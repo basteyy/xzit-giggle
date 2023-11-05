@@ -1,2 +1,3 @@
 # xzit-giggle
-WIP
+
+This is work in progress.

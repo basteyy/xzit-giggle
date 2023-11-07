@@ -17,7 +17,10 @@ declare(strict_types=1);
     <div class="container-xxl text-end">
         <hr class="my-3 my-md-5"/>
         <p class="text-muted small fw-light">
-            This is Xzit Giggle, a project by <a href="https://xzit.de">xzit.de</a>.<br />
+            This is <a href="https://github.com/basteyy/xzit-giggle" target="_blank" title="Xzit Giggle on Github">Xzit Giggle</a> , a project by <a href="https://xzit.de"
+                                                                                                                                                     target="_blank"
+                                                                                                                                                     title="Visit xzit.de">xzit
+                                                                                                                                                                             .de</a>.<br />
             Made with  ❤️, ☕ and a little bit of 🦄.
         </p>
     </div>

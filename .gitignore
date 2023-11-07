@@ -6,3 +6,5 @@ composer.phar
 public/css
 public/js
 public/uploads
+.env
+.setup

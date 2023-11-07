@@ -1,0 +1,62 @@
+{
+  "name": "basteyy/xzit-giggle",
+  "description": "A simple and lightweight webhosting control panel",
+  "type": "project",
+  "keywords": [],
+  "authors": [
+    {
+      "name": "Sebastian Eiweleit",
+      "email": "sebastian@eiweleit.de",
+      "role": "Lead Developer"
+    }
+  ],
+  "autoload": {
+    "files": [
+      "src/Config/constants.php",
+      "src/Helper/functions.php"
+    ],
+    "psr-4": {
+      "basteyy\\XzitGiggle\\": "src"
+    }
+  },
+  "require": {
+    "php": "^8.3",
+    "ext-pdo": "*",
+    "basteyy/git-php": "dev-master",
+    "league/commonmark": "2.*",
+    "league/plates": "3.*",
+    "filp/whoops": "2.*",
+    "slim/slim": "4.*",
+    "vlucas/phpdotenv": "^5.4",
+    "psr-discovery/all": "^1.0.0",
+    "slim/psr7": "^1.5",
+    "php-di/slim-bridge": "^3.1",
+    "middlewares/trailing-slash": "^2.0",
+    "basteyy/minimal-hash-wrapper": "^1.0",
+    "odan/session": "^6.1.0",
+    "twbs/bootstrap-icons": ">=v1.11.1",
+    "twbs/bootstrap": ">=v5.3.2",
+    "propel/propel": ">=2.0.0-beta3",
+    "juststeveking/http-status-code": ">=3.0.2",
+    "akrabat/ip-address-middleware": "^2.1",
+    "basteyy/var-debug": "^1.1.0",
+    "basteyy/php-stringer": "^1.0.0",
+    "basteyy/php-i18n": "^1.0.0",
+    "monolog/monolog": ">=3.5.0",
+    "adhocore/cli": "^v1.0.0"
+  },
+  "scripts": {
+    "post-update-cmd": [
+      "php -r \"if (!is_dir('public/css')) { mkdir('public/css', 0777, true); } copy('vendor/twbs/bootstrap/dist/css/bootstrap.min.css', 'public/css/bootstrap.min.css');\"",
+      "php -r \"if (!is_dir('public/js')) { mkdir('public/js', 0777, true); } copy('vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js', 'public/js/bootstrap.bundle.min.js');\"",
+      "php -r \"if (!is_dir('public/js')) { mkdir('public/js', 0777, true); } copy('vendor/twbs/bootstrap/dist/js/bootstrap.bundle.js', 'public/js/bootstrap.bundle.js');\"",
+      "php -r \"if (!is_dir('public/js')) { mkdir('public/js', 0777, true); } copy('vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js.map', 'public/js/bootstrap.bundle.min.js.map');\"",
+      "php -r \"copy('vendor/twbs/bootstrap-icons/font/bootstrap-icons.min.css', 'public/css/bootstrap-icons.min.css');\"",
+      "php -r \"if (!is_dir('public/css/fonts')) { mkdir('public/css/fonts', 0777, true); } copy('vendor/twbs/bootstrap-icons/font/fonts/bootstrap-icons.woff', 'public/css/fonts/bootstrap-icons.woff');\"",
+      "php -r \"copy('vendor/twbs/bootstrap-icons/font/fonts/bootstrap-icons.woff2', 'public/css/fonts/bootstrap-icons.woff2');\""
+    ]
+  }
+
+
+
+}

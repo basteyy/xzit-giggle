@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="default" defaultIdMethod="native"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="http://xsd.propelorm.org/1.6/database.xsd"
+          namespace="basteyy\XzitGiggle\Models"
+          package="."
+          defaultPhpNamingMethod="underscore"
+          identifierQuoting="true">
+
+    <!-- Config Table -->
+    <table name="xg_config" phpName="Config">
+        <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="key" type="varchar" size="255" required="true"/>
+        <column name="default" type="varchar" size="255" required="true"/>
+        <column name="value" type="varchar" size="255" required="true"/>
+        <unique>
+            <unique-column name="key"/>
+        </unique>
+    </table>
+
+    <!-- User Tables -->
+    <table name="xg_users" phpName="User">
+        <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="email" type="varchar" size="255" required="true"/>
+        <column name="username" type="varchar" size="255" required="true"/>
+        <column name="user_role_id" type="integer" required="true"/>
+        <column name="secret_key" type="varchar" size="128" required="false"/>
+        <column name="password_hash" type="varchar" size="256" required="false"/>
+
+        <column name="activated" type="boolean" required="true" default="false"/>
+        <column name="blocked" type="boolean" required="true" default="false"/>
+
+        <foreign-key foreignTable="xg_user_roles" phpName="UserRole" refPhpName="Users">
+            <reference local="user_role_id" foreign="id"/>
+        </foreign-key>
+
+        <unique>
+            <unique-column name="email"/>
+            <unique-column name="secret_key"/>
+        </unique>
+    </table>
+
+    <table name="xg_user_roles" phpName="UserRole">
+        <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="name" type="varchar" size="64" required="true"/>
+        <column name="identifier" type="varchar" size="64" required="true"/>
+    </table>
+
+    <!-- Ip Addresses -->
+    <table name="xg_ip" phpName="IpAddress">
+        <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+
+        <!-- Ip Adresse - could be ipv4 or ipv6 -->
+        <column name="address" type="varchar" size="128" required="true"/>
+
+        <!-- IPv4 Address -->
+        <column name="ipv4" type="integer" required="true"/>
+
+        <!-- IPv6 Address -->
+        <column name="ipv6" type="varchar" size="128" required="true"/>
+
+        <!-- Can this ip address assigned to a user? -->
+        <column name="can_assign" type="boolean" required="true" default="false"/>
+
+        <!-- Exclusive IP-Address? -->
+        <column name="exclusive" type="boolean" required="true" default="false"/>
+    </table>
+
+    <!-- Here we can store all exlusive ip addresses as pools. A ip in the pool cannot be assigned by someone outside the pool -->
+    <table name="xg_ip_pool" phpName="IpPool">
+        <!-- ID of entry -->
+        <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+
+        <!-- Pool Name -->
+        <column name="name" type="varchar" size="255" required="true"/>
+
+        <!-- IP adress -->
+        <column name="ip_id" type="integer" required="true"/>
+
+        <!-- Connec to xg_ip -->
+        <foreign-key foreignTable="xg_ip" phpName="IpAddress" refPhpName="ipPool">
+            <reference local="ip_id" foreign="id"/>
+        </foreign-key>
+    </table>
+
+    <!-- Users in pools -->
+    <table name="xg_ip_pool_users" phpName="IpPoolUsers">
+        <!-- ID of entry -->
+        <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+
+        <!-- User-id -->
+        <column name="user_id" type="integer" required="true"/>
+
+        <!-- Pool-id -->
+        <column name="pool_id" type="integer" required="true"/>
+
+        <!-- Connect to IP Pool -->
+        <foreign-key foreignTable="xg_ip_pool" phpName="IpPool" refPhpName="IpPoolUsers">
+            <reference local="pool_id" foreign="id"/>
+        </foreign-key>
+
+        <!-- Connect to user -->
+        <foreign-key foreignTable="xg_users" phpName="Users" refPhpName="IpPoolUsers">
+            <reference local="user_id" foreign="id"/>
+        </foreign-key>
+
+    </table>
+
+    <!-- Domains -->
+    <table name="xg_domains" phpName="Domain">
+        <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+
+        <!-- Owner of Domain User ID -->
+        <column name="user_id" type="integer" required="true"/>
+
+        <!-- Domain TLD -->
+        <column name="tld" type="varchar" size="255" required="true"/>
+
+        <!-- Domainname -->
+        <column name="domain" type="varchar" size="255" required="true"/>
+
+        <!-- When registered -->
+        <column name="registered" type="TIMESTAMP" required="true" defaultExpr="CURRENT_TIMESTAMP"/>
+
+        <!-- With www-alias? -->
+        <column name="www_alias" type="boolean" required="true" default="false"/>
+
+        <!-- With Let's Encrypt? -->
+        <column name="lets_encrypt" type="boolean" required="true" default="false"/>
+
+        <!-- IPv4 Address -->
+        <column name="ipv4" type="integer" required="true"/>
+
+        <!-- IPv6 Address -->
+        <column name="ipv6" type="integer" required="false"/>
+
+        <!-- Mounting Point -->
+        <column name="mounting_point" type="varchar" size="255" required="true"/>
+
+        <!-- Activated? -->
+        <column name="activated" type="boolean" required="true" default="true"/>
+
+        <!-- Blocked? -->
+        <column name="blocked" type="boolean" required="true" default="false"/>
+
+        <!-- Connect user_id to xg_users -->
+        <foreign-key foreignTable="xg_users" phpName="User" refPhpName="Domains">
+            <reference local="user_id" foreign="id"/>
+        </foreign-key>
+    </table>
+
+
+</database>

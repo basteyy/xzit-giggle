@@ -12,22 +12,19 @@
  */
 declare(strict_types=1);
 
-namespace basteyy\XzitGiggle\Controller\Domains;
+namespace basteyy\XzitGiggle\Controller\Login;
 
-use basteyy\XzitGiggle\Controller\BaseLoggedInController;
-use basteyy\XzitGiggle\Models\DomainQuery;
-use Propel\Runtime\Exception\PropelException;
+use basteyy\XzitGiggle\Controller\UserBaseController;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-class EditDomainController extends BaseLoggedInController
+class LogoutControllerUser extends UserBaseController
 {
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     * @throws PropelException
      */
     public function __invoke(
         RequestInterface  $request,
@@ -35,17 +32,9 @@ class EditDomainController extends BaseLoggedInController
     ): ResponseInterface
     {
         $this->setRequest($request);
-
-        $domain = DomainQuery::create()
-            ->filterByUser($this->getUser())
-            ->findOneByDomain($request->getQueryParams()['d'] ?? '');
-
-        return $this->render(
-            template: 'user/domains/edit_domain',
-            data: [
-                'domain' => $domain
-            ],
-            response: $response
-        );
+        $this->logOutUser();
+        $this->addSuccessMessage(__('You are now logged out'));
+        return $this->redirect('/', $response);
     }
+
 }

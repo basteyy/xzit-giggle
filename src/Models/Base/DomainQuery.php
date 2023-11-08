@@ -31,6 +31,8 @@ use basteyy\XzitGiggle\Models\Map\DomainTableMap;
  * @method     ChildDomainQuery orderByMountingPoint($order = Criteria::ASC) Order by the mounting_point column
  * @method     ChildDomainQuery orderByActivated($order = Criteria::ASC) Order by the activated column
  * @method     ChildDomainQuery orderByBlocked($order = Criteria::ASC) Order by the blocked column
+ * @method     ChildDomainQuery orderByProcessed($order = Criteria::ASC) Order by the processed column
+ * @method     ChildDomainQuery orderByProcessedAt($order = Criteria::ASC) Order by the processed_at column
  *
  * @method     ChildDomainQuery groupById() Group by the id column
  * @method     ChildDomainQuery groupByUserId() Group by the user_id column
@@ -44,6 +46,8 @@ use basteyy\XzitGiggle\Models\Map\DomainTableMap;
  * @method     ChildDomainQuery groupByMountingPoint() Group by the mounting_point column
  * @method     ChildDomainQuery groupByActivated() Group by the activated column
  * @method     ChildDomainQuery groupByBlocked() Group by the blocked column
+ * @method     ChildDomainQuery groupByProcessed() Group by the processed column
+ * @method     ChildDomainQuery groupByProcessedAt() Group by the processed_at column
  *
  * @method     ChildDomainQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildDomainQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -80,6 +84,8 @@ use basteyy\XzitGiggle\Models\Map\DomainTableMap;
  * @method     ChildDomain|null findOneByMountingPoint(string $mounting_point) Return the first ChildDomain filtered by the mounting_point column
  * @method     ChildDomain|null findOneByActivated(boolean $activated) Return the first ChildDomain filtered by the activated column
  * @method     ChildDomain|null findOneByBlocked(boolean $blocked) Return the first ChildDomain filtered by the blocked column
+ * @method     ChildDomain|null findOneByProcessed(boolean $processed) Return the first ChildDomain filtered by the processed column
+ * @method     ChildDomain|null findOneByProcessedAt(string $processed_at) Return the first ChildDomain filtered by the processed_at column
  *
  * @method     ChildDomain requirePk($key, ?ConnectionInterface $con = null) Return the ChildDomain by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildDomain requireOne(?ConnectionInterface $con = null) Return the first ChildDomain matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -96,6 +102,8 @@ use basteyy\XzitGiggle\Models\Map\DomainTableMap;
  * @method     ChildDomain requireOneByMountingPoint(string $mounting_point) Return the first ChildDomain filtered by the mounting_point column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildDomain requireOneByActivated(boolean $activated) Return the first ChildDomain filtered by the activated column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildDomain requireOneByBlocked(boolean $blocked) Return the first ChildDomain filtered by the blocked column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildDomain requireOneByProcessed(boolean $processed) Return the first ChildDomain filtered by the processed column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildDomain requireOneByProcessedAt(string $processed_at) Return the first ChildDomain filtered by the processed_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildDomain[]|Collection find(?ConnectionInterface $con = null) Return ChildDomain objects based on current ModelCriteria
  * @psalm-method Collection&\Traversable<ChildDomain> find(?ConnectionInterface $con = null) Return ChildDomain objects based on current ModelCriteria
@@ -124,6 +132,10 @@ use basteyy\XzitGiggle\Models\Map\DomainTableMap;
  * @psalm-method Collection&\Traversable<ChildDomain> findByActivated(boolean|array<boolean> $activated) Return ChildDomain objects filtered by the activated column
  * @method     ChildDomain[]|Collection findByBlocked(boolean|array<boolean> $blocked) Return ChildDomain objects filtered by the blocked column
  * @psalm-method Collection&\Traversable<ChildDomain> findByBlocked(boolean|array<boolean> $blocked) Return ChildDomain objects filtered by the blocked column
+ * @method     ChildDomain[]|Collection findByProcessed(boolean|array<boolean> $processed) Return ChildDomain objects filtered by the processed column
+ * @psalm-method Collection&\Traversable<ChildDomain> findByProcessed(boolean|array<boolean> $processed) Return ChildDomain objects filtered by the processed column
+ * @method     ChildDomain[]|Collection findByProcessedAt(string|array<string> $processed_at) Return ChildDomain objects filtered by the processed_at column
+ * @psalm-method Collection&\Traversable<ChildDomain> findByProcessedAt(string|array<string> $processed_at) Return ChildDomain objects filtered by the processed_at column
  *
  * @method     ChildDomain[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ?ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  * @psalm-method \Propel\Runtime\Util\PropelModelPager&\Traversable<ChildDomain> paginate($page = 1, $maxPerPage = 10, ?ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -223,7 +235,7 @@ abstract class DomainQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT `id`, `user_id`, `tld`, `domain`, `registered`, `www_alias`, `lets_encrypt`, `ipv4`, `ipv6`, `mounting_point`, `activated`, `blocked` FROM `xg_domains` WHERE `id` = :p0';
+        $sql = 'SELECT `id`, `user_id`, `tld`, `domain`, `registered`, `www_alias`, `lets_encrypt`, `ipv4`, `ipv6`, `mounting_point`, `activated`, `blocked`, `processed`, `processed_at` FROM `xg_domains` WHERE `id` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -732,6 +744,80 @@ abstract class DomainQuery extends ModelCriteria
         }
 
         $this->addUsingAlias(DomainTableMap::COL_BLOCKED, $blocked, $comparison);
+
+        return $this;
+    }
+
+    /**
+     * Filter the query on the processed column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByProcessed(true); // WHERE processed = true
+     * $query->filterByProcessed('yes'); // WHERE processed = true
+     * </code>
+     *
+     * @param bool|string $processed The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this The current query, for fluid interface
+     */
+    public function filterByProcessed($processed = null, ?string $comparison = null)
+    {
+        if (is_string($processed)) {
+            $processed = in_array(strtolower($processed), array('false', 'off', '-', 'no', 'n', '0', ''), true) ? false : true;
+        }
+
+        $this->addUsingAlias(DomainTableMap::COL_PROCESSED, $processed, $comparison);
+
+        return $this;
+    }
+
+    /**
+     * Filter the query on the processed_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByProcessedAt('2011-03-14'); // WHERE processed_at = '2011-03-14'
+     * $query->filterByProcessedAt('now'); // WHERE processed_at = '2011-03-14'
+     * $query->filterByProcessedAt(array('max' => 'yesterday')); // WHERE processed_at > '2011-03-13'
+     * </code>
+     *
+     * @param mixed $processedAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this The current query, for fluid interface
+     */
+    public function filterByProcessedAt($processedAt = null, ?string $comparison = null)
+    {
+        if (is_array($processedAt)) {
+            $useMinMax = false;
+            if (isset($processedAt['min'])) {
+                $this->addUsingAlias(DomainTableMap::COL_PROCESSED_AT, $processedAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($processedAt['max'])) {
+                $this->addUsingAlias(DomainTableMap::COL_PROCESSED_AT, $processedAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        $this->addUsingAlias(DomainTableMap::COL_PROCESSED_AT, $processedAt, $comparison);
 
         return $this;
     }

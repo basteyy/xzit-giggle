@@ -21,13 +21,18 @@ declare(strict_types=1);
 <link href="/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+<header>
+
+    <?= $this->fetch('layouts::partials/navigation') ?>
+</header>
 <main class="container-lg mt-5 pt-5">
     <?= $this->fetch('layouts::partials/flash_messages') ?>
     <?= $this->section('content') ?>
 </main>
-<script src="/js/bootstrap.bundle.min.js"></script>
 
 
 <?= $this->fetch('layouts::partials/footer') ?>
+<link href="/css/bootstrap-icons.min.css" rel="stylesheet">
+<script src="/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

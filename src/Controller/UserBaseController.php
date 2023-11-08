@@ -2,7 +2,7 @@
 /**
  * Xzit Giggle
  *
- * This file `BaseLoggedInController.php` is part of the `xzit-giggle` project.
+ * This file `UserBaseController.php` is part of the `xzit-giggle` project.
  * Xzit Giggle is available for use at your own risk and WITHOUT ANY WARRANTY.
  *
  * @license CC0 1.0 Universal
@@ -22,7 +22,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
-class BaseLoggedInController extends BaseController {
+class UserBaseController extends BaseController {
     use SessionFlashMessagesTrait,
         UserSessionTrait,
         RenderTrait;

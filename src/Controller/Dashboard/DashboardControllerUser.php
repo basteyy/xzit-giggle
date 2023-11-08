@@ -12,17 +12,15 @@
  */
 declare(strict_types=1);
 
-namespace basteyy\XzitGiggle\Controller\Domains;
+namespace basteyy\XzitGiggle\Controller\Dashboard;
 
-use basteyy\XzitGiggle\Controller\BaseController;
-use basteyy\XzitGiggle\Controller\BaseLoggedInController;
+use basteyy\XzitGiggle\Controller\UserBaseController;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-class ListDomainsController extends BaseLoggedInController
+class DashboardControllerUser extends UserBaseController
 {
     /**
      * @throws ContainerExceptionInterface
@@ -36,8 +34,11 @@ class ListDomainsController extends BaseLoggedInController
         $this->setRequest($request);
 
         return $this->render(
-            template: 'user/domains/list_domains',
-            response: $response
+            template: 'user/dashboard/dashboard',
+            data: [
+            ],
+            response: $response,
         );
     }
+
 }

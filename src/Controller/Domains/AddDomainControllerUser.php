@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace basteyy\XzitGiggle\Controller\Domains;
 
-use basteyy\XzitGiggle\Controller\BaseLoggedInController;
+use basteyy\XzitGiggle\Controller\UserBaseController;
 use basteyy\XzitGiggle\Models\Domain;
 use basteyy\XzitGiggle\Models\DomainQuery;
 use basteyy\XzitGiggle\Models\IpAddressQuery;
@@ -23,7 +23,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-class AddDomainController extends BaseLoggedInController
+class AddDomainControllerUser extends UserBaseController
 {
     /**
      * @throws ContainerExceptionInterface

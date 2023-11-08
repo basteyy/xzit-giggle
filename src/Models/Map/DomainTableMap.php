@@ -63,7 +63,7 @@ class DomainTableMap extends TableMap
     /**
      * The total number of columns
      */
-    public const NUM_COLUMNS = 12;
+    public const NUM_COLUMNS = 14;
 
     /**
      * The number of lazy-loaded columns
@@ -73,7 +73,7 @@ class DomainTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    public const NUM_HYDRATE_COLUMNS = 12;
+    public const NUM_HYDRATE_COLUMNS = 14;
 
     /**
      * the column name for the id field
@@ -136,6 +136,16 @@ class DomainTableMap extends TableMap
     public const COL_BLOCKED = 'xg_domains.blocked';
 
     /**
+     * the column name for the processed field
+     */
+    public const COL_PROCESSED = 'xg_domains.processed';
+
+    /**
+     * the column name for the processed_at field
+     */
+    public const COL_PROCESSED_AT = 'xg_domains.processed_at';
+
+    /**
      * The default string format for model objects of the related table
      */
     public const DEFAULT_STRING_FORMAT = 'YAML';
@@ -149,11 +159,11 @@ class DomainTableMap extends TableMap
      * @var array<string, mixed>
      */
     protected static $fieldNames = [
-        self::TYPE_PHPNAME       => ['Id', 'UserId', 'Tld', 'Domain', 'Registered', 'WwwAlias', 'LetsEncrypt', 'Ipv4', 'Ipv6', 'MountingPoint', 'Activated', 'Blocked', ],
-        self::TYPE_CAMELNAME     => ['id', 'userId', 'tld', 'domain', 'registered', 'wwwAlias', 'letsEncrypt', 'ipv4', 'ipv6', 'mountingPoint', 'activated', 'blocked', ],
-        self::TYPE_COLNAME       => [DomainTableMap::COL_ID, DomainTableMap::COL_USER_ID, DomainTableMap::COL_TLD, DomainTableMap::COL_DOMAIN, DomainTableMap::COL_REGISTERED, DomainTableMap::COL_WWW_ALIAS, DomainTableMap::COL_LETS_ENCRYPT, DomainTableMap::COL_IPV4, DomainTableMap::COL_IPV6, DomainTableMap::COL_MOUNTING_POINT, DomainTableMap::COL_ACTIVATED, DomainTableMap::COL_BLOCKED, ],
-        self::TYPE_FIELDNAME     => ['id', 'user_id', 'tld', 'domain', 'registered', 'www_alias', 'lets_encrypt', 'ipv4', 'ipv6', 'mounting_point', 'activated', 'blocked', ],
-        self::TYPE_NUM           => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, ]
+        self::TYPE_PHPNAME       => ['Id', 'UserId', 'Tld', 'Domain', 'Registered', 'WwwAlias', 'LetsEncrypt', 'Ipv4', 'Ipv6', 'MountingPoint', 'Activated', 'Blocked', 'Processed', 'ProcessedAt', ],
+        self::TYPE_CAMELNAME     => ['id', 'userId', 'tld', 'domain', 'registered', 'wwwAlias', 'letsEncrypt', 'ipv4', 'ipv6', 'mountingPoint', 'activated', 'blocked', 'processed', 'processedAt', ],
+        self::TYPE_COLNAME       => [DomainTableMap::COL_ID, DomainTableMap::COL_USER_ID, DomainTableMap::COL_TLD, DomainTableMap::COL_DOMAIN, DomainTableMap::COL_REGISTERED, DomainTableMap::COL_WWW_ALIAS, DomainTableMap::COL_LETS_ENCRYPT, DomainTableMap::COL_IPV4, DomainTableMap::COL_IPV6, DomainTableMap::COL_MOUNTING_POINT, DomainTableMap::COL_ACTIVATED, DomainTableMap::COL_BLOCKED, DomainTableMap::COL_PROCESSED, DomainTableMap::COL_PROCESSED_AT, ],
+        self::TYPE_FIELDNAME     => ['id', 'user_id', 'tld', 'domain', 'registered', 'www_alias', 'lets_encrypt', 'ipv4', 'ipv6', 'mounting_point', 'activated', 'blocked', 'processed', 'processed_at', ],
+        self::TYPE_NUM           => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, ]
     ];
 
     /**
@@ -165,11 +175,11 @@ class DomainTableMap extends TableMap
      * @var array<string, mixed>
      */
     protected static $fieldKeys = [
-        self::TYPE_PHPNAME       => ['Id' => 0, 'UserId' => 1, 'Tld' => 2, 'Domain' => 3, 'Registered' => 4, 'WwwAlias' => 5, 'LetsEncrypt' => 6, 'Ipv4' => 7, 'Ipv6' => 8, 'MountingPoint' => 9, 'Activated' => 10, 'Blocked' => 11, ],
-        self::TYPE_CAMELNAME     => ['id' => 0, 'userId' => 1, 'tld' => 2, 'domain' => 3, 'registered' => 4, 'wwwAlias' => 5, 'letsEncrypt' => 6, 'ipv4' => 7, 'ipv6' => 8, 'mountingPoint' => 9, 'activated' => 10, 'blocked' => 11, ],
-        self::TYPE_COLNAME       => [DomainTableMap::COL_ID => 0, DomainTableMap::COL_USER_ID => 1, DomainTableMap::COL_TLD => 2, DomainTableMap::COL_DOMAIN => 3, DomainTableMap::COL_REGISTERED => 4, DomainTableMap::COL_WWW_ALIAS => 5, DomainTableMap::COL_LETS_ENCRYPT => 6, DomainTableMap::COL_IPV4 => 7, DomainTableMap::COL_IPV6 => 8, DomainTableMap::COL_MOUNTING_POINT => 9, DomainTableMap::COL_ACTIVATED => 10, DomainTableMap::COL_BLOCKED => 11, ],
-        self::TYPE_FIELDNAME     => ['id' => 0, 'user_id' => 1, 'tld' => 2, 'domain' => 3, 'registered' => 4, 'www_alias' => 5, 'lets_encrypt' => 6, 'ipv4' => 7, 'ipv6' => 8, 'mounting_point' => 9, 'activated' => 10, 'blocked' => 11, ],
-        self::TYPE_NUM           => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, ]
+        self::TYPE_PHPNAME       => ['Id' => 0, 'UserId' => 1, 'Tld' => 2, 'Domain' => 3, 'Registered' => 4, 'WwwAlias' => 5, 'LetsEncrypt' => 6, 'Ipv4' => 7, 'Ipv6' => 8, 'MountingPoint' => 9, 'Activated' => 10, 'Blocked' => 11, 'Processed' => 12, 'ProcessedAt' => 13, ],
+        self::TYPE_CAMELNAME     => ['id' => 0, 'userId' => 1, 'tld' => 2, 'domain' => 3, 'registered' => 4, 'wwwAlias' => 5, 'letsEncrypt' => 6, 'ipv4' => 7, 'ipv6' => 8, 'mountingPoint' => 9, 'activated' => 10, 'blocked' => 11, 'processed' => 12, 'processedAt' => 13, ],
+        self::TYPE_COLNAME       => [DomainTableMap::COL_ID => 0, DomainTableMap::COL_USER_ID => 1, DomainTableMap::COL_TLD => 2, DomainTableMap::COL_DOMAIN => 3, DomainTableMap::COL_REGISTERED => 4, DomainTableMap::COL_WWW_ALIAS => 5, DomainTableMap::COL_LETS_ENCRYPT => 6, DomainTableMap::COL_IPV4 => 7, DomainTableMap::COL_IPV6 => 8, DomainTableMap::COL_MOUNTING_POINT => 9, DomainTableMap::COL_ACTIVATED => 10, DomainTableMap::COL_BLOCKED => 11, DomainTableMap::COL_PROCESSED => 12, DomainTableMap::COL_PROCESSED_AT => 13, ],
+        self::TYPE_FIELDNAME     => ['id' => 0, 'user_id' => 1, 'tld' => 2, 'domain' => 3, 'registered' => 4, 'www_alias' => 5, 'lets_encrypt' => 6, 'ipv4' => 7, 'ipv6' => 8, 'mounting_point' => 9, 'activated' => 10, 'blocked' => 11, 'processed' => 12, 'processed_at' => 13, ],
+        self::TYPE_NUM           => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, ]
     ];
 
     /**
@@ -266,6 +276,21 @@ class DomainTableMap extends TableMap
         'DomainTableMap::COL_BLOCKED' => 'BLOCKED',
         'COL_BLOCKED' => 'BLOCKED',
         'xg_domains.blocked' => 'BLOCKED',
+        'Processed' => 'PROCESSED',
+        'Domain.Processed' => 'PROCESSED',
+        'processed' => 'PROCESSED',
+        'domain.processed' => 'PROCESSED',
+        'DomainTableMap::COL_PROCESSED' => 'PROCESSED',
+        'COL_PROCESSED' => 'PROCESSED',
+        'xg_domains.processed' => 'PROCESSED',
+        'ProcessedAt' => 'PROCESSED_AT',
+        'Domain.ProcessedAt' => 'PROCESSED_AT',
+        'processedAt' => 'PROCESSED_AT',
+        'domain.processedAt' => 'PROCESSED_AT',
+        'DomainTableMap::COL_PROCESSED_AT' => 'PROCESSED_AT',
+        'COL_PROCESSED_AT' => 'PROCESSED_AT',
+        'processed_at' => 'PROCESSED_AT',
+        'xg_domains.processed_at' => 'PROCESSED_AT',
     ];
 
     /**
@@ -297,6 +322,8 @@ class DomainTableMap extends TableMap
         $this->addColumn('mounting_point', 'MountingPoint', 'VARCHAR', true, 255, null);
         $this->addColumn('activated', 'Activated', 'BOOLEAN', true, 1, true);
         $this->addColumn('blocked', 'Blocked', 'BOOLEAN', true, 1, false);
+        $this->addColumn('processed', 'Processed', 'BOOLEAN', true, 1, false);
+        $this->addColumn('processed_at', 'ProcessedAt', 'TIMESTAMP', false, null, null);
     }
 
     /**
@@ -469,6 +496,8 @@ class DomainTableMap extends TableMap
             $criteria->addSelectColumn(DomainTableMap::COL_MOUNTING_POINT);
             $criteria->addSelectColumn(DomainTableMap::COL_ACTIVATED);
             $criteria->addSelectColumn(DomainTableMap::COL_BLOCKED);
+            $criteria->addSelectColumn(DomainTableMap::COL_PROCESSED);
+            $criteria->addSelectColumn(DomainTableMap::COL_PROCESSED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.user_id');
@@ -482,6 +511,8 @@ class DomainTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.mounting_point');
             $criteria->addSelectColumn($alias . '.activated');
             $criteria->addSelectColumn($alias . '.blocked');
+            $criteria->addSelectColumn($alias . '.processed');
+            $criteria->addSelectColumn($alias . '.processed_at');
         }
     }
 
@@ -512,6 +543,8 @@ class DomainTableMap extends TableMap
             $criteria->removeSelectColumn(DomainTableMap::COL_MOUNTING_POINT);
             $criteria->removeSelectColumn(DomainTableMap::COL_ACTIVATED);
             $criteria->removeSelectColumn(DomainTableMap::COL_BLOCKED);
+            $criteria->removeSelectColumn(DomainTableMap::COL_PROCESSED);
+            $criteria->removeSelectColumn(DomainTableMap::COL_PROCESSED_AT);
         } else {
             $criteria->removeSelectColumn($alias . '.id');
             $criteria->removeSelectColumn($alias . '.user_id');
@@ -525,6 +558,8 @@ class DomainTableMap extends TableMap
             $criteria->removeSelectColumn($alias . '.mounting_point');
             $criteria->removeSelectColumn($alias . '.activated');
             $criteria->removeSelectColumn($alias . '.blocked');
+            $criteria->removeSelectColumn($alias . '.processed');
+            $criteria->removeSelectColumn($alias . '.processed_at');
         }
     }
 

@@ -155,6 +155,21 @@ abstract class Domain implements ActiveRecordInterface
     protected $blocked;
 
     /**
+     * The value for the processed field.
+     *
+     * Note: this column has a database default value of: false
+     * @var        boolean
+     */
+    protected $processed;
+
+    /**
+     * The value for the processed_at field.
+     *
+     * @var        DateTime|null
+     */
+    protected $processed_at;
+
+    /**
      * @var        ChildUser
      */
     protected $aUser;
@@ -179,6 +194,7 @@ abstract class Domain implements ActiveRecordInterface
         $this->lets_encrypt = false;
         $this->activated = true;
         $this->blocked = false;
+        $this->processed = false;
     }
 
     /**
@@ -582,6 +598,48 @@ abstract class Domain implements ActiveRecordInterface
     }
 
     /**
+     * Get the [processed] column value.
+     *
+     * @return boolean
+     */
+    public function getProcessed()
+    {
+        return $this->processed;
+    }
+
+    /**
+     * Get the [processed] column value.
+     *
+     * @return boolean
+     */
+    public function isProcessed()
+    {
+        return $this->getProcessed();
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [processed_at] column value.
+     *
+     *
+     * @param string|null $format The date/time format string (either date()-style or strftime()-style).
+     *   If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime|null Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00.
+     *
+     * @throws \Propel\Runtime\Exception\PropelException - if unable to parse/validate the date/time value.
+     *
+     * @psalm-return ($format is null ? DateTime|null : string|null)
+     */
+    public function getProcessedAt($format = null)
+    {
+        if ($format === null) {
+            return $this->processed_at;
+        } else {
+            return $this->processed_at instanceof \DateTimeInterface ? $this->processed_at->format($format) : null;
+        }
+    }
+
+    /**
      * Set the value of [id] column.
      *
      * @param int $v New value
@@ -858,6 +916,54 @@ abstract class Domain implements ActiveRecordInterface
     }
 
     /**
+     * Sets the value of the [processed] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     *
+     * @param bool|integer|string $v The new value
+     * @return $this The current object (for fluent API support)
+     */
+    public function setProcessed($v)
+    {
+        if ($v !== null) {
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
+        }
+
+        if ($this->processed !== $v) {
+            $this->processed = $v;
+            $this->modifiedColumns[DomainTableMap::COL_PROCESSED] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Sets the value of [processed_at] column to a normalized version of the date/time value specified.
+     *
+     * @param string|integer|\DateTimeInterface|null $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this The current object (for fluent API support)
+     */
+    public function setProcessedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->processed_at !== null || $dt !== null) {
+            if ($this->processed_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->processed_at->format("Y-m-d H:i:s.u")) {
+                $this->processed_at = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[DomainTableMap::COL_PROCESSED_AT] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    }
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -880,6 +986,10 @@ abstract class Domain implements ActiveRecordInterface
             }
 
             if ($this->blocked !== false) {
+                return false;
+            }
+
+            if ($this->processed !== false) {
                 return false;
             }
 
@@ -948,6 +1058,15 @@ abstract class Domain implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : DomainTableMap::translateFieldName('Blocked', TableMap::TYPE_PHPNAME, $indexType)];
             $this->blocked = (null !== $col) ? (boolean) $col : null;
 
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : DomainTableMap::translateFieldName('Processed', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->processed = (null !== $col) ? (boolean) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : DomainTableMap::translateFieldName('ProcessedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->processed_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
             $this->resetModified();
             $this->setNew(false);
 
@@ -955,7 +1074,7 @@ abstract class Domain implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 12; // 12 = DomainTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 14; // 14 = DomainTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\basteyy\\XzitGiggle\\Models\\Domain'), 0, $e);
@@ -1209,6 +1328,12 @@ abstract class Domain implements ActiveRecordInterface
         if ($this->isColumnModified(DomainTableMap::COL_BLOCKED)) {
             $modifiedColumns[':p' . $index++]  = '`blocked`';
         }
+        if ($this->isColumnModified(DomainTableMap::COL_PROCESSED)) {
+            $modifiedColumns[':p' . $index++]  = '`processed`';
+        }
+        if ($this->isColumnModified(DomainTableMap::COL_PROCESSED_AT)) {
+            $modifiedColumns[':p' . $index++]  = '`processed_at`';
+        }
 
         $sql = sprintf(
             'INSERT INTO `xg_domains` (%s) VALUES (%s)',
@@ -1266,6 +1391,14 @@ abstract class Domain implements ActiveRecordInterface
                         break;
                     case '`blocked`':
                         $stmt->bindValue($identifier, (int) $this->blocked, PDO::PARAM_INT);
+
+                        break;
+                    case '`processed`':
+                        $stmt->bindValue($identifier, (int) $this->processed, PDO::PARAM_INT);
+
+                        break;
+                    case '`processed_at`':
+                        $stmt->bindValue($identifier, $this->processed_at ? $this->processed_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
 
                         break;
                 }
@@ -1366,6 +1499,12 @@ abstract class Domain implements ActiveRecordInterface
             case 11:
                 return $this->getBlocked();
 
+            case 12:
+                return $this->getProcessed();
+
+            case 13:
+                return $this->getProcessedAt();
+
             default:
                 return null;
         } // switch()
@@ -1406,9 +1545,15 @@ abstract class Domain implements ActiveRecordInterface
             $keys[9] => $this->getMountingPoint(),
             $keys[10] => $this->getActivated(),
             $keys[11] => $this->getBlocked(),
+            $keys[12] => $this->getProcessed(),
+            $keys[13] => $this->getProcessedAt(),
         ];
         if ($result[$keys[4]] instanceof \DateTimeInterface) {
             $result[$keys[4]] = $result[$keys[4]]->format('Y-m-d H:i:s.u');
+        }
+
+        if ($result[$keys[13]] instanceof \DateTimeInterface) {
+            $result[$keys[13]] = $result[$keys[13]]->format('Y-m-d H:i:s.u');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1504,6 +1649,12 @@ abstract class Domain implements ActiveRecordInterface
             case 11:
                 $this->setBlocked($value);
                 break;
+            case 12:
+                $this->setProcessed($value);
+                break;
+            case 13:
+                $this->setProcessedAt($value);
+                break;
         } // switch()
 
         return $this;
@@ -1565,6 +1716,12 @@ abstract class Domain implements ActiveRecordInterface
         }
         if (array_key_exists($keys[11], $arr)) {
             $this->setBlocked($arr[$keys[11]]);
+        }
+        if (array_key_exists($keys[12], $arr)) {
+            $this->setProcessed($arr[$keys[12]]);
+        }
+        if (array_key_exists($keys[13], $arr)) {
+            $this->setProcessedAt($arr[$keys[13]]);
         }
 
         return $this;
@@ -1644,6 +1801,12 @@ abstract class Domain implements ActiveRecordInterface
         }
         if ($this->isColumnModified(DomainTableMap::COL_BLOCKED)) {
             $criteria->add(DomainTableMap::COL_BLOCKED, $this->blocked);
+        }
+        if ($this->isColumnModified(DomainTableMap::COL_PROCESSED)) {
+            $criteria->add(DomainTableMap::COL_PROCESSED, $this->processed);
+        }
+        if ($this->isColumnModified(DomainTableMap::COL_PROCESSED_AT)) {
+            $criteria->add(DomainTableMap::COL_PROCESSED_AT, $this->processed_at);
         }
 
         return $criteria;
@@ -1744,6 +1907,8 @@ abstract class Domain implements ActiveRecordInterface
         $copyObj->setMountingPoint($this->getMountingPoint());
         $copyObj->setActivated($this->getActivated());
         $copyObj->setBlocked($this->getBlocked());
+        $copyObj->setProcessed($this->getProcessed());
+        $copyObj->setProcessedAt($this->getProcessedAt());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1847,6 +2012,8 @@ abstract class Domain implements ActiveRecordInterface
         $this->mounting_point = null;
         $this->activated = null;
         $this->blocked = null;
+        $this->processed = null;
+        $this->processed_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();

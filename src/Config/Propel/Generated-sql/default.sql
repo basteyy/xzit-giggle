@@ -134,6 +134,8 @@ CREATE TABLE `xg_domains`
     `mounting_point` VARCHAR(255) NOT NULL,
     `activated` TINYINT(1) DEFAULT 1 NOT NULL,
     `blocked` TINYINT(1) DEFAULT 0 NOT NULL,
+    `processed` TINYINT(1) DEFAULT 0 NOT NULL,
+    `processed_at` TIMESTAMP NULL,
     PRIMARY KEY (`id`),
     INDEX `xg_domains_fi_3f87ee` (`user_id`),
     CONSTRAINT `xg_domains_fk_3f87ee`

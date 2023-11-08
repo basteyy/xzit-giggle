@@ -15,6 +15,10 @@ use basteyy\XzitGiggle\Models\Base\User as BaseUser;
  */
 class User extends BaseUser
 {
+    public function isAdmin() : bool {
+        return $this->getUserRole()->getIdentifier() === 'superuser';
+    }
+
     public function getLogRoot() : string {
         return rtrim(\basteyy\XzitGiggle\Helper\Config::get('user_home_path'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $this->getUsername() . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR;
     }
@@ -25,7 +29,6 @@ class User extends BaseUser
     {
         return password_verify($password, $this->getPasswordHash());
     }
-
     public function getFpmSock()
     {
         return '/run/php/php8.4-fpm-' . $this->getUsername() . '.sock';

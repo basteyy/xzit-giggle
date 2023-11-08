@@ -19,13 +19,16 @@
       "basteyy\\XzitGiggle\\": "src"
     }
   },
+  "require-dev": {
+    "basteyy/var-debug": "^1.1.0",
+    "filp/whoops": "2.*"
+  },
   "require": {
     "php": "^8.3",
     "ext-pdo": "*",
     "basteyy/git-php": "dev-master",
     "league/commonmark": "2.*",
     "league/plates": "3.*",
-    "filp/whoops": "2.*",
     "slim/slim": "4.*",
     "vlucas/phpdotenv": "^5.4",
     "psr-discovery/all": "^1.0.0",
@@ -39,7 +42,6 @@
     "propel/propel": ">=2.0.0-beta3",
     "juststeveking/http-status-code": ">=3.0.2",
     "akrabat/ip-address-middleware": "^2.1",
-    "basteyy/var-debug": "^1.1.0",
     "basteyy/php-stringer": "^1.0.0",
     "basteyy/php-i18n": "^1.0.0",
     "monolog/monolog": ">=3.5.0",

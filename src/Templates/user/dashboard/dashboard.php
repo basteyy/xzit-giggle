@@ -33,31 +33,4 @@ $this->layout('layouts::default', [
         <?= __('What do you want to do?') ?>
     </p>
 
-    <div class="row">
-        <div class="col-6 col-md-4">
-            <div class="bg-body-tertiary  border p-3 rounded-3">
-                <h2 class="h4"><?= __('Add a domain') ?></h2>
-                <p class="lh-lg">
-                    <?= __('Add a new domain to your account') ?>
-                </p>
-                <a href="/domains/add" class="btn btn-primary"><?= __('Add a domain') ?></a>
-            </div>
-        </div>
-        <div class="col-6 col-md-4">
-            <div class="bg-body-tertiary  border p-3 rounded-3">
-                <h2 class="h4"><?= __('Manage your domains') ?></h2>
-                <p class="lh-lg">
-                    <?= __('List all domains, which are connected to your webhosting and manage them') ?>
-                </p>
-                <a href="/domains/" class="btn btn-primary"><?= __('Manage domains') ?></a>
-            </div>
-        </div>
-    </div>
-
-    <hr class="my-3 my-md-5" />
-
-    <p class="text-end">
-        <?= __('All done?') ?> <a href="/logout"><?= __('Logout') ?></a>
-    </p>
-
 </main>

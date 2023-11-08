@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace basteyy\XzitGiggle\Controller\Setup;
 
+use basteyy\XzitGiggle\Helper\Enums\UserRole;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\RequestInterface;
@@ -113,14 +114,14 @@ class SetupInstallController extends BaseSetupController
             /** Insert roles superuser and user into xg_user_roles */
             $connection->exec(
                 'INSERT INTO `xg_user_roles` (`name`, `identifier`) VALUES (' .
-                $connection->quote('superuser') . ', ' .
-                $connection->quote('superuser') . ');'
+                $connection->quote(UserRole::SUPER_USER->value) . ', ' .
+                $connection->quote(UserRole::SUPER_USER->value) . ');'
             );
 
             $connection->exec(
                 'INSERT INTO `xg_user_roles` (`name`, `identifier`) VALUES (' .
-                $connection->quote('user') . ', ' .
-                $connection->quote('user') . ');'
+                $connection->quote(UserRole::USER->value) . ', ' .
+                $connection->quote(UserRole::USER->value) . ');'
             );
 
             /** Insert first user */
@@ -128,7 +129,7 @@ class SetupInstallController extends BaseSetupController
                 'INSERT INTO `xg_users` (`email`, `username`, `user_role_id`, `secret_key`, `password_hash`, `activated`, `blocked`) VALUES (' .
                 $connection->quote($user['username'] . '@localhost') . ', ' .
                 $connection->quote($user['username']) . ', ' .
-                '(SELECT `id` FROM `xg_user_roles` WHERE `identifier` = ' . $connection->quote('superuser') . '), ' .
+                '(SELECT `id` FROM `xg_user_roles` WHERE `identifier` = ' . $connection->quote(UserRole::SUPER_USER->value) . '), ' .
                 $connection->quote(getRandomAlphaNumericString()) . ', ' .
                 $connection->quote($user['password']) . ', ' .
                 $connection->quote('1') . ', ' .

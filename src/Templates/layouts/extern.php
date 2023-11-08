@@ -25,7 +25,8 @@ declare(strict_types=1);
     <?= $this->fetch('layouts::partials/flash_messages') ?>
     <?= $this->section('content') ?>
 </main>
-<script src="/js/bootstrap.bundle.min.js"></script>
 <?= $this->fetch('layouts::partials/footer') ?>
+<link href="/css/bootstrap-icons.min.css" rel="stylesheet">
+<script src="/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

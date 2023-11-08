@@ -143,6 +143,10 @@
         <!-- Blocked? -->
         <column name="blocked" type="boolean" required="true" default="false"/>
 
+        <!-- Processed? -->
+        <column name="processed" type="boolean" required="true" default="false"/>
+        <column name="processed_at" type="TIMESTAMP" required="false" default="NULL"/>
+
         <!-- Connect user_id to xg_users -->
         <foreign-key foreignTable="xg_users" phpName="User" refPhpName="Domains">
             <reference local="user_id" foreign="id"/>

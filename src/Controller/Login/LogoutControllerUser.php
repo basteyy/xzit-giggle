@@ -14,13 +14,13 @@ declare(strict_types=1);
 
 namespace basteyy\XzitGiggle\Controller\Login;
 
-use basteyy\XzitGiggle\Controller\UserBaseController;
+use basteyy\XzitGiggle\Controller\BaseUserController;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-class LogoutControllerUser extends UserBaseController
+class LogoutControllerUser extends BaseUserController
 {
     /**
      * @throws ContainerExceptionInterface

@@ -15,14 +15,14 @@ declare(strict_types=1);
 namespace basteyy\XzitGiggle\Controller\Domains;
 
 use basteyy\XzitGiggle\Controller\BaseController;
-use basteyy\XzitGiggle\Controller\UserBaseController;
+use basteyy\XzitGiggle\Controller\BaseUserController;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-class ListDomainsControllerUser extends UserBaseController
+class ListDomainsControllerUser extends BaseUserController
 {
     /**
      * @throws ContainerExceptionInterface

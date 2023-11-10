@@ -14,28 +14,55 @@ declare(strict_types=1);
 
 namespace basteyy\XzitGiggle\Controller\Superuser\Users;
 
-use basteyy\XzitGiggle\Controller\Superuser\SuperuserBaseController;
+use basteyy\XzitGiggle\Controller\Superuser\SuperuserBaseUserController;
+use basteyy\XzitGiggle\Controller\Superuser\Users\Trait\UserSaveTrait;
+use basteyy\XzitGiggle\Models\UserQuery;
+use basteyy\XzitGiggle\Models\UserRoleQuery;
+use Propel\Runtime\Exception\PropelException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 
-class EditUserController extends SuperuserBaseController
+class EditUserController extends SuperuserBaseUserController
 {
+    use UserSaveTrait;
+
     /**
      * @param Request $request
      * @param Response $response
      * @return ResponseInterface
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws PropelException
      */
     public function __invoke(RequestInterface  $request,
                              ResponseInterface $response): ResponseInterface
     {
+        $user = UserQuery::create()->findOneByUsername($request->getQueryParams()['u'] ?? null);
+
+        if (!$user) {
+            $this->addErrorMessage(__('User not found!'));
+            return $this->redirect(
+                target: '/su/users',
+                response: $response
+            );
+        }
+
+        if ($this->isPost()) {
+            $user = $this->saveUser($user, $request);
+            if($this->saved_successfully) {
+                return $this->redirect(
+                    target: '/su/users/edit?u=' . $user->getUsername(),
+                    response: $response
+                );
+            }
+        }
+
         return $this->render(
-            template: 'SU::',
+            template: 'SU::users/edit_user',
             data: [
-                'users' => ''
+                'user' => $user
             ],
             response: $response
         );

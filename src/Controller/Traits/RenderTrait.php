@@ -83,4 +83,11 @@ trait RenderTrait
         return $response;
     }
 
+    protected function render404(?ResponseInterface $response = null) : ResponseInterface {
+        return $this->render(
+            template: 'layouts::errors/404',
+            data: [],
+            response: $response
+        );
+    }
 }

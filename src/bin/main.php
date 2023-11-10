@@ -13,6 +13,10 @@
 declare(strict_types=1);
 
 use Ahc\Cli\Application;
+use basteyy\XzitGiggle\bin\Server\ServerDatabaseTask;
+use basteyy\XzitGiggle\bin\Server\ServerDomainsTask;
+use basteyy\XzitGiggle\bin\Server\ServerUsersTask;
+use Dotenv\Dotenv;
 
 define('ROOT', dirname(__DIR__, 2));
 
@@ -20,13 +24,15 @@ define('ROOT', dirname(__DIR__, 2));
 require_once ROOT . '/vendor/autoload.php';
 
 /** Load .env */
-$dotenv = \Dotenv\Dotenv::createImmutable(ROOT);
+$dotenv = Dotenv::createImmutable(ROOT);
 $dotenv->load();
 
 /** Load cli */
 $app = new Application('Xzit Giggle - The CLI Tool', '1.0.0');
 
-$app->add(new \basteyy\XzitGiggle\bin\Server\SyncServerConfig(), 'server:sync');
+$app->add(new ServerDomainsTask::class, 'server:domains');
+$app->add(new ServerUsersTask::class, 'server:users');
+$app->add(new ServerDatabaseTask::class, 'server:databases');
 
 
 $app->logo('   _  __      _ __     _______             __   

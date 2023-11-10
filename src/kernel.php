@@ -19,9 +19,10 @@ declare(strict_types=1);
 use DI\Bridge\Slim\Bridge;
 use DI\ContainerBuilder;
 
-/** Jep, nobody wants to know that kind of information later */
+/** Yep, nobody wants to know that kind of information later */
 define('START_TIME', microtime(true));
 define('START_MEMORY', memory_get_usage());
+
 try {
 
     /** Root */

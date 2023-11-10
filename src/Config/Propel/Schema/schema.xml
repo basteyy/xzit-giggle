@@ -26,9 +26,20 @@
         <column name="user_role_id" type="integer" required="true"/>
         <column name="secret_key" type="varchar" size="128" required="false"/>
         <column name="password_hash" type="varchar" size="256" required="false"/>
-
         <column name="activated" type="boolean" required="true" default="false"/>
         <column name="blocked" type="boolean" required="true" default="false"/>
+        <column name="is_delete_candidate" type="boolean" required="true" default="false"/>
+        <column name="last_login" type="TIMESTAMP" required="false" default="NULL"/>
+        <column name="last_login_ip" type="varchar" size="128" required="false" default="NULL"/>
+        <column name="processed" type="boolean" required="false" default="false"/>
+        <column name="processed_at" type="TIMESTAMP" required="false" default="NULL"/>
+        <column name="home_folder" type="varchar" size="256" required="false"/>
+        <column name="log_folder" type="varchar" size="256" required="false"/>
+        <column name="web_folder" type="varchar" size="256" required="false"/>
+        <column name="bash" type="varchar" size="256" required="false"/>
+        <column name="php_fpm_pool" type="varchar" size="256" required="false"/>
+        <column name="php_fpm_socket" type="varchar" size="256" required="false"/>
+        <column name="php_fpm_port" type="integer" required="false"/>
 
         <foreign-key foreignTable="xg_user_roles" phpName="UserRole" refPhpName="Users">
             <reference local="user_role_id" foreign="id"/>
@@ -49,35 +60,18 @@
     <!-- Ip Addresses -->
     <table name="xg_ip" phpName="IpAddress">
         <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
-
-        <!-- Ip Adresse - could be ipv4 or ipv6 -->
         <column name="address" type="varchar" size="128" required="true"/>
-
-        <!-- IPv4 Address -->
         <column name="ipv4" type="integer" required="true"/>
-
-        <!-- IPv6 Address -->
         <column name="ipv6" type="varchar" size="128" required="true"/>
-
-        <!-- Can this ip address assigned to a user? -->
         <column name="can_assign" type="boolean" required="true" default="false"/>
-
-        <!-- Exclusive IP-Address? -->
         <column name="exclusive" type="boolean" required="true" default="false"/>
     </table>
 
     <!-- Here we can store all exlusive ip addresses as pools. A ip in the pool cannot be assigned by someone outside the pool -->
     <table name="xg_ip_pool" phpName="IpPool">
-        <!-- ID of entry -->
         <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
-
-        <!-- Pool Name -->
         <column name="name" type="varchar" size="255" required="true"/>
-
-        <!-- IP adress -->
         <column name="ip_id" type="integer" required="true"/>
-
-        <!-- Connec to xg_ip -->
         <foreign-key foreignTable="xg_ip" phpName="IpAddress" refPhpName="ipPool">
             <reference local="ip_id" foreign="id"/>
         </foreign-key>
@@ -85,73 +79,105 @@
 
     <!-- Users in pools -->
     <table name="xg_ip_pool_users" phpName="IpPoolUsers">
-        <!-- ID of entry -->
         <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
-
-        <!-- User-id -->
         <column name="user_id" type="integer" required="true"/>
-
-        <!-- Pool-id -->
         <column name="pool_id" type="integer" required="true"/>
 
-        <!-- Connect to IP Pool -->
         <foreign-key foreignTable="xg_ip_pool" phpName="IpPool" refPhpName="IpPoolUsers">
             <reference local="pool_id" foreign="id"/>
         </foreign-key>
 
-        <!-- Connect to user -->
         <foreign-key foreignTable="xg_users" phpName="Users" refPhpName="IpPoolUsers">
             <reference local="user_id" foreign="id"/>
         </foreign-key>
-
     </table>
 
     <!-- Domains -->
     <table name="xg_domains" phpName="Domain">
         <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
-
-        <!-- Owner of Domain User ID -->
         <column name="user_id" type="integer" required="true"/>
-
-        <!-- Domain TLD -->
         <column name="tld" type="varchar" size="255" required="true"/>
-
-        <!-- Domainname -->
         <column name="domain" type="varchar" size="255" required="true"/>
-
-        <!-- When registered -->
         <column name="registered" type="TIMESTAMP" required="true" defaultExpr="CURRENT_TIMESTAMP"/>
-
-        <!-- With www-alias? -->
         <column name="www_alias" type="boolean" required="true" default="false"/>
-
-        <!-- With Let's Encrypt? -->
         <column name="lets_encrypt" type="boolean" required="true" default="false"/>
-
-        <!-- IPv4 Address -->
         <column name="ipv4" type="integer" required="true"/>
-
-        <!-- IPv6 Address -->
         <column name="ipv6" type="integer" required="false"/>
-
-        <!-- Mounting Point -->
         <column name="mounting_point" type="varchar" size="255" required="true"/>
-
-        <!-- Activated? -->
         <column name="activated" type="boolean" required="true" default="true"/>
-
-        <!-- Blocked? -->
         <column name="blocked" type="boolean" required="true" default="false"/>
-
-        <!-- Processed? -->
         <column name="processed" type="boolean" required="true" default="false"/>
         <column name="processed_at" type="TIMESTAMP" required="false" default="NULL"/>
 
-        <!-- Connect user_id to xg_users -->
         <foreign-key foreignTable="xg_users" phpName="User" refPhpName="Domains">
             <reference local="user_id" foreign="id"/>
         </foreign-key>
     </table>
 
+
+    <!-- Messages -->
+    <table name="xg_dialogs" phpName="Dialog">
+        <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="hash" type="varchar" size="16" required="true" defaultExpr="LEFT(MD5(CURRENT_TIMESTAMP), 16)"/>
+        <column name="subject" type="varchar" size="255" required="false" default="Chat"/>
+        <column name="created_user_id" type="integer" required="true"/>
+        <column name="created_at" type="TIMESTAMP" required="true" defaultExpr="CURRENT_TIMESTAMP"/>
+        <column name="active" type="boolean" required="true" default="false"/>
+        <column name="is_private" type="boolean" required="true" default="true"/>
+        <column name="last_message" type="TIMESTAMP" required="false"/>
+        <foreign-key foreignTable="xg_users" phpName="CreatedByUser" refPhpName="StartedDialogs">
+            <reference local="created_user_id" foreign="id"/>
+        </foreign-key>
+    </table>
+
+    <table name="xg_dialog_users" phpName="DialogUser">
+        <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="user_id" type="integer" required="true"/>
+        <column name="dialog_id" type="integer" required="true"/>
+
+        <column name="joined" type="boolean" required="true" default="false"/>
+        <column name="joined_at" type="TIMESTAMP" required="false" defaultExpr="CURRENT_TIMESTAMP"/>
+        <column name="invited_at" type="TIMESTAMP" required="false" defaultExpr="CURRENT_TIMESTAMP"/>
+        <column name="invited_user_id" type="integer" required="false"/>
+
+        <foreign-key foreignTable="xg_users" phpName="User" refPhpName="Dialogs">
+            <reference local="user_id" foreign="id"/>
+        </foreign-key>
+
+        <foreign-key foreignTable="xg_users" phpName="InviterUser" refPhpName="DialogInvites">
+            <reference local="invited_user_id" foreign="id"/>
+        </foreign-key>
+
+        <foreign-key foreignTable="xg_dialogs" phpName="Dialog" refPhpName="DialogUser">
+            <reference local="dialog_id" foreign="id"/>
+        </foreign-key>
+    </table>
+
+    <table name="xg_dialog_messages" phpName="DialogMessage">
+        <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="user_id" type="integer" required="true"/>
+        <column name="dialog_id" type="integer" required="true"/>
+        <column name="created_at" type="TIMESTAMP" required="true" defaultExpr="CURRENT_TIMESTAMP"/>
+        <column name="message" type="varchar" size="2048" required="true"/>
+
+        <foreign-key foreignTable="xg_users" phpName="User" refPhpName="DialogMessages">
+            <reference local="user_id" foreign="id"/>
+        </foreign-key>
+
+        <foreign-key foreignTable="xg_dialogs" phpName="Dialog" refPhpName="DialogUsers">
+            <reference local="dialog_id" foreign="id"/>
+        </foreign-key>
+    </table>
+
+    <table name="xg_action_log" phpName="ActionLog">
+        <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="user_id" type="integer" required="true"/>
+        <column name="action" type="varchar" size="255" required="true"/>
+        <column name="created_at" type="TIMESTAMP" required="true" defaultExpr="CURRENT_TIMESTAMP"/>
+
+        <foreign-key foreignTable="xg_users" phpName="User" refPhpName="ActionLogs">
+            <reference local="user_id" foreign="id"/>
+        </foreign-key>
+    </table>
 
 </database>

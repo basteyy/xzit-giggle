@@ -15,12 +15,21 @@ use basteyy\XzitGiggle\Controller\Traits\Session\UserSessionTrait;
 use basteyy\XzitGiggle\Models\UserQuery;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Slim\Psr7\Request;
+use Slim\Psr7\Response;
 
 class LoginController extends BaseController
 {
     use SessionFlashMessagesTrait,
         UserSessionTrait;
 
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @return ResponseInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
     public function __invoke(
         RequestInterface  $request,
         ResponseInterface $response
@@ -46,6 +55,15 @@ class LoginController extends BaseController
                 $this->addWarningMessage(__('Please check your password'));
                 return $this->reload($response);
             }
+
+            if (!$user->isActivated()) {
+                $this->addWarningMessage(__('Your account is not activated'));
+                return $this->reload($response);
+            }
+
+            $user->setLastLogin(new \DateTime());
+            $user->setLastLoginIp($request->getAttribute('ip_address'));
+            $user->save();
 
             $this->addSuccessMessage(__('Welcome back %s', $user->getUsername()));
             $this->logInUser($user);

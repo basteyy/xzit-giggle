@@ -40,3 +40,6 @@ const USER_SESSION_IDENTIFIER = 'user';
 
 /** Default format of DateTime Objects */
 const DEFAULT_DATETIME_FORMAT = 'Y-m-d H:i:s';
+
+/** The default algorithmic which is used to hash user password */
+const USED_PASSWORD_HASHING_ALGO = PASSWORD_ARGON2ID;

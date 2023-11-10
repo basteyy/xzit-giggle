@@ -14,12 +14,12 @@ declare(strict_types=1);
 
 namespace basteyy\XzitGiggle\Controller\Superuser\Dashboard;
 
-use basteyy\XzitGiggle\Controller\Superuser\SuperuserBaseController;
+use basteyy\XzitGiggle\Controller\Superuser\SuperuserBaseUserController;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Psr7\Response;
 
-class SUDashboardController extends SuperuserBaseController {
+class SUDashboardController extends SuperuserBaseUserController {
     public function __invoke(
         RequestInterface $request,
         ResponseInterface $response

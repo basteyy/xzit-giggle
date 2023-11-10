@@ -64,6 +64,12 @@ return function(\Slim\App $app) {
     $app->group('', function (\Slim\Routing\RouteCollectorProxy $app) {
         $app->get('/dashboard/', \basteyy\XzitGiggle\Controller\Dashboard\DashboardControllerUser::class);
         $app->get('/logout/', \basteyy\XzitGiggle\Controller\Login\LogoutControllerUser::class);
+        $app->get('/settings/', \basteyy\XzitGiggle\Controller\User\UserSettingController::class);
+
+
+        $app->get('/@{username:[A-z0-9]+}/', \basteyy\XzitGiggle\Controller\UserProfile\ProfilUserController::class);
+        $app->map(['GET', 'POST'], '/@{username:[A-z0-9]+}/dialogs/', \basteyy\XzitGiggle\Controller\Dialog\UserDialogController::class);
+        $app->map(['GET', 'POST'], '/@{username:[A-z0-9]+}/message/', \basteyy\XzitGiggle\Controller\Dialog\StartPrivateDialogController::class);
 
         /** Domains */
         $app->group('/domains/', function(\Slim\Routing\RouteCollectorProxy $app) {

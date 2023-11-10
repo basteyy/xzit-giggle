@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace basteyy\XzitGiggle\Middleware\Session;
 
+use League\Plates\Engine;
 use Odan\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -23,13 +24,28 @@ use Slim\Psr7\Response;
 
 class UsersOnlyMiddleware implements MiddlewareInterface {
 
+    /** @var SessionInterface $session */
     private SessionInterface $session;
 
-    public function __construct(SessionInterface $session)
+    /** @var Engine $engine */
+    private Engine $engine;
+
+    /**
+     * @param SessionInterface $session
+     * @param Engine $engine
+     */
+    public function __construct(SessionInterface $session, Engine $engine)
     {
         $this->session = $session;
+        $this->engine = $engine;
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @param RequestHandlerInterface $handler
+     * @return ResponseInterface
+     * @throws \Exception
+     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -38,7 +54,9 @@ class UsersOnlyMiddleware implements MiddlewareInterface {
 
         if(!$this->session->has(USER_SESSION_IDENTIFIER)) {
             $response = new Response();
-            $response->getBody()->write('You are not allowed to access this page. Go to <a href="/">home</a>');
+            $engine = new Engine(ROOT . '/src/Templates/layouts/');
+            $engine->addFolder('layouts', ROOT . '/src/Templates/layouts/');
+            $response->getBody()->write($engine->render('403'));
             return $response->withStatus(403);
         }
 

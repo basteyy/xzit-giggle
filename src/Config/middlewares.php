@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 return function(\Slim\App $app) {
 
+    /** IP Middleware */
+    $app->add(\RKA\Middleware\IpAddress::class);
 
 
     /** Trailing Slashes Handling */

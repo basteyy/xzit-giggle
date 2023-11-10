@@ -36,6 +36,7 @@ return [
     /** Session Engine */
     \Odan\Session\SessionInterface::class             => function () {
         $sessionHandler = new \Odan\Session\PhpSession([
+            'lifetime'        => 0,
             'name'            => 'app',
             'cookie_samesite' => 'Lax',
             'cookie_secure'   => true,

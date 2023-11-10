@@ -14,13 +14,13 @@ declare(strict_types=1);
 
 namespace basteyy\XzitGiggle\Controller\Superuser\Domains;
 
-use basteyy\XzitGiggle\Controller\Superuser\SuperuserBaseController;
+use basteyy\XzitGiggle\Controller\Superuser\SuperuserBaseUserController;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 
-class ListDomainsController extends SuperuserBaseController
+class ListDomainsController extends SuperuserBaseUserController
 {
     /**
      * @param Request $request
@@ -33,9 +33,9 @@ class ListDomainsController extends SuperuserBaseController
                              ResponseInterface $response): ResponseInterface
     {
         return $this->render(
-            template: 'SU::',
+            template: 'SU::domains/list_domains',
             data: [
-                'users' => ''
+
             ],
             response: $response
         );

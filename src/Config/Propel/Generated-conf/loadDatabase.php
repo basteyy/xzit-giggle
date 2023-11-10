@@ -5,7 +5,11 @@ $serviceContainer->initDatabaseMapFromDumps(array (
   array (
     'tablesByName' => 
     array (
+      'xg_action_log' => '\\basteyy\\XzitGiggle\\Models\\Map\\ActionLogTableMap',
       'xg_config' => '\\basteyy\\XzitGiggle\\Models\\Map\\ConfigTableMap',
+      'xg_dialog_messages' => '\\basteyy\\XzitGiggle\\Models\\Map\\DialogMessageTableMap',
+      'xg_dialog_users' => '\\basteyy\\XzitGiggle\\Models\\Map\\DialogUserTableMap',
+      'xg_dialogs' => '\\basteyy\\XzitGiggle\\Models\\Map\\DialogTableMap',
       'xg_domains' => '\\basteyy\\XzitGiggle\\Models\\Map\\DomainTableMap',
       'xg_ip' => '\\basteyy\\XzitGiggle\\Models\\Map\\IpAddressTableMap',
       'xg_ip_pool' => '\\basteyy\\XzitGiggle\\Models\\Map\\IpPoolTableMap',
@@ -15,7 +19,11 @@ $serviceContainer->initDatabaseMapFromDumps(array (
     ),
     'tablesByPhpName' => 
     array (
+      '\\ActionLog' => '\\basteyy\\XzitGiggle\\Models\\Map\\ActionLogTableMap',
       '\\Config' => '\\basteyy\\XzitGiggle\\Models\\Map\\ConfigTableMap',
+      '\\Dialog' => '\\basteyy\\XzitGiggle\\Models\\Map\\DialogTableMap',
+      '\\DialogMessage' => '\\basteyy\\XzitGiggle\\Models\\Map\\DialogMessageTableMap',
+      '\\DialogUser' => '\\basteyy\\XzitGiggle\\Models\\Map\\DialogUserTableMap',
       '\\Domain' => '\\basteyy\\XzitGiggle\\Models\\Map\\DomainTableMap',
       '\\IpAddress' => '\\basteyy\\XzitGiggle\\Models\\Map\\IpAddressTableMap',
       '\\IpPool' => '\\basteyy\\XzitGiggle\\Models\\Map\\IpPoolTableMap',

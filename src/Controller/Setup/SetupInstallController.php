@@ -15,6 +15,9 @@ declare(strict_types=1);
 namespace basteyy\XzitGiggle\Controller\Setup;
 
 use basteyy\XzitGiggle\Helper\Enums\UserRole;
+use Exception;
+use PDO;
+use PDOException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\RequestInterface;
@@ -39,7 +42,7 @@ class SetupInstallController extends BaseSetupController
 
         $this->setRequest($request);
 
-        if(isSetUp()) {
+        if (isSetUp()) {
             $this->addErrorMessage('Setup already done. Dont touch the setup again.');
             return $response->withHeader('Location', '/')->withStatus(302);
         }
@@ -83,13 +86,13 @@ class SetupInstallController extends BaseSetupController
         }
 
         try {
-            $connection->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             /** Get the sql from file */
             $connection->exec(file_get_contents($sql));
 
             /** Insert all ip addresses */
-            foreach ( $this->getIpV4() as $ip) {
+            foreach ($this->getIpV4() as $ip) {
                 $connection->exec(
                     'INSERT INTO `xg_ip` (`address`, `ipv4`, `ipv6`, `can_assign`, `exclusive`) VALUES (' .
                     $connection->quote($ip) . ', ' .
@@ -100,7 +103,7 @@ class SetupInstallController extends BaseSetupController
                 );
             }
 
-            foreach ( $this->getIpV6() as $ip) {
+            foreach ($this->getIpV6() as $ip) {
                 $connection->exec(
                     'INSERT INTO `xg_ip` (`address`, `ipv4`, `ipv6`, `can_assign`, `exclusive`) VALUES (' .
                     $connection->quote($ip) . ', ' .
@@ -112,17 +115,18 @@ class SetupInstallController extends BaseSetupController
             }
 
             /** Insert roles superuser and user into xg_user_roles */
-            $connection->exec(
-                'INSERT INTO `xg_user_roles` (`name`, `identifier`) VALUES (' .
-                $connection->quote(UserRole::SUPER_USER->value) . ', ' .
-                $connection->quote(UserRole::SUPER_USER->value) . ');'
-            );
+            $user_roles = [
+                UserRole::SUPER_USER->value => UserRole::SUPER_USER->value,
+                UserRole::USER->value       => UserRole::USER->value,
+            ];
 
-            $connection->exec(
-                'INSERT INTO `xg_user_roles` (`name`, `identifier`) VALUES (' .
-                $connection->quote(UserRole::USER->value) . ', ' .
-                $connection->quote(UserRole::USER->value) . ');'
-            );
+            foreach ($user_roles as $name => $identifier) {
+                $connection->exec(
+                    'INSERT INTO `xg_user_roles` (`name`, `identifier`) VALUES (' .
+                    $connection->quote($name) . ', ' .
+                    $connection->quote($identifier) . ');'
+                );
+            }
 
             /** Insert first user */
             $connection->exec(
@@ -137,45 +141,27 @@ class SetupInstallController extends BaseSetupController
             );
 
             /**
-             * Insert the settings
-             * webroot_path
-             * user_home_path
-             * users_bash
+             * Insert settings from setup dialog and some default settings
              * */
-            $connection->exec(
-                'INSERT INTO `xg_config` (`key`, `default`, `value`) VALUES (' .
-                $connection->quote('webroot_path') . ', ' .
-                $connection->quote($this->getOptions()['webroot_path']) . ', ' .
-                $connection->quote($this->getOptions()['webroot_path']) . ');'
-            );
+            $default_settings = [
+                'webroot_path'                => $this->getOptions()['webroot_path'],
+                'user_home_path'              => $this->getOptions()['user_home_path'],
+                'users_bash'                  => $this->getOptions()['users_bash'],
+                'php_fpm_socket_path'         => '/var/run/php-fpm/',
+                'php_fpm_socket_port'         => '9000',
+                'allow_user_login'            => (string)isset($this->getOptions()['allow_user_login']),
+                'allow_users_domain_adding'   => (string)isset($this->getOptions()['allow_users_domain_adding']),
+                'allow_users_database_adding' => (string)true
+            ];
 
-            $connection->exec(
-                'INSERT INTO `xg_config` (`key`, `default`, `value`) VALUES (' .
-                $connection->quote('user_home_path') . ', ' .
-                $connection->quote($this->getOptions()['user_home_path']) . ', ' .
-                $connection->quote($this->getOptions()['user_home_path']) . ');'
-            );
-
-            $connection->exec(
-                'INSERT INTO `xg_config` (`key`, `default`, `value`) VALUES (' .
-                $connection->quote('users_bash') . ', ' .
-                $connection->quote($this->getOptions()['users_bash']) . ', ' .
-                $connection->quote($this->getOptions()['users_bash']) . ');'
-            );
-
-            $connection->exec(
-                'INSERT INTO `xg_config` (`key`, `default`, `value`) VALUES (' .
-                $connection->quote('allow_user_login') . ', ' .
-                $connection->quote((string)isset($this->getOptions()['allow_user_login'])) . ', ' .
-                $connection->quote((string)isset($this->getOptions()['allow_user_login'])) . ');'
-            );
-
-            $connection->exec(
-                'INSERT INTO `xg_config` (`key`, `default`, `value`) VALUES (' .
-                $connection->quote('allow_users_domain_adding') . ', ' .
-                $connection->quote((string)isset($this->getOptions()['allow_users_domain_adding'])) . ', ' .
-                $connection->quote((string)isset($this->getOptions()['allow_users_domain_adding'])) . ');'
-            );
+            foreach ($default_settings as $item => $setting) {
+                $connection->exec(
+                    'INSERT INTO `xg_config` (`key`, `default`, `value`) VALUES (' .
+                    $connection->quote($item) . ', ' .
+                    $connection->quote($setting) . ', ' .
+                    $connection->quote($setting) . ');'
+                );
+            }
 
             setSetUp();
 
@@ -185,9 +171,9 @@ class SetupInstallController extends BaseSetupController
             $this->addSuccessMessage('Setup done. You can now login.');
             return $response->withHeader('Location', '/')->withStatus(302);
 
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             varDebug("Failed: " . $e->getMessage());
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             varDebug("Something else: " . $e->getMessage());
         }
     }

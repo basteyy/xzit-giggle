@@ -14,29 +14,50 @@ declare(strict_types=1);
 
 namespace basteyy\XzitGiggle\Controller\Superuser\Users;
 
-use basteyy\XzitGiggle\Controller\Superuser\SuperuserBaseController;
+use basteyy\XzitGiggle\Controller\Superuser\SuperuserBaseUserController;
+use basteyy\XzitGiggle\Controller\Superuser\Users\Trait\UserSaveTrait;
+use basteyy\XzitGiggle\Models\User;
+use Propel\Runtime\Exception\PropelException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 
-class AddUserController extends SuperuserBaseController
+class AddUserController extends SuperuserBaseUserController
 {
+    use UserSaveTrait;
+
     /**
      * @param Request $request
      * @param Response $response
      * @return ResponseInterface
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws PropelException
      */
     public function __invoke(RequestInterface  $request,
                              ResponseInterface $response): ResponseInterface
     {
+        $this->setRequest($request);
+
+        // Empty User Object
+        $user = new User();
+
+        if ($this->isPost()) {
+            $user = $this->saveUser($user, $request);
+            if($this->saved_successfully) {
+                return $this->redirect(
+                    target: '/su/users#user-' . $user->getId(),
+                    response: $response
+                );
+            }
+        }
+
         return $this->render(
-            template: 'SU::',
-            data: [
-                'users' => ''
-            ],
+            template: 'SU::users/add_user',
+            data: ['user' => $user],
             response: $response
         );
     }

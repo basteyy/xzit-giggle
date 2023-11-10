@@ -2,6 +2,7 @@
 
 namespace basteyy\XzitGiggle\Models\Base;
 
+use \DateTime;
 use \Exception;
 use \PDO;
 use Propel\Runtime\Propel;
@@ -16,6 +17,15 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
+use basteyy\XzitGiggle\Models\ActionLog as ChildActionLog;
+use basteyy\XzitGiggle\Models\ActionLogQuery as ChildActionLogQuery;
+use basteyy\XzitGiggle\Models\Dialog as ChildDialog;
+use basteyy\XzitGiggle\Models\DialogMessage as ChildDialogMessage;
+use basteyy\XzitGiggle\Models\DialogMessageQuery as ChildDialogMessageQuery;
+use basteyy\XzitGiggle\Models\DialogQuery as ChildDialogQuery;
+use basteyy\XzitGiggle\Models\DialogUser as ChildDialogUser;
+use basteyy\XzitGiggle\Models\DialogUserQuery as ChildDialogUserQuery;
 use basteyy\XzitGiggle\Models\Domain as ChildDomain;
 use basteyy\XzitGiggle\Models\DomainQuery as ChildDomainQuery;
 use basteyy\XzitGiggle\Models\IpPoolUsers as ChildIpPoolUsers;
@@ -24,6 +34,10 @@ use basteyy\XzitGiggle\Models\User as ChildUser;
 use basteyy\XzitGiggle\Models\UserQuery as ChildUserQuery;
 use basteyy\XzitGiggle\Models\UserRole as ChildUserRole;
 use basteyy\XzitGiggle\Models\UserRoleQuery as ChildUserRoleQuery;
+use basteyy\XzitGiggle\Models\Map\ActionLogTableMap;
+use basteyy\XzitGiggle\Models\Map\DialogMessageTableMap;
+use basteyy\XzitGiggle\Models\Map\DialogTableMap;
+use basteyy\XzitGiggle\Models\Map\DialogUserTableMap;
 use basteyy\XzitGiggle\Models\Map\DomainTableMap;
 use basteyy\XzitGiggle\Models\Map\IpPoolUsersTableMap;
 use basteyy\XzitGiggle\Models\Map\UserTableMap;
@@ -130,6 +144,92 @@ abstract class User implements ActiveRecordInterface
     protected $blocked;
 
     /**
+     * The value for the is_delete_candidate field.
+     *
+     * Note: this column has a database default value of: false
+     * @var        boolean
+     */
+    protected $is_delete_candidate;
+
+    /**
+     * The value for the last_login field.
+     *
+     * @var        DateTime|null
+     */
+    protected $last_login;
+
+    /**
+     * The value for the last_login_ip field.
+     *
+     * @var        string|null
+     */
+    protected $last_login_ip;
+
+    /**
+     * The value for the processed field.
+     *
+     * Note: this column has a database default value of: false
+     * @var        boolean|null
+     */
+    protected $processed;
+
+    /**
+     * The value for the processed_at field.
+     *
+     * @var        DateTime|null
+     */
+    protected $processed_at;
+
+    /**
+     * The value for the home_folder field.
+     *
+     * @var        string|null
+     */
+    protected $home_folder;
+
+    /**
+     * The value for the log_folder field.
+     *
+     * @var        string|null
+     */
+    protected $log_folder;
+
+    /**
+     * The value for the web_folder field.
+     *
+     * @var        string|null
+     */
+    protected $web_folder;
+
+    /**
+     * The value for the bash field.
+     *
+     * @var        string|null
+     */
+    protected $bash;
+
+    /**
+     * The value for the php_fpm_pool field.
+     *
+     * @var        string|null
+     */
+    protected $php_fpm_pool;
+
+    /**
+     * The value for the php_fpm_socket field.
+     *
+     * @var        string|null
+     */
+    protected $php_fpm_socket;
+
+    /**
+     * The value for the php_fpm_port field.
+     *
+     * @var        int|null
+     */
+    protected $php_fpm_port;
+
+    /**
      * @var        ChildUserRole
      */
     protected $aUserRole;
@@ -147,6 +247,41 @@ abstract class User implements ActiveRecordInterface
      */
     protected $collDomainss;
     protected $collDomainssPartial;
+
+    /**
+     * @var        ObjectCollection|ChildDialog[] Collection to store aggregation of ChildDialog objects.
+     * @phpstan-var ObjectCollection&\Traversable<ChildDialog> Collection to store aggregation of ChildDialog objects.
+     */
+    protected $collStartedDialogss;
+    protected $collStartedDialogssPartial;
+
+    /**
+     * @var        ObjectCollection|ChildDialogUser[] Collection to store aggregation of ChildDialogUser objects.
+     * @phpstan-var ObjectCollection&\Traversable<ChildDialogUser> Collection to store aggregation of ChildDialogUser objects.
+     */
+    protected $collDialogss;
+    protected $collDialogssPartial;
+
+    /**
+     * @var        ObjectCollection|ChildDialogUser[] Collection to store aggregation of ChildDialogUser objects.
+     * @phpstan-var ObjectCollection&\Traversable<ChildDialogUser> Collection to store aggregation of ChildDialogUser objects.
+     */
+    protected $collDialogInvitess;
+    protected $collDialogInvitessPartial;
+
+    /**
+     * @var        ObjectCollection|ChildDialogMessage[] Collection to store aggregation of ChildDialogMessage objects.
+     * @phpstan-var ObjectCollection&\Traversable<ChildDialogMessage> Collection to store aggregation of ChildDialogMessage objects.
+     */
+    protected $collDialogMessagess;
+    protected $collDialogMessagessPartial;
+
+    /**
+     * @var        ObjectCollection|ChildActionLog[] Collection to store aggregation of ChildActionLog objects.
+     * @phpstan-var ObjectCollection&\Traversable<ChildActionLog> Collection to store aggregation of ChildActionLog objects.
+     */
+    protected $collActionLogss;
+    protected $collActionLogssPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -171,6 +306,41 @@ abstract class User implements ActiveRecordInterface
     protected $domainssScheduledForDeletion = null;
 
     /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildDialog[]
+     * @phpstan-var ObjectCollection&\Traversable<ChildDialog>
+     */
+    protected $startedDialogssScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildDialogUser[]
+     * @phpstan-var ObjectCollection&\Traversable<ChildDialogUser>
+     */
+    protected $dialogssScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildDialogUser[]
+     * @phpstan-var ObjectCollection&\Traversable<ChildDialogUser>
+     */
+    protected $dialogInvitessScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildDialogMessage[]
+     * @phpstan-var ObjectCollection&\Traversable<ChildDialogMessage>
+     */
+    protected $dialogMessagessScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildActionLog[]
+     * @phpstan-var ObjectCollection&\Traversable<ChildActionLog>
+     */
+    protected $actionLogssScheduledForDeletion = null;
+
+    /**
      * Applies default values to this object.
      * This method should be called from the object's constructor (or
      * equivalent initialization method).
@@ -180,6 +350,8 @@ abstract class User implements ActiveRecordInterface
     {
         $this->activated = false;
         $this->blocked = false;
+        $this->is_delete_candidate = false;
+        $this->processed = false;
     }
 
     /**
@@ -511,6 +683,170 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
+     * Get the [is_delete_candidate] column value.
+     *
+     * @return boolean
+     */
+    public function getIsDeleteCandidate()
+    {
+        return $this->is_delete_candidate;
+    }
+
+    /**
+     * Get the [is_delete_candidate] column value.
+     *
+     * @return boolean
+     */
+    public function isDeleteCandidate()
+    {
+        return $this->getIsDeleteCandidate();
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [last_login] column value.
+     *
+     *
+     * @param string|null $format The date/time format string (either date()-style or strftime()-style).
+     *   If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime|null Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00.
+     *
+     * @throws \Propel\Runtime\Exception\PropelException - if unable to parse/validate the date/time value.
+     *
+     * @psalm-return ($format is null ? DateTime|null : string|null)
+     */
+    public function getLastLogin($format = null)
+    {
+        if ($format === null) {
+            return $this->last_login;
+        } else {
+            return $this->last_login instanceof \DateTimeInterface ? $this->last_login->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [last_login_ip] column value.
+     *
+     * @return string|null
+     */
+    public function getLastLoginIp()
+    {
+        return $this->last_login_ip;
+    }
+
+    /**
+     * Get the [processed] column value.
+     *
+     * @return boolean|null
+     */
+    public function getProcessed()
+    {
+        return $this->processed;
+    }
+
+    /**
+     * Get the [processed] column value.
+     *
+     * @return boolean|null
+     */
+    public function isProcessed()
+    {
+        return $this->getProcessed();
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [processed_at] column value.
+     *
+     *
+     * @param string|null $format The date/time format string (either date()-style or strftime()-style).
+     *   If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime|null Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00.
+     *
+     * @throws \Propel\Runtime\Exception\PropelException - if unable to parse/validate the date/time value.
+     *
+     * @psalm-return ($format is null ? DateTime|null : string|null)
+     */
+    public function getProcessedAt($format = null)
+    {
+        if ($format === null) {
+            return $this->processed_at;
+        } else {
+            return $this->processed_at instanceof \DateTimeInterface ? $this->processed_at->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [home_folder] column value.
+     *
+     * @return string|null
+     */
+    public function getHomeFolder()
+    {
+        return $this->home_folder;
+    }
+
+    /**
+     * Get the [log_folder] column value.
+     *
+     * @return string|null
+     */
+    public function getLogFolder()
+    {
+        return $this->log_folder;
+    }
+
+    /**
+     * Get the [web_folder] column value.
+     *
+     * @return string|null
+     */
+    public function getWebFolder()
+    {
+        return $this->web_folder;
+    }
+
+    /**
+     * Get the [bash] column value.
+     *
+     * @return string|null
+     */
+    public function getBash()
+    {
+        return $this->bash;
+    }
+
+    /**
+     * Get the [php_fpm_pool] column value.
+     *
+     * @return string|null
+     */
+    public function getPhpFpmPool()
+    {
+        return $this->php_fpm_pool;
+    }
+
+    /**
+     * Get the [php_fpm_socket] column value.
+     *
+     * @return string|null
+     */
+    public function getPhpFpmSocket()
+    {
+        return $this->php_fpm_socket;
+    }
+
+    /**
+     * Get the [php_fpm_port] column value.
+     *
+     * @return int|null
+     */
+    public function getPhpFpmPort()
+    {
+        return $this->php_fpm_port;
+    }
+
+    /**
      * Set the value of [id] column.
      *
      * @param int $v New value
@@ -691,6 +1027,262 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
+     * Sets the value of the [is_delete_candidate] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     *
+     * @param bool|integer|string $v The new value
+     * @return $this The current object (for fluent API support)
+     */
+    public function setIsDeleteCandidate($v)
+    {
+        if ($v !== null) {
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
+        }
+
+        if ($this->is_delete_candidate !== $v) {
+            $this->is_delete_candidate = $v;
+            $this->modifiedColumns[UserTableMap::COL_IS_DELETE_CANDIDATE] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Sets the value of [last_login] column to a normalized version of the date/time value specified.
+     *
+     * @param string|integer|\DateTimeInterface|null $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this The current object (for fluent API support)
+     */
+    public function setLastLogin($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->last_login !== null || $dt !== null) {
+            if ($this->last_login === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->last_login->format("Y-m-d H:i:s.u")) {
+                $this->last_login = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[UserTableMap::COL_LAST_LOGIN] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    }
+
+    /**
+     * Set the value of [last_login_ip] column.
+     *
+     * @param string|null $v New value
+     * @return $this The current object (for fluent API support)
+     */
+    public function setLastLoginIp($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->last_login_ip !== $v) {
+            $this->last_login_ip = $v;
+            $this->modifiedColumns[UserTableMap::COL_LAST_LOGIN_IP] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Sets the value of the [processed] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     *
+     * @param bool|integer|string|null $v The new value
+     * @return $this The current object (for fluent API support)
+     */
+    public function setProcessed($v)
+    {
+        if ($v !== null) {
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
+        }
+
+        if ($this->processed !== $v) {
+            $this->processed = $v;
+            $this->modifiedColumns[UserTableMap::COL_PROCESSED] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Sets the value of [processed_at] column to a normalized version of the date/time value specified.
+     *
+     * @param string|integer|\DateTimeInterface|null $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this The current object (for fluent API support)
+     */
+    public function setProcessedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->processed_at !== null || $dt !== null) {
+            if ($this->processed_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->processed_at->format("Y-m-d H:i:s.u")) {
+                $this->processed_at = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[UserTableMap::COL_PROCESSED_AT] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    }
+
+    /**
+     * Set the value of [home_folder] column.
+     *
+     * @param string|null $v New value
+     * @return $this The current object (for fluent API support)
+     */
+    public function setHomeFolder($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->home_folder !== $v) {
+            $this->home_folder = $v;
+            $this->modifiedColumns[UserTableMap::COL_HOME_FOLDER] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set the value of [log_folder] column.
+     *
+     * @param string|null $v New value
+     * @return $this The current object (for fluent API support)
+     */
+    public function setLogFolder($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->log_folder !== $v) {
+            $this->log_folder = $v;
+            $this->modifiedColumns[UserTableMap::COL_LOG_FOLDER] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set the value of [web_folder] column.
+     *
+     * @param string|null $v New value
+     * @return $this The current object (for fluent API support)
+     */
+    public function setWebFolder($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->web_folder !== $v) {
+            $this->web_folder = $v;
+            $this->modifiedColumns[UserTableMap::COL_WEB_FOLDER] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set the value of [bash] column.
+     *
+     * @param string|null $v New value
+     * @return $this The current object (for fluent API support)
+     */
+    public function setBash($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->bash !== $v) {
+            $this->bash = $v;
+            $this->modifiedColumns[UserTableMap::COL_BASH] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set the value of [php_fpm_pool] column.
+     *
+     * @param string|null $v New value
+     * @return $this The current object (for fluent API support)
+     */
+    public function setPhpFpmPool($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->php_fpm_pool !== $v) {
+            $this->php_fpm_pool = $v;
+            $this->modifiedColumns[UserTableMap::COL_PHP_FPM_POOL] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set the value of [php_fpm_socket] column.
+     *
+     * @param string|null $v New value
+     * @return $this The current object (for fluent API support)
+     */
+    public function setPhpFpmSocket($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->php_fpm_socket !== $v) {
+            $this->php_fpm_socket = $v;
+            $this->modifiedColumns[UserTableMap::COL_PHP_FPM_SOCKET] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set the value of [php_fpm_port] column.
+     *
+     * @param int|null $v New value
+     * @return $this The current object (for fluent API support)
+     */
+    public function setPhpFpmPort($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->php_fpm_port !== $v) {
+            $this->php_fpm_port = $v;
+            $this->modifiedColumns[UserTableMap::COL_PHP_FPM_PORT] = true;
+        }
+
+        return $this;
+    }
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -705,6 +1297,14 @@ abstract class User implements ActiveRecordInterface
             }
 
             if ($this->blocked !== false) {
+                return false;
+            }
+
+            if ($this->is_delete_candidate !== false) {
+                return false;
+            }
+
+            if ($this->processed !== false) {
                 return false;
             }
 
@@ -758,6 +1358,48 @@ abstract class User implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : UserTableMap::translateFieldName('Blocked', TableMap::TYPE_PHPNAME, $indexType)];
             $this->blocked = (null !== $col) ? (boolean) $col : null;
 
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : UserTableMap::translateFieldName('IsDeleteCandidate', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->is_delete_candidate = (null !== $col) ? (boolean) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : UserTableMap::translateFieldName('LastLogin', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->last_login = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : UserTableMap::translateFieldName('LastLoginIp', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->last_login_ip = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : UserTableMap::translateFieldName('Processed', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->processed = (null !== $col) ? (boolean) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : UserTableMap::translateFieldName('ProcessedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->processed_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : UserTableMap::translateFieldName('HomeFolder', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->home_folder = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : UserTableMap::translateFieldName('LogFolder', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->log_folder = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 15 + $startcol : UserTableMap::translateFieldName('WebFolder', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->web_folder = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 16 + $startcol : UserTableMap::translateFieldName('Bash', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->bash = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 17 + $startcol : UserTableMap::translateFieldName('PhpFpmPool', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->php_fpm_pool = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 18 + $startcol : UserTableMap::translateFieldName('PhpFpmSocket', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->php_fpm_socket = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 19 + $startcol : UserTableMap::translateFieldName('PhpFpmPort', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->php_fpm_port = (null !== $col) ? (int) $col : null;
+
             $this->resetModified();
             $this->setNew(false);
 
@@ -765,7 +1407,7 @@ abstract class User implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 8; // 8 = UserTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 20; // 20 = UserTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\basteyy\\XzitGiggle\\Models\\User'), 0, $e);
@@ -834,6 +1476,16 @@ abstract class User implements ActiveRecordInterface
             $this->collIpPoolUserss = null;
 
             $this->collDomainss = null;
+
+            $this->collStartedDialogss = null;
+
+            $this->collDialogss = null;
+
+            $this->collDialogInvitess = null;
+
+            $this->collDialogMessagess = null;
+
+            $this->collActionLogss = null;
 
         } // if (deep)
     }
@@ -995,6 +1647,92 @@ abstract class User implements ActiveRecordInterface
                 }
             }
 
+            if ($this->startedDialogssScheduledForDeletion !== null) {
+                if (!$this->startedDialogssScheduledForDeletion->isEmpty()) {
+                    \basteyy\XzitGiggle\Models\DialogQuery::create()
+                        ->filterByPrimaryKeys($this->startedDialogssScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->startedDialogssScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collStartedDialogss !== null) {
+                foreach ($this->collStartedDialogss as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->dialogssScheduledForDeletion !== null) {
+                if (!$this->dialogssScheduledForDeletion->isEmpty()) {
+                    \basteyy\XzitGiggle\Models\DialogUserQuery::create()
+                        ->filterByPrimaryKeys($this->dialogssScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->dialogssScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collDialogss !== null) {
+                foreach ($this->collDialogss as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->dialogInvitessScheduledForDeletion !== null) {
+                if (!$this->dialogInvitessScheduledForDeletion->isEmpty()) {
+                    foreach ($this->dialogInvitessScheduledForDeletion as $dialogInvites) {
+                        // need to save related object because we set the relation to null
+                        $dialogInvites->save($con);
+                    }
+                    $this->dialogInvitessScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collDialogInvitess !== null) {
+                foreach ($this->collDialogInvitess as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->dialogMessagessScheduledForDeletion !== null) {
+                if (!$this->dialogMessagessScheduledForDeletion->isEmpty()) {
+                    \basteyy\XzitGiggle\Models\DialogMessageQuery::create()
+                        ->filterByPrimaryKeys($this->dialogMessagessScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->dialogMessagessScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collDialogMessagess !== null) {
+                foreach ($this->collDialogMessagess as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->actionLogssScheduledForDeletion !== null) {
+                if (!$this->actionLogssScheduledForDeletion->isEmpty()) {
+                    \basteyy\XzitGiggle\Models\ActionLogQuery::create()
+                        ->filterByPrimaryKeys($this->actionLogssScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->actionLogssScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collActionLogss !== null) {
+                foreach ($this->collActionLogss as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             $this->alreadyInSave = false;
 
         }
@@ -1045,6 +1783,42 @@ abstract class User implements ActiveRecordInterface
         if ($this->isColumnModified(UserTableMap::COL_BLOCKED)) {
             $modifiedColumns[':p' . $index++]  = '`blocked`';
         }
+        if ($this->isColumnModified(UserTableMap::COL_IS_DELETE_CANDIDATE)) {
+            $modifiedColumns[':p' . $index++]  = '`is_delete_candidate`';
+        }
+        if ($this->isColumnModified(UserTableMap::COL_LAST_LOGIN)) {
+            $modifiedColumns[':p' . $index++]  = '`last_login`';
+        }
+        if ($this->isColumnModified(UserTableMap::COL_LAST_LOGIN_IP)) {
+            $modifiedColumns[':p' . $index++]  = '`last_login_ip`';
+        }
+        if ($this->isColumnModified(UserTableMap::COL_PROCESSED)) {
+            $modifiedColumns[':p' . $index++]  = '`processed`';
+        }
+        if ($this->isColumnModified(UserTableMap::COL_PROCESSED_AT)) {
+            $modifiedColumns[':p' . $index++]  = '`processed_at`';
+        }
+        if ($this->isColumnModified(UserTableMap::COL_HOME_FOLDER)) {
+            $modifiedColumns[':p' . $index++]  = '`home_folder`';
+        }
+        if ($this->isColumnModified(UserTableMap::COL_LOG_FOLDER)) {
+            $modifiedColumns[':p' . $index++]  = '`log_folder`';
+        }
+        if ($this->isColumnModified(UserTableMap::COL_WEB_FOLDER)) {
+            $modifiedColumns[':p' . $index++]  = '`web_folder`';
+        }
+        if ($this->isColumnModified(UserTableMap::COL_BASH)) {
+            $modifiedColumns[':p' . $index++]  = '`bash`';
+        }
+        if ($this->isColumnModified(UserTableMap::COL_PHP_FPM_POOL)) {
+            $modifiedColumns[':p' . $index++]  = '`php_fpm_pool`';
+        }
+        if ($this->isColumnModified(UserTableMap::COL_PHP_FPM_SOCKET)) {
+            $modifiedColumns[':p' . $index++]  = '`php_fpm_socket`';
+        }
+        if ($this->isColumnModified(UserTableMap::COL_PHP_FPM_PORT)) {
+            $modifiedColumns[':p' . $index++]  = '`php_fpm_port`';
+        }
 
         $sql = sprintf(
             'INSERT INTO `xg_users` (%s) VALUES (%s)',
@@ -1086,6 +1860,54 @@ abstract class User implements ActiveRecordInterface
                         break;
                     case '`blocked`':
                         $stmt->bindValue($identifier, (int) $this->blocked, PDO::PARAM_INT);
+
+                        break;
+                    case '`is_delete_candidate`':
+                        $stmt->bindValue($identifier, (int) $this->is_delete_candidate, PDO::PARAM_INT);
+
+                        break;
+                    case '`last_login`':
+                        $stmt->bindValue($identifier, $this->last_login ? $this->last_login->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+
+                        break;
+                    case '`last_login_ip`':
+                        $stmt->bindValue($identifier, $this->last_login_ip, PDO::PARAM_STR);
+
+                        break;
+                    case '`processed`':
+                        $stmt->bindValue($identifier, (int) $this->processed, PDO::PARAM_INT);
+
+                        break;
+                    case '`processed_at`':
+                        $stmt->bindValue($identifier, $this->processed_at ? $this->processed_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+
+                        break;
+                    case '`home_folder`':
+                        $stmt->bindValue($identifier, $this->home_folder, PDO::PARAM_STR);
+
+                        break;
+                    case '`log_folder`':
+                        $stmt->bindValue($identifier, $this->log_folder, PDO::PARAM_STR);
+
+                        break;
+                    case '`web_folder`':
+                        $stmt->bindValue($identifier, $this->web_folder, PDO::PARAM_STR);
+
+                        break;
+                    case '`bash`':
+                        $stmt->bindValue($identifier, $this->bash, PDO::PARAM_STR);
+
+                        break;
+                    case '`php_fpm_pool`':
+                        $stmt->bindValue($identifier, $this->php_fpm_pool, PDO::PARAM_STR);
+
+                        break;
+                    case '`php_fpm_socket`':
+                        $stmt->bindValue($identifier, $this->php_fpm_socket, PDO::PARAM_STR);
+
+                        break;
+                    case '`php_fpm_port`':
+                        $stmt->bindValue($identifier, $this->php_fpm_port, PDO::PARAM_INT);
 
                         break;
                 }
@@ -1174,6 +1996,42 @@ abstract class User implements ActiveRecordInterface
             case 7:
                 return $this->getBlocked();
 
+            case 8:
+                return $this->getIsDeleteCandidate();
+
+            case 9:
+                return $this->getLastLogin();
+
+            case 10:
+                return $this->getLastLoginIp();
+
+            case 11:
+                return $this->getProcessed();
+
+            case 12:
+                return $this->getProcessedAt();
+
+            case 13:
+                return $this->getHomeFolder();
+
+            case 14:
+                return $this->getLogFolder();
+
+            case 15:
+                return $this->getWebFolder();
+
+            case 16:
+                return $this->getBash();
+
+            case 17:
+                return $this->getPhpFpmPool();
+
+            case 18:
+                return $this->getPhpFpmSocket();
+
+            case 19:
+                return $this->getPhpFpmPort();
+
             default:
                 return null;
         } // switch()
@@ -1210,7 +2068,27 @@ abstract class User implements ActiveRecordInterface
             $keys[5] => $this->getPasswordHash(),
             $keys[6] => $this->getActivated(),
             $keys[7] => $this->getBlocked(),
+            $keys[8] => $this->getIsDeleteCandidate(),
+            $keys[9] => $this->getLastLogin(),
+            $keys[10] => $this->getLastLoginIp(),
+            $keys[11] => $this->getProcessed(),
+            $keys[12] => $this->getProcessedAt(),
+            $keys[13] => $this->getHomeFolder(),
+            $keys[14] => $this->getLogFolder(),
+            $keys[15] => $this->getWebFolder(),
+            $keys[16] => $this->getBash(),
+            $keys[17] => $this->getPhpFpmPool(),
+            $keys[18] => $this->getPhpFpmSocket(),
+            $keys[19] => $this->getPhpFpmPort(),
         ];
+        if ($result[$keys[9]] instanceof \DateTimeInterface) {
+            $result[$keys[9]] = $result[$keys[9]]->format('Y-m-d H:i:s.u');
+        }
+
+        if ($result[$keys[12]] instanceof \DateTimeInterface) {
+            $result[$keys[12]] = $result[$keys[12]]->format('Y-m-d H:i:s.u');
+        }
+
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
@@ -1261,6 +2139,81 @@ abstract class User implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->collDomainss->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collStartedDialogss) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'dialogs';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'xg_dialogss';
+                        break;
+                    default:
+                        $key = 'StartedDialogss';
+                }
+
+                $result[$key] = $this->collStartedDialogss->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collDialogss) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'dialogUsers';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'xg_dialog_userss';
+                        break;
+                    default:
+                        $key = 'Dialogss';
+                }
+
+                $result[$key] = $this->collDialogss->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collDialogInvitess) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'dialogUsers';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'xg_dialog_userss';
+                        break;
+                    default:
+                        $key = 'DialogInvitess';
+                }
+
+                $result[$key] = $this->collDialogInvitess->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collDialogMessagess) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'dialogMessages';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'xg_dialog_messagess';
+                        break;
+                    default:
+                        $key = 'DialogMessagess';
+                }
+
+                $result[$key] = $this->collDialogMessagess->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collActionLogss) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'actionLogs';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'xg_action_logs';
+                        break;
+                    default:
+                        $key = 'ActionLogss';
+                }
+
+                $result[$key] = $this->collActionLogss->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1322,6 +2275,42 @@ abstract class User implements ActiveRecordInterface
             case 7:
                 $this->setBlocked($value);
                 break;
+            case 8:
+                $this->setIsDeleteCandidate($value);
+                break;
+            case 9:
+                $this->setLastLogin($value);
+                break;
+            case 10:
+                $this->setLastLoginIp($value);
+                break;
+            case 11:
+                $this->setProcessed($value);
+                break;
+            case 12:
+                $this->setProcessedAt($value);
+                break;
+            case 13:
+                $this->setHomeFolder($value);
+                break;
+            case 14:
+                $this->setLogFolder($value);
+                break;
+            case 15:
+                $this->setWebFolder($value);
+                break;
+            case 16:
+                $this->setBash($value);
+                break;
+            case 17:
+                $this->setPhpFpmPool($value);
+                break;
+            case 18:
+                $this->setPhpFpmSocket($value);
+                break;
+            case 19:
+                $this->setPhpFpmPort($value);
+                break;
         } // switch()
 
         return $this;
@@ -1371,6 +2360,42 @@ abstract class User implements ActiveRecordInterface
         }
         if (array_key_exists($keys[7], $arr)) {
             $this->setBlocked($arr[$keys[7]]);
+        }
+        if (array_key_exists($keys[8], $arr)) {
+            $this->setIsDeleteCandidate($arr[$keys[8]]);
+        }
+        if (array_key_exists($keys[9], $arr)) {
+            $this->setLastLogin($arr[$keys[9]]);
+        }
+        if (array_key_exists($keys[10], $arr)) {
+            $this->setLastLoginIp($arr[$keys[10]]);
+        }
+        if (array_key_exists($keys[11], $arr)) {
+            $this->setProcessed($arr[$keys[11]]);
+        }
+        if (array_key_exists($keys[12], $arr)) {
+            $this->setProcessedAt($arr[$keys[12]]);
+        }
+        if (array_key_exists($keys[13], $arr)) {
+            $this->setHomeFolder($arr[$keys[13]]);
+        }
+        if (array_key_exists($keys[14], $arr)) {
+            $this->setLogFolder($arr[$keys[14]]);
+        }
+        if (array_key_exists($keys[15], $arr)) {
+            $this->setWebFolder($arr[$keys[15]]);
+        }
+        if (array_key_exists($keys[16], $arr)) {
+            $this->setBash($arr[$keys[16]]);
+        }
+        if (array_key_exists($keys[17], $arr)) {
+            $this->setPhpFpmPool($arr[$keys[17]]);
+        }
+        if (array_key_exists($keys[18], $arr)) {
+            $this->setPhpFpmSocket($arr[$keys[18]]);
+        }
+        if (array_key_exists($keys[19], $arr)) {
+            $this->setPhpFpmPort($arr[$keys[19]]);
         }
 
         return $this;
@@ -1438,6 +2463,42 @@ abstract class User implements ActiveRecordInterface
         }
         if ($this->isColumnModified(UserTableMap::COL_BLOCKED)) {
             $criteria->add(UserTableMap::COL_BLOCKED, $this->blocked);
+        }
+        if ($this->isColumnModified(UserTableMap::COL_IS_DELETE_CANDIDATE)) {
+            $criteria->add(UserTableMap::COL_IS_DELETE_CANDIDATE, $this->is_delete_candidate);
+        }
+        if ($this->isColumnModified(UserTableMap::COL_LAST_LOGIN)) {
+            $criteria->add(UserTableMap::COL_LAST_LOGIN, $this->last_login);
+        }
+        if ($this->isColumnModified(UserTableMap::COL_LAST_LOGIN_IP)) {
+            $criteria->add(UserTableMap::COL_LAST_LOGIN_IP, $this->last_login_ip);
+        }
+        if ($this->isColumnModified(UserTableMap::COL_PROCESSED)) {
+            $criteria->add(UserTableMap::COL_PROCESSED, $this->processed);
+        }
+        if ($this->isColumnModified(UserTableMap::COL_PROCESSED_AT)) {
+            $criteria->add(UserTableMap::COL_PROCESSED_AT, $this->processed_at);
+        }
+        if ($this->isColumnModified(UserTableMap::COL_HOME_FOLDER)) {
+            $criteria->add(UserTableMap::COL_HOME_FOLDER, $this->home_folder);
+        }
+        if ($this->isColumnModified(UserTableMap::COL_LOG_FOLDER)) {
+            $criteria->add(UserTableMap::COL_LOG_FOLDER, $this->log_folder);
+        }
+        if ($this->isColumnModified(UserTableMap::COL_WEB_FOLDER)) {
+            $criteria->add(UserTableMap::COL_WEB_FOLDER, $this->web_folder);
+        }
+        if ($this->isColumnModified(UserTableMap::COL_BASH)) {
+            $criteria->add(UserTableMap::COL_BASH, $this->bash);
+        }
+        if ($this->isColumnModified(UserTableMap::COL_PHP_FPM_POOL)) {
+            $criteria->add(UserTableMap::COL_PHP_FPM_POOL, $this->php_fpm_pool);
+        }
+        if ($this->isColumnModified(UserTableMap::COL_PHP_FPM_SOCKET)) {
+            $criteria->add(UserTableMap::COL_PHP_FPM_SOCKET, $this->php_fpm_socket);
+        }
+        if ($this->isColumnModified(UserTableMap::COL_PHP_FPM_PORT)) {
+            $criteria->add(UserTableMap::COL_PHP_FPM_PORT, $this->php_fpm_port);
         }
 
         return $criteria;
@@ -1534,6 +2595,18 @@ abstract class User implements ActiveRecordInterface
         $copyObj->setPasswordHash($this->getPasswordHash());
         $copyObj->setActivated($this->getActivated());
         $copyObj->setBlocked($this->getBlocked());
+        $copyObj->setIsDeleteCandidate($this->getIsDeleteCandidate());
+        $copyObj->setLastLogin($this->getLastLogin());
+        $copyObj->setLastLoginIp($this->getLastLoginIp());
+        $copyObj->setProcessed($this->getProcessed());
+        $copyObj->setProcessedAt($this->getProcessedAt());
+        $copyObj->setHomeFolder($this->getHomeFolder());
+        $copyObj->setLogFolder($this->getLogFolder());
+        $copyObj->setWebFolder($this->getWebFolder());
+        $copyObj->setBash($this->getBash());
+        $copyObj->setPhpFpmPool($this->getPhpFpmPool());
+        $copyObj->setPhpFpmSocket($this->getPhpFpmSocket());
+        $copyObj->setPhpFpmPort($this->getPhpFpmPort());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1549,6 +2622,36 @@ abstract class User implements ActiveRecordInterface
             foreach ($this->getDomainss() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addDomains($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getStartedDialogss() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addStartedDialogs($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getDialogss() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addDialogs($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getDialogInvitess() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addDialogInvites($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getDialogMessagess() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addDialogMessages($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getActionLogss() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addActionLogs($relObj->copy($deepCopy));
                 }
             }
 
@@ -1650,6 +2753,26 @@ abstract class User implements ActiveRecordInterface
         }
         if ('Domains' === $relationName) {
             $this->initDomainss();
+            return;
+        }
+        if ('StartedDialogs' === $relationName) {
+            $this->initStartedDialogss();
+            return;
+        }
+        if ('Dialogs' === $relationName) {
+            $this->initDialogss();
+            return;
+        }
+        if ('DialogInvites' === $relationName) {
+            $this->initDialogInvitess();
+            return;
+        }
+        if ('DialogMessages' === $relationName) {
+            $this->initDialogMessagess();
+            return;
+        }
+        if ('ActionLogs' === $relationName) {
+            $this->initActionLogss();
             return;
         }
     }
@@ -2159,6 +3282,1279 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collStartedDialogss collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return $this
+     * @see addStartedDialogss()
+     */
+    public function clearStartedDialogss()
+    {
+        $this->collStartedDialogss = null; // important to set this to NULL since that means it is uninitialized
+
+        return $this;
+    }
+
+    /**
+     * Reset is the collStartedDialogss collection loaded partially.
+     *
+     * @return void
+     */
+    public function resetPartialStartedDialogss($v = true): void
+    {
+        $this->collStartedDialogssPartial = $v;
+    }
+
+    /**
+     * Initializes the collStartedDialogss collection.
+     *
+     * By default this just sets the collStartedDialogss collection to an empty array (like clearcollStartedDialogss());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param bool $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initStartedDialogss(bool $overrideExisting = true): void
+    {
+        if (null !== $this->collStartedDialogss && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = DialogTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collStartedDialogss = new $collectionClassName;
+        $this->collStartedDialogss->setModel('\basteyy\XzitGiggle\Models\Dialog');
+    }
+
+    /**
+     * Gets an array of ChildDialog objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildUser is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildDialog[] List of ChildDialog objects
+     * @phpstan-return ObjectCollection&\Traversable<ChildDialog> List of ChildDialog objects
+     * @throws \Propel\Runtime\Exception\PropelException
+     */
+    public function getStartedDialogss(?Criteria $criteria = null, ?ConnectionInterface $con = null)
+    {
+        $partial = $this->collStartedDialogssPartial && !$this->isNew();
+        if (null === $this->collStartedDialogss || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collStartedDialogss) {
+                    $this->initStartedDialogss();
+                } else {
+                    $collectionClassName = DialogTableMap::getTableMap()->getCollectionClassName();
+
+                    $collStartedDialogss = new $collectionClassName;
+                    $collStartedDialogss->setModel('\basteyy\XzitGiggle\Models\Dialog');
+
+                    return $collStartedDialogss;
+                }
+            } else {
+                $collStartedDialogss = ChildDialogQuery::create(null, $criteria)
+                    ->filterByCreatedByUser($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collStartedDialogssPartial && count($collStartedDialogss)) {
+                        $this->initStartedDialogss(false);
+
+                        foreach ($collStartedDialogss as $obj) {
+                            if (false == $this->collStartedDialogss->contains($obj)) {
+                                $this->collStartedDialogss->append($obj);
+                            }
+                        }
+
+                        $this->collStartedDialogssPartial = true;
+                    }
+
+                    return $collStartedDialogss;
+                }
+
+                if ($partial && $this->collStartedDialogss) {
+                    foreach ($this->collStartedDialogss as $obj) {
+                        if ($obj->isNew()) {
+                            $collStartedDialogss[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collStartedDialogss = $collStartedDialogss;
+                $this->collStartedDialogssPartial = false;
+            }
+        }
+
+        return $this->collStartedDialogss;
+    }
+
+    /**
+     * Sets a collection of ChildDialog objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param Collection $startedDialogss A Propel collection.
+     * @param ConnectionInterface $con Optional connection object
+     * @return $this The current object (for fluent API support)
+     */
+    public function setStartedDialogss(Collection $startedDialogss, ?ConnectionInterface $con = null)
+    {
+        /** @var ChildDialog[] $startedDialogssToDelete */
+        $startedDialogssToDelete = $this->getStartedDialogss(new Criteria(), $con)->diff($startedDialogss);
+
+
+        $this->startedDialogssScheduledForDeletion = $startedDialogssToDelete;
+
+        foreach ($startedDialogssToDelete as $startedDialogsRemoved) {
+            $startedDialogsRemoved->setCreatedByUser(null);
+        }
+
+        $this->collStartedDialogss = null;
+        foreach ($startedDialogss as $startedDialogs) {
+            $this->addStartedDialogs($startedDialogs);
+        }
+
+        $this->collStartedDialogss = $startedDialogss;
+        $this->collStartedDialogssPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Dialog objects.
+     *
+     * @param Criteria $criteria
+     * @param bool $distinct
+     * @param ConnectionInterface $con
+     * @return int Count of related Dialog objects.
+     * @throws \Propel\Runtime\Exception\PropelException
+     */
+    public function countStartedDialogss(?Criteria $criteria = null, bool $distinct = false, ?ConnectionInterface $con = null): int
+    {
+        $partial = $this->collStartedDialogssPartial && !$this->isNew();
+        if (null === $this->collStartedDialogss || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collStartedDialogss) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getStartedDialogss());
+            }
+
+            $query = ChildDialogQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByCreatedByUser($this)
+                ->count($con);
+        }
+
+        return count($this->collStartedDialogss);
+    }
+
+    /**
+     * Method called to associate a ChildDialog object to this object
+     * through the ChildDialog foreign key attribute.
+     *
+     * @param ChildDialog $l ChildDialog
+     * @return $this The current object (for fluent API support)
+     */
+    public function addStartedDialogs(ChildDialog $l)
+    {
+        if ($this->collStartedDialogss === null) {
+            $this->initStartedDialogss();
+            $this->collStartedDialogssPartial = true;
+        }
+
+        if (!$this->collStartedDialogss->contains($l)) {
+            $this->doAddStartedDialogs($l);
+
+            if ($this->startedDialogssScheduledForDeletion and $this->startedDialogssScheduledForDeletion->contains($l)) {
+                $this->startedDialogssScheduledForDeletion->remove($this->startedDialogssScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildDialog $startedDialogs The ChildDialog object to add.
+     */
+    protected function doAddStartedDialogs(ChildDialog $startedDialogs): void
+    {
+        $this->collStartedDialogss[]= $startedDialogs;
+        $startedDialogs->setCreatedByUser($this);
+    }
+
+    /**
+     * @param ChildDialog $startedDialogs The ChildDialog object to remove.
+     * @return $this The current object (for fluent API support)
+     */
+    public function removeStartedDialogs(ChildDialog $startedDialogs)
+    {
+        if ($this->getStartedDialogss()->contains($startedDialogs)) {
+            $pos = $this->collStartedDialogss->search($startedDialogs);
+            $this->collStartedDialogss->remove($pos);
+            if (null === $this->startedDialogssScheduledForDeletion) {
+                $this->startedDialogssScheduledForDeletion = clone $this->collStartedDialogss;
+                $this->startedDialogssScheduledForDeletion->clear();
+            }
+            $this->startedDialogssScheduledForDeletion[]= clone $startedDialogs;
+            $startedDialogs->setCreatedByUser(null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collDialogss collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return $this
+     * @see addDialogss()
+     */
+    public function clearDialogss()
+    {
+        $this->collDialogss = null; // important to set this to NULL since that means it is uninitialized
+
+        return $this;
+    }
+
+    /**
+     * Reset is the collDialogss collection loaded partially.
+     *
+     * @return void
+     */
+    public function resetPartialDialogss($v = true): void
+    {
+        $this->collDialogssPartial = $v;
+    }
+
+    /**
+     * Initializes the collDialogss collection.
+     *
+     * By default this just sets the collDialogss collection to an empty array (like clearcollDialogss());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param bool $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initDialogss(bool $overrideExisting = true): void
+    {
+        if (null !== $this->collDialogss && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = DialogUserTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collDialogss = new $collectionClassName;
+        $this->collDialogss->setModel('\basteyy\XzitGiggle\Models\DialogUser');
+    }
+
+    /**
+     * Gets an array of ChildDialogUser objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildUser is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildDialogUser[] List of ChildDialogUser objects
+     * @phpstan-return ObjectCollection&\Traversable<ChildDialogUser> List of ChildDialogUser objects
+     * @throws \Propel\Runtime\Exception\PropelException
+     */
+    public function getDialogss(?Criteria $criteria = null, ?ConnectionInterface $con = null)
+    {
+        $partial = $this->collDialogssPartial && !$this->isNew();
+        if (null === $this->collDialogss || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collDialogss) {
+                    $this->initDialogss();
+                } else {
+                    $collectionClassName = DialogUserTableMap::getTableMap()->getCollectionClassName();
+
+                    $collDialogss = new $collectionClassName;
+                    $collDialogss->setModel('\basteyy\XzitGiggle\Models\DialogUser');
+
+                    return $collDialogss;
+                }
+            } else {
+                $collDialogss = ChildDialogUserQuery::create(null, $criteria)
+                    ->filterByUser($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collDialogssPartial && count($collDialogss)) {
+                        $this->initDialogss(false);
+
+                        foreach ($collDialogss as $obj) {
+                            if (false == $this->collDialogss->contains($obj)) {
+                                $this->collDialogss->append($obj);
+                            }
+                        }
+
+                        $this->collDialogssPartial = true;
+                    }
+
+                    return $collDialogss;
+                }
+
+                if ($partial && $this->collDialogss) {
+                    foreach ($this->collDialogss as $obj) {
+                        if ($obj->isNew()) {
+                            $collDialogss[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collDialogss = $collDialogss;
+                $this->collDialogssPartial = false;
+            }
+        }
+
+        return $this->collDialogss;
+    }
+
+    /**
+     * Sets a collection of ChildDialogUser objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param Collection $dialogss A Propel collection.
+     * @param ConnectionInterface $con Optional connection object
+     * @return $this The current object (for fluent API support)
+     */
+    public function setDialogss(Collection $dialogss, ?ConnectionInterface $con = null)
+    {
+        /** @var ChildDialogUser[] $dialogssToDelete */
+        $dialogssToDelete = $this->getDialogss(new Criteria(), $con)->diff($dialogss);
+
+
+        $this->dialogssScheduledForDeletion = $dialogssToDelete;
+
+        foreach ($dialogssToDelete as $dialogsRemoved) {
+            $dialogsRemoved->setUser(null);
+        }
+
+        $this->collDialogss = null;
+        foreach ($dialogss as $dialogs) {
+            $this->addDialogs($dialogs);
+        }
+
+        $this->collDialogss = $dialogss;
+        $this->collDialogssPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related DialogUser objects.
+     *
+     * @param Criteria $criteria
+     * @param bool $distinct
+     * @param ConnectionInterface $con
+     * @return int Count of related DialogUser objects.
+     * @throws \Propel\Runtime\Exception\PropelException
+     */
+    public function countDialogss(?Criteria $criteria = null, bool $distinct = false, ?ConnectionInterface $con = null): int
+    {
+        $partial = $this->collDialogssPartial && !$this->isNew();
+        if (null === $this->collDialogss || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collDialogss) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getDialogss());
+            }
+
+            $query = ChildDialogUserQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByUser($this)
+                ->count($con);
+        }
+
+        return count($this->collDialogss);
+    }
+
+    /**
+     * Method called to associate a ChildDialogUser object to this object
+     * through the ChildDialogUser foreign key attribute.
+     *
+     * @param ChildDialogUser $l ChildDialogUser
+     * @return $this The current object (for fluent API support)
+     */
+    public function addDialogs(ChildDialogUser $l)
+    {
+        if ($this->collDialogss === null) {
+            $this->initDialogss();
+            $this->collDialogssPartial = true;
+        }
+
+        if (!$this->collDialogss->contains($l)) {
+            $this->doAddDialogs($l);
+
+            if ($this->dialogssScheduledForDeletion and $this->dialogssScheduledForDeletion->contains($l)) {
+                $this->dialogssScheduledForDeletion->remove($this->dialogssScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildDialogUser $dialogs The ChildDialogUser object to add.
+     */
+    protected function doAddDialogs(ChildDialogUser $dialogs): void
+    {
+        $this->collDialogss[]= $dialogs;
+        $dialogs->setUser($this);
+    }
+
+    /**
+     * @param ChildDialogUser $dialogs The ChildDialogUser object to remove.
+     * @return $this The current object (for fluent API support)
+     */
+    public function removeDialogs(ChildDialogUser $dialogs)
+    {
+        if ($this->getDialogss()->contains($dialogs)) {
+            $pos = $this->collDialogss->search($dialogs);
+            $this->collDialogss->remove($pos);
+            if (null === $this->dialogssScheduledForDeletion) {
+                $this->dialogssScheduledForDeletion = clone $this->collDialogss;
+                $this->dialogssScheduledForDeletion->clear();
+            }
+            $this->dialogssScheduledForDeletion[]= clone $dialogs;
+            $dialogs->setUser(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this User is new, it will return
+     * an empty collection; or if this User has previously
+     * been saved, it will retrieve related Dialogss from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in User.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param ConnectionInterface $con optional connection object
+     * @param string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildDialogUser[] List of ChildDialogUser objects
+     * @phpstan-return ObjectCollection&\Traversable<ChildDialogUser}> List of ChildDialogUser objects
+     */
+    public function getDialogssJoinDialog(?Criteria $criteria = null, ?ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildDialogUserQuery::create(null, $criteria);
+        $query->joinWith('Dialog', $joinBehavior);
+
+        return $this->getDialogss($query, $con);
+    }
+
+    /**
+     * Clears out the collDialogInvitess collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return $this
+     * @see addDialogInvitess()
+     */
+    public function clearDialogInvitess()
+    {
+        $this->collDialogInvitess = null; // important to set this to NULL since that means it is uninitialized
+
+        return $this;
+    }
+
+    /**
+     * Reset is the collDialogInvitess collection loaded partially.
+     *
+     * @return void
+     */
+    public function resetPartialDialogInvitess($v = true): void
+    {
+        $this->collDialogInvitessPartial = $v;
+    }
+
+    /**
+     * Initializes the collDialogInvitess collection.
+     *
+     * By default this just sets the collDialogInvitess collection to an empty array (like clearcollDialogInvitess());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param bool $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initDialogInvitess(bool $overrideExisting = true): void
+    {
+        if (null !== $this->collDialogInvitess && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = DialogUserTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collDialogInvitess = new $collectionClassName;
+        $this->collDialogInvitess->setModel('\basteyy\XzitGiggle\Models\DialogUser');
+    }
+
+    /**
+     * Gets an array of ChildDialogUser objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildUser is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildDialogUser[] List of ChildDialogUser objects
+     * @phpstan-return ObjectCollection&\Traversable<ChildDialogUser> List of ChildDialogUser objects
+     * @throws \Propel\Runtime\Exception\PropelException
+     */
+    public function getDialogInvitess(?Criteria $criteria = null, ?ConnectionInterface $con = null)
+    {
+        $partial = $this->collDialogInvitessPartial && !$this->isNew();
+        if (null === $this->collDialogInvitess || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collDialogInvitess) {
+                    $this->initDialogInvitess();
+                } else {
+                    $collectionClassName = DialogUserTableMap::getTableMap()->getCollectionClassName();
+
+                    $collDialogInvitess = new $collectionClassName;
+                    $collDialogInvitess->setModel('\basteyy\XzitGiggle\Models\DialogUser');
+
+                    return $collDialogInvitess;
+                }
+            } else {
+                $collDialogInvitess = ChildDialogUserQuery::create(null, $criteria)
+                    ->filterByInviterUser($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collDialogInvitessPartial && count($collDialogInvitess)) {
+                        $this->initDialogInvitess(false);
+
+                        foreach ($collDialogInvitess as $obj) {
+                            if (false == $this->collDialogInvitess->contains($obj)) {
+                                $this->collDialogInvitess->append($obj);
+                            }
+                        }
+
+                        $this->collDialogInvitessPartial = true;
+                    }
+
+                    return $collDialogInvitess;
+                }
+
+                if ($partial && $this->collDialogInvitess) {
+                    foreach ($this->collDialogInvitess as $obj) {
+                        if ($obj->isNew()) {
+                            $collDialogInvitess[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collDialogInvitess = $collDialogInvitess;
+                $this->collDialogInvitessPartial = false;
+            }
+        }
+
+        return $this->collDialogInvitess;
+    }
+
+    /**
+     * Sets a collection of ChildDialogUser objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param Collection $dialogInvitess A Propel collection.
+     * @param ConnectionInterface $con Optional connection object
+     * @return $this The current object (for fluent API support)
+     */
+    public function setDialogInvitess(Collection $dialogInvitess, ?ConnectionInterface $con = null)
+    {
+        /** @var ChildDialogUser[] $dialogInvitessToDelete */
+        $dialogInvitessToDelete = $this->getDialogInvitess(new Criteria(), $con)->diff($dialogInvitess);
+
+
+        $this->dialogInvitessScheduledForDeletion = $dialogInvitessToDelete;
+
+        foreach ($dialogInvitessToDelete as $dialogInvitesRemoved) {
+            $dialogInvitesRemoved->setInviterUser(null);
+        }
+
+        $this->collDialogInvitess = null;
+        foreach ($dialogInvitess as $dialogInvites) {
+            $this->addDialogInvites($dialogInvites);
+        }
+
+        $this->collDialogInvitess = $dialogInvitess;
+        $this->collDialogInvitessPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related DialogUser objects.
+     *
+     * @param Criteria $criteria
+     * @param bool $distinct
+     * @param ConnectionInterface $con
+     * @return int Count of related DialogUser objects.
+     * @throws \Propel\Runtime\Exception\PropelException
+     */
+    public function countDialogInvitess(?Criteria $criteria = null, bool $distinct = false, ?ConnectionInterface $con = null): int
+    {
+        $partial = $this->collDialogInvitessPartial && !$this->isNew();
+        if (null === $this->collDialogInvitess || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collDialogInvitess) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getDialogInvitess());
+            }
+
+            $query = ChildDialogUserQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByInviterUser($this)
+                ->count($con);
+        }
+
+        return count($this->collDialogInvitess);
+    }
+
+    /**
+     * Method called to associate a ChildDialogUser object to this object
+     * through the ChildDialogUser foreign key attribute.
+     *
+     * @param ChildDialogUser $l ChildDialogUser
+     * @return $this The current object (for fluent API support)
+     */
+    public function addDialogInvites(ChildDialogUser $l)
+    {
+        if ($this->collDialogInvitess === null) {
+            $this->initDialogInvitess();
+            $this->collDialogInvitessPartial = true;
+        }
+
+        if (!$this->collDialogInvitess->contains($l)) {
+            $this->doAddDialogInvites($l);
+
+            if ($this->dialogInvitessScheduledForDeletion and $this->dialogInvitessScheduledForDeletion->contains($l)) {
+                $this->dialogInvitessScheduledForDeletion->remove($this->dialogInvitessScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildDialogUser $dialogInvites The ChildDialogUser object to add.
+     */
+    protected function doAddDialogInvites(ChildDialogUser $dialogInvites): void
+    {
+        $this->collDialogInvitess[]= $dialogInvites;
+        $dialogInvites->setInviterUser($this);
+    }
+
+    /**
+     * @param ChildDialogUser $dialogInvites The ChildDialogUser object to remove.
+     * @return $this The current object (for fluent API support)
+     */
+    public function removeDialogInvites(ChildDialogUser $dialogInvites)
+    {
+        if ($this->getDialogInvitess()->contains($dialogInvites)) {
+            $pos = $this->collDialogInvitess->search($dialogInvites);
+            $this->collDialogInvitess->remove($pos);
+            if (null === $this->dialogInvitessScheduledForDeletion) {
+                $this->dialogInvitessScheduledForDeletion = clone $this->collDialogInvitess;
+                $this->dialogInvitessScheduledForDeletion->clear();
+            }
+            $this->dialogInvitessScheduledForDeletion[]= $dialogInvites;
+            $dialogInvites->setInviterUser(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this User is new, it will return
+     * an empty collection; or if this User has previously
+     * been saved, it will retrieve related DialogInvitess from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in User.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param ConnectionInterface $con optional connection object
+     * @param string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildDialogUser[] List of ChildDialogUser objects
+     * @phpstan-return ObjectCollection&\Traversable<ChildDialogUser}> List of ChildDialogUser objects
+     */
+    public function getDialogInvitessJoinDialog(?Criteria $criteria = null, ?ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildDialogUserQuery::create(null, $criteria);
+        $query->joinWith('Dialog', $joinBehavior);
+
+        return $this->getDialogInvitess($query, $con);
+    }
+
+    /**
+     * Clears out the collDialogMessagess collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return $this
+     * @see addDialogMessagess()
+     */
+    public function clearDialogMessagess()
+    {
+        $this->collDialogMessagess = null; // important to set this to NULL since that means it is uninitialized
+
+        return $this;
+    }
+
+    /**
+     * Reset is the collDialogMessagess collection loaded partially.
+     *
+     * @return void
+     */
+    public function resetPartialDialogMessagess($v = true): void
+    {
+        $this->collDialogMessagessPartial = $v;
+    }
+
+    /**
+     * Initializes the collDialogMessagess collection.
+     *
+     * By default this just sets the collDialogMessagess collection to an empty array (like clearcollDialogMessagess());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param bool $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initDialogMessagess(bool $overrideExisting = true): void
+    {
+        if (null !== $this->collDialogMessagess && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = DialogMessageTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collDialogMessagess = new $collectionClassName;
+        $this->collDialogMessagess->setModel('\basteyy\XzitGiggle\Models\DialogMessage');
+    }
+
+    /**
+     * Gets an array of ChildDialogMessage objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildUser is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildDialogMessage[] List of ChildDialogMessage objects
+     * @phpstan-return ObjectCollection&\Traversable<ChildDialogMessage> List of ChildDialogMessage objects
+     * @throws \Propel\Runtime\Exception\PropelException
+     */
+    public function getDialogMessagess(?Criteria $criteria = null, ?ConnectionInterface $con = null)
+    {
+        $partial = $this->collDialogMessagessPartial && !$this->isNew();
+        if (null === $this->collDialogMessagess || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collDialogMessagess) {
+                    $this->initDialogMessagess();
+                } else {
+                    $collectionClassName = DialogMessageTableMap::getTableMap()->getCollectionClassName();
+
+                    $collDialogMessagess = new $collectionClassName;
+                    $collDialogMessagess->setModel('\basteyy\XzitGiggle\Models\DialogMessage');
+
+                    return $collDialogMessagess;
+                }
+            } else {
+                $collDialogMessagess = ChildDialogMessageQuery::create(null, $criteria)
+                    ->filterByUser($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collDialogMessagessPartial && count($collDialogMessagess)) {
+                        $this->initDialogMessagess(false);
+
+                        foreach ($collDialogMessagess as $obj) {
+                            if (false == $this->collDialogMessagess->contains($obj)) {
+                                $this->collDialogMessagess->append($obj);
+                            }
+                        }
+
+                        $this->collDialogMessagessPartial = true;
+                    }
+
+                    return $collDialogMessagess;
+                }
+
+                if ($partial && $this->collDialogMessagess) {
+                    foreach ($this->collDialogMessagess as $obj) {
+                        if ($obj->isNew()) {
+                            $collDialogMessagess[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collDialogMessagess = $collDialogMessagess;
+                $this->collDialogMessagessPartial = false;
+            }
+        }
+
+        return $this->collDialogMessagess;
+    }
+
+    /**
+     * Sets a collection of ChildDialogMessage objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param Collection $dialogMessagess A Propel collection.
+     * @param ConnectionInterface $con Optional connection object
+     * @return $this The current object (for fluent API support)
+     */
+    public function setDialogMessagess(Collection $dialogMessagess, ?ConnectionInterface $con = null)
+    {
+        /** @var ChildDialogMessage[] $dialogMessagessToDelete */
+        $dialogMessagessToDelete = $this->getDialogMessagess(new Criteria(), $con)->diff($dialogMessagess);
+
+
+        $this->dialogMessagessScheduledForDeletion = $dialogMessagessToDelete;
+
+        foreach ($dialogMessagessToDelete as $dialogMessagesRemoved) {
+            $dialogMessagesRemoved->setUser(null);
+        }
+
+        $this->collDialogMessagess = null;
+        foreach ($dialogMessagess as $dialogMessages) {
+            $this->addDialogMessages($dialogMessages);
+        }
+
+        $this->collDialogMessagess = $dialogMessagess;
+        $this->collDialogMessagessPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related DialogMessage objects.
+     *
+     * @param Criteria $criteria
+     * @param bool $distinct
+     * @param ConnectionInterface $con
+     * @return int Count of related DialogMessage objects.
+     * @throws \Propel\Runtime\Exception\PropelException
+     */
+    public function countDialogMessagess(?Criteria $criteria = null, bool $distinct = false, ?ConnectionInterface $con = null): int
+    {
+        $partial = $this->collDialogMessagessPartial && !$this->isNew();
+        if (null === $this->collDialogMessagess || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collDialogMessagess) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getDialogMessagess());
+            }
+
+            $query = ChildDialogMessageQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByUser($this)
+                ->count($con);
+        }
+
+        return count($this->collDialogMessagess);
+    }
+
+    /**
+     * Method called to associate a ChildDialogMessage object to this object
+     * through the ChildDialogMessage foreign key attribute.
+     *
+     * @param ChildDialogMessage $l ChildDialogMessage
+     * @return $this The current object (for fluent API support)
+     */
+    public function addDialogMessages(ChildDialogMessage $l)
+    {
+        if ($this->collDialogMessagess === null) {
+            $this->initDialogMessagess();
+            $this->collDialogMessagessPartial = true;
+        }
+
+        if (!$this->collDialogMessagess->contains($l)) {
+            $this->doAddDialogMessages($l);
+
+            if ($this->dialogMessagessScheduledForDeletion and $this->dialogMessagessScheduledForDeletion->contains($l)) {
+                $this->dialogMessagessScheduledForDeletion->remove($this->dialogMessagessScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildDialogMessage $dialogMessages The ChildDialogMessage object to add.
+     */
+    protected function doAddDialogMessages(ChildDialogMessage $dialogMessages): void
+    {
+        $this->collDialogMessagess[]= $dialogMessages;
+        $dialogMessages->setUser($this);
+    }
+
+    /**
+     * @param ChildDialogMessage $dialogMessages The ChildDialogMessage object to remove.
+     * @return $this The current object (for fluent API support)
+     */
+    public function removeDialogMessages(ChildDialogMessage $dialogMessages)
+    {
+        if ($this->getDialogMessagess()->contains($dialogMessages)) {
+            $pos = $this->collDialogMessagess->search($dialogMessages);
+            $this->collDialogMessagess->remove($pos);
+            if (null === $this->dialogMessagessScheduledForDeletion) {
+                $this->dialogMessagessScheduledForDeletion = clone $this->collDialogMessagess;
+                $this->dialogMessagessScheduledForDeletion->clear();
+            }
+            $this->dialogMessagessScheduledForDeletion[]= clone $dialogMessages;
+            $dialogMessages->setUser(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this User is new, it will return
+     * an empty collection; or if this User has previously
+     * been saved, it will retrieve related DialogMessagess from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in User.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param ConnectionInterface $con optional connection object
+     * @param string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildDialogMessage[] List of ChildDialogMessage objects
+     * @phpstan-return ObjectCollection&\Traversable<ChildDialogMessage}> List of ChildDialogMessage objects
+     */
+    public function getDialogMessagessJoinDialog(?Criteria $criteria = null, ?ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildDialogMessageQuery::create(null, $criteria);
+        $query->joinWith('Dialog', $joinBehavior);
+
+        return $this->getDialogMessagess($query, $con);
+    }
+
+    /**
+     * Clears out the collActionLogss collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return $this
+     * @see addActionLogss()
+     */
+    public function clearActionLogss()
+    {
+        $this->collActionLogss = null; // important to set this to NULL since that means it is uninitialized
+
+        return $this;
+    }
+
+    /**
+     * Reset is the collActionLogss collection loaded partially.
+     *
+     * @return void
+     */
+    public function resetPartialActionLogss($v = true): void
+    {
+        $this->collActionLogssPartial = $v;
+    }
+
+    /**
+     * Initializes the collActionLogss collection.
+     *
+     * By default this just sets the collActionLogss collection to an empty array (like clearcollActionLogss());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param bool $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initActionLogss(bool $overrideExisting = true): void
+    {
+        if (null !== $this->collActionLogss && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = ActionLogTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collActionLogss = new $collectionClassName;
+        $this->collActionLogss->setModel('\basteyy\XzitGiggle\Models\ActionLog');
+    }
+
+    /**
+     * Gets an array of ChildActionLog objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildUser is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildActionLog[] List of ChildActionLog objects
+     * @phpstan-return ObjectCollection&\Traversable<ChildActionLog> List of ChildActionLog objects
+     * @throws \Propel\Runtime\Exception\PropelException
+     */
+    public function getActionLogss(?Criteria $criteria = null, ?ConnectionInterface $con = null)
+    {
+        $partial = $this->collActionLogssPartial && !$this->isNew();
+        if (null === $this->collActionLogss || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collActionLogss) {
+                    $this->initActionLogss();
+                } else {
+                    $collectionClassName = ActionLogTableMap::getTableMap()->getCollectionClassName();
+
+                    $collActionLogss = new $collectionClassName;
+                    $collActionLogss->setModel('\basteyy\XzitGiggle\Models\ActionLog');
+
+                    return $collActionLogss;
+                }
+            } else {
+                $collActionLogss = ChildActionLogQuery::create(null, $criteria)
+                    ->filterByUser($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collActionLogssPartial && count($collActionLogss)) {
+                        $this->initActionLogss(false);
+
+                        foreach ($collActionLogss as $obj) {
+                            if (false == $this->collActionLogss->contains($obj)) {
+                                $this->collActionLogss->append($obj);
+                            }
+                        }
+
+                        $this->collActionLogssPartial = true;
+                    }
+
+                    return $collActionLogss;
+                }
+
+                if ($partial && $this->collActionLogss) {
+                    foreach ($this->collActionLogss as $obj) {
+                        if ($obj->isNew()) {
+                            $collActionLogss[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collActionLogss = $collActionLogss;
+                $this->collActionLogssPartial = false;
+            }
+        }
+
+        return $this->collActionLogss;
+    }
+
+    /**
+     * Sets a collection of ChildActionLog objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param Collection $actionLogss A Propel collection.
+     * @param ConnectionInterface $con Optional connection object
+     * @return $this The current object (for fluent API support)
+     */
+    public function setActionLogss(Collection $actionLogss, ?ConnectionInterface $con = null)
+    {
+        /** @var ChildActionLog[] $actionLogssToDelete */
+        $actionLogssToDelete = $this->getActionLogss(new Criteria(), $con)->diff($actionLogss);
+
+
+        $this->actionLogssScheduledForDeletion = $actionLogssToDelete;
+
+        foreach ($actionLogssToDelete as $actionLogsRemoved) {
+            $actionLogsRemoved->setUser(null);
+        }
+
+        $this->collActionLogss = null;
+        foreach ($actionLogss as $actionLogs) {
+            $this->addActionLogs($actionLogs);
+        }
+
+        $this->collActionLogss = $actionLogss;
+        $this->collActionLogssPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related ActionLog objects.
+     *
+     * @param Criteria $criteria
+     * @param bool $distinct
+     * @param ConnectionInterface $con
+     * @return int Count of related ActionLog objects.
+     * @throws \Propel\Runtime\Exception\PropelException
+     */
+    public function countActionLogss(?Criteria $criteria = null, bool $distinct = false, ?ConnectionInterface $con = null): int
+    {
+        $partial = $this->collActionLogssPartial && !$this->isNew();
+        if (null === $this->collActionLogss || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collActionLogss) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getActionLogss());
+            }
+
+            $query = ChildActionLogQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByUser($this)
+                ->count($con);
+        }
+
+        return count($this->collActionLogss);
+    }
+
+    /**
+     * Method called to associate a ChildActionLog object to this object
+     * through the ChildActionLog foreign key attribute.
+     *
+     * @param ChildActionLog $l ChildActionLog
+     * @return $this The current object (for fluent API support)
+     */
+    public function addActionLogs(ChildActionLog $l)
+    {
+        if ($this->collActionLogss === null) {
+            $this->initActionLogss();
+            $this->collActionLogssPartial = true;
+        }
+
+        if (!$this->collActionLogss->contains($l)) {
+            $this->doAddActionLogs($l);
+
+            if ($this->actionLogssScheduledForDeletion and $this->actionLogssScheduledForDeletion->contains($l)) {
+                $this->actionLogssScheduledForDeletion->remove($this->actionLogssScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildActionLog $actionLogs The ChildActionLog object to add.
+     */
+    protected function doAddActionLogs(ChildActionLog $actionLogs): void
+    {
+        $this->collActionLogss[]= $actionLogs;
+        $actionLogs->setUser($this);
+    }
+
+    /**
+     * @param ChildActionLog $actionLogs The ChildActionLog object to remove.
+     * @return $this The current object (for fluent API support)
+     */
+    public function removeActionLogs(ChildActionLog $actionLogs)
+    {
+        if ($this->getActionLogss()->contains($actionLogs)) {
+            $pos = $this->collActionLogss->search($actionLogs);
+            $this->collActionLogss->remove($pos);
+            if (null === $this->actionLogssScheduledForDeletion) {
+                $this->actionLogssScheduledForDeletion = clone $this->collActionLogss;
+                $this->actionLogssScheduledForDeletion->clear();
+            }
+            $this->actionLogssScheduledForDeletion[]= clone $actionLogs;
+            $actionLogs->setUser(null);
+        }
+
+        return $this;
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
@@ -2178,6 +4574,18 @@ abstract class User implements ActiveRecordInterface
         $this->password_hash = null;
         $this->activated = null;
         $this->blocked = null;
+        $this->is_delete_candidate = null;
+        $this->last_login = null;
+        $this->last_login_ip = null;
+        $this->processed = null;
+        $this->processed_at = null;
+        $this->home_folder = null;
+        $this->log_folder = null;
+        $this->web_folder = null;
+        $this->bash = null;
+        $this->php_fpm_pool = null;
+        $this->php_fpm_socket = null;
+        $this->php_fpm_port = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();
@@ -2210,10 +4618,40 @@ abstract class User implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collStartedDialogss) {
+                foreach ($this->collStartedDialogss as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collDialogss) {
+                foreach ($this->collDialogss as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collDialogInvitess) {
+                foreach ($this->collDialogInvitess as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collDialogMessagess) {
+                foreach ($this->collDialogMessagess as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collActionLogss) {
+                foreach ($this->collActionLogss as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
         $this->collIpPoolUserss = null;
         $this->collDomainss = null;
+        $this->collStartedDialogss = null;
+        $this->collDialogss = null;
+        $this->collDialogInvitess = null;
+        $this->collDialogMessagess = null;
+        $this->collActionLogss = null;
         $this->aUserRole = null;
         return $this;
     }

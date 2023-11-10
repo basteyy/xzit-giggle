@@ -63,7 +63,7 @@ class UserTableMap extends TableMap
     /**
      * The total number of columns
      */
-    public const NUM_COLUMNS = 8;
+    public const NUM_COLUMNS = 20;
 
     /**
      * The number of lazy-loaded columns
@@ -73,7 +73,7 @@ class UserTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    public const NUM_HYDRATE_COLUMNS = 8;
+    public const NUM_HYDRATE_COLUMNS = 20;
 
     /**
      * the column name for the id field
@@ -116,6 +116,66 @@ class UserTableMap extends TableMap
     public const COL_BLOCKED = 'xg_users.blocked';
 
     /**
+     * the column name for the is_delete_candidate field
+     */
+    public const COL_IS_DELETE_CANDIDATE = 'xg_users.is_delete_candidate';
+
+    /**
+     * the column name for the last_login field
+     */
+    public const COL_LAST_LOGIN = 'xg_users.last_login';
+
+    /**
+     * the column name for the last_login_ip field
+     */
+    public const COL_LAST_LOGIN_IP = 'xg_users.last_login_ip';
+
+    /**
+     * the column name for the processed field
+     */
+    public const COL_PROCESSED = 'xg_users.processed';
+
+    /**
+     * the column name for the processed_at field
+     */
+    public const COL_PROCESSED_AT = 'xg_users.processed_at';
+
+    /**
+     * the column name for the home_folder field
+     */
+    public const COL_HOME_FOLDER = 'xg_users.home_folder';
+
+    /**
+     * the column name for the log_folder field
+     */
+    public const COL_LOG_FOLDER = 'xg_users.log_folder';
+
+    /**
+     * the column name for the web_folder field
+     */
+    public const COL_WEB_FOLDER = 'xg_users.web_folder';
+
+    /**
+     * the column name for the bash field
+     */
+    public const COL_BASH = 'xg_users.bash';
+
+    /**
+     * the column name for the php_fpm_pool field
+     */
+    public const COL_PHP_FPM_POOL = 'xg_users.php_fpm_pool';
+
+    /**
+     * the column name for the php_fpm_socket field
+     */
+    public const COL_PHP_FPM_SOCKET = 'xg_users.php_fpm_socket';
+
+    /**
+     * the column name for the php_fpm_port field
+     */
+    public const COL_PHP_FPM_PORT = 'xg_users.php_fpm_port';
+
+    /**
      * The default string format for model objects of the related table
      */
     public const DEFAULT_STRING_FORMAT = 'YAML';
@@ -129,11 +189,11 @@ class UserTableMap extends TableMap
      * @var array<string, mixed>
      */
     protected static $fieldNames = [
-        self::TYPE_PHPNAME       => ['Id', 'Email', 'Username', 'UserRoleId', 'SecretKey', 'PasswordHash', 'Activated', 'Blocked', ],
-        self::TYPE_CAMELNAME     => ['id', 'email', 'username', 'userRoleId', 'secretKey', 'passwordHash', 'activated', 'blocked', ],
-        self::TYPE_COLNAME       => [UserTableMap::COL_ID, UserTableMap::COL_EMAIL, UserTableMap::COL_USERNAME, UserTableMap::COL_USER_ROLE_ID, UserTableMap::COL_SECRET_KEY, UserTableMap::COL_PASSWORD_HASH, UserTableMap::COL_ACTIVATED, UserTableMap::COL_BLOCKED, ],
-        self::TYPE_FIELDNAME     => ['id', 'email', 'username', 'user_role_id', 'secret_key', 'password_hash', 'activated', 'blocked', ],
-        self::TYPE_NUM           => [0, 1, 2, 3, 4, 5, 6, 7, ]
+        self::TYPE_PHPNAME       => ['Id', 'Email', 'Username', 'UserRoleId', 'SecretKey', 'PasswordHash', 'Activated', 'Blocked', 'IsDeleteCandidate', 'LastLogin', 'LastLoginIp', 'Processed', 'ProcessedAt', 'HomeFolder', 'LogFolder', 'WebFolder', 'Bash', 'PhpFpmPool', 'PhpFpmSocket', 'PhpFpmPort', ],
+        self::TYPE_CAMELNAME     => ['id', 'email', 'username', 'userRoleId', 'secretKey', 'passwordHash', 'activated', 'blocked', 'isDeleteCandidate', 'lastLogin', 'lastLoginIp', 'processed', 'processedAt', 'homeFolder', 'logFolder', 'webFolder', 'bash', 'phpFpmPool', 'phpFpmSocket', 'phpFpmPort', ],
+        self::TYPE_COLNAME       => [UserTableMap::COL_ID, UserTableMap::COL_EMAIL, UserTableMap::COL_USERNAME, UserTableMap::COL_USER_ROLE_ID, UserTableMap::COL_SECRET_KEY, UserTableMap::COL_PASSWORD_HASH, UserTableMap::COL_ACTIVATED, UserTableMap::COL_BLOCKED, UserTableMap::COL_IS_DELETE_CANDIDATE, UserTableMap::COL_LAST_LOGIN, UserTableMap::COL_LAST_LOGIN_IP, UserTableMap::COL_PROCESSED, UserTableMap::COL_PROCESSED_AT, UserTableMap::COL_HOME_FOLDER, UserTableMap::COL_LOG_FOLDER, UserTableMap::COL_WEB_FOLDER, UserTableMap::COL_BASH, UserTableMap::COL_PHP_FPM_POOL, UserTableMap::COL_PHP_FPM_SOCKET, UserTableMap::COL_PHP_FPM_PORT, ],
+        self::TYPE_FIELDNAME     => ['id', 'email', 'username', 'user_role_id', 'secret_key', 'password_hash', 'activated', 'blocked', 'is_delete_candidate', 'last_login', 'last_login_ip', 'processed', 'processed_at', 'home_folder', 'log_folder', 'web_folder', 'bash', 'php_fpm_pool', 'php_fpm_socket', 'php_fpm_port', ],
+        self::TYPE_NUM           => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, ]
     ];
 
     /**
@@ -145,11 +205,11 @@ class UserTableMap extends TableMap
      * @var array<string, mixed>
      */
     protected static $fieldKeys = [
-        self::TYPE_PHPNAME       => ['Id' => 0, 'Email' => 1, 'Username' => 2, 'UserRoleId' => 3, 'SecretKey' => 4, 'PasswordHash' => 5, 'Activated' => 6, 'Blocked' => 7, ],
-        self::TYPE_CAMELNAME     => ['id' => 0, 'email' => 1, 'username' => 2, 'userRoleId' => 3, 'secretKey' => 4, 'passwordHash' => 5, 'activated' => 6, 'blocked' => 7, ],
-        self::TYPE_COLNAME       => [UserTableMap::COL_ID => 0, UserTableMap::COL_EMAIL => 1, UserTableMap::COL_USERNAME => 2, UserTableMap::COL_USER_ROLE_ID => 3, UserTableMap::COL_SECRET_KEY => 4, UserTableMap::COL_PASSWORD_HASH => 5, UserTableMap::COL_ACTIVATED => 6, UserTableMap::COL_BLOCKED => 7, ],
-        self::TYPE_FIELDNAME     => ['id' => 0, 'email' => 1, 'username' => 2, 'user_role_id' => 3, 'secret_key' => 4, 'password_hash' => 5, 'activated' => 6, 'blocked' => 7, ],
-        self::TYPE_NUM           => [0, 1, 2, 3, 4, 5, 6, 7, ]
+        self::TYPE_PHPNAME       => ['Id' => 0, 'Email' => 1, 'Username' => 2, 'UserRoleId' => 3, 'SecretKey' => 4, 'PasswordHash' => 5, 'Activated' => 6, 'Blocked' => 7, 'IsDeleteCandidate' => 8, 'LastLogin' => 9, 'LastLoginIp' => 10, 'Processed' => 11, 'ProcessedAt' => 12, 'HomeFolder' => 13, 'LogFolder' => 14, 'WebFolder' => 15, 'Bash' => 16, 'PhpFpmPool' => 17, 'PhpFpmSocket' => 18, 'PhpFpmPort' => 19, ],
+        self::TYPE_CAMELNAME     => ['id' => 0, 'email' => 1, 'username' => 2, 'userRoleId' => 3, 'secretKey' => 4, 'passwordHash' => 5, 'activated' => 6, 'blocked' => 7, 'isDeleteCandidate' => 8, 'lastLogin' => 9, 'lastLoginIp' => 10, 'processed' => 11, 'processedAt' => 12, 'homeFolder' => 13, 'logFolder' => 14, 'webFolder' => 15, 'bash' => 16, 'phpFpmPool' => 17, 'phpFpmSocket' => 18, 'phpFpmPort' => 19, ],
+        self::TYPE_COLNAME       => [UserTableMap::COL_ID => 0, UserTableMap::COL_EMAIL => 1, UserTableMap::COL_USERNAME => 2, UserTableMap::COL_USER_ROLE_ID => 3, UserTableMap::COL_SECRET_KEY => 4, UserTableMap::COL_PASSWORD_HASH => 5, UserTableMap::COL_ACTIVATED => 6, UserTableMap::COL_BLOCKED => 7, UserTableMap::COL_IS_DELETE_CANDIDATE => 8, UserTableMap::COL_LAST_LOGIN => 9, UserTableMap::COL_LAST_LOGIN_IP => 10, UserTableMap::COL_PROCESSED => 11, UserTableMap::COL_PROCESSED_AT => 12, UserTableMap::COL_HOME_FOLDER => 13, UserTableMap::COL_LOG_FOLDER => 14, UserTableMap::COL_WEB_FOLDER => 15, UserTableMap::COL_BASH => 16, UserTableMap::COL_PHP_FPM_POOL => 17, UserTableMap::COL_PHP_FPM_SOCKET => 18, UserTableMap::COL_PHP_FPM_PORT => 19, ],
+        self::TYPE_FIELDNAME     => ['id' => 0, 'email' => 1, 'username' => 2, 'user_role_id' => 3, 'secret_key' => 4, 'password_hash' => 5, 'activated' => 6, 'blocked' => 7, 'is_delete_candidate' => 8, 'last_login' => 9, 'last_login_ip' => 10, 'processed' => 11, 'processed_at' => 12, 'home_folder' => 13, 'log_folder' => 14, 'web_folder' => 15, 'bash' => 16, 'php_fpm_pool' => 17, 'php_fpm_socket' => 18, 'php_fpm_port' => 19, ],
+        self::TYPE_NUM           => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, ]
     ];
 
     /**
@@ -217,6 +277,100 @@ class UserTableMap extends TableMap
         'UserTableMap::COL_BLOCKED' => 'BLOCKED',
         'COL_BLOCKED' => 'BLOCKED',
         'xg_users.blocked' => 'BLOCKED',
+        'IsDeleteCandidate' => 'IS_DELETE_CANDIDATE',
+        'User.IsDeleteCandidate' => 'IS_DELETE_CANDIDATE',
+        'isDeleteCandidate' => 'IS_DELETE_CANDIDATE',
+        'user.isDeleteCandidate' => 'IS_DELETE_CANDIDATE',
+        'UserTableMap::COL_IS_DELETE_CANDIDATE' => 'IS_DELETE_CANDIDATE',
+        'COL_IS_DELETE_CANDIDATE' => 'IS_DELETE_CANDIDATE',
+        'is_delete_candidate' => 'IS_DELETE_CANDIDATE',
+        'xg_users.is_delete_candidate' => 'IS_DELETE_CANDIDATE',
+        'LastLogin' => 'LAST_LOGIN',
+        'User.LastLogin' => 'LAST_LOGIN',
+        'lastLogin' => 'LAST_LOGIN',
+        'user.lastLogin' => 'LAST_LOGIN',
+        'UserTableMap::COL_LAST_LOGIN' => 'LAST_LOGIN',
+        'COL_LAST_LOGIN' => 'LAST_LOGIN',
+        'last_login' => 'LAST_LOGIN',
+        'xg_users.last_login' => 'LAST_LOGIN',
+        'LastLoginIp' => 'LAST_LOGIN_IP',
+        'User.LastLoginIp' => 'LAST_LOGIN_IP',
+        'lastLoginIp' => 'LAST_LOGIN_IP',
+        'user.lastLoginIp' => 'LAST_LOGIN_IP',
+        'UserTableMap::COL_LAST_LOGIN_IP' => 'LAST_LOGIN_IP',
+        'COL_LAST_LOGIN_IP' => 'LAST_LOGIN_IP',
+        'last_login_ip' => 'LAST_LOGIN_IP',
+        'xg_users.last_login_ip' => 'LAST_LOGIN_IP',
+        'Processed' => 'PROCESSED',
+        'User.Processed' => 'PROCESSED',
+        'processed' => 'PROCESSED',
+        'user.processed' => 'PROCESSED',
+        'UserTableMap::COL_PROCESSED' => 'PROCESSED',
+        'COL_PROCESSED' => 'PROCESSED',
+        'xg_users.processed' => 'PROCESSED',
+        'ProcessedAt' => 'PROCESSED_AT',
+        'User.ProcessedAt' => 'PROCESSED_AT',
+        'processedAt' => 'PROCESSED_AT',
+        'user.processedAt' => 'PROCESSED_AT',
+        'UserTableMap::COL_PROCESSED_AT' => 'PROCESSED_AT',
+        'COL_PROCESSED_AT' => 'PROCESSED_AT',
+        'processed_at' => 'PROCESSED_AT',
+        'xg_users.processed_at' => 'PROCESSED_AT',
+        'HomeFolder' => 'HOME_FOLDER',
+        'User.HomeFolder' => 'HOME_FOLDER',
+        'homeFolder' => 'HOME_FOLDER',
+        'user.homeFolder' => 'HOME_FOLDER',
+        'UserTableMap::COL_HOME_FOLDER' => 'HOME_FOLDER',
+        'COL_HOME_FOLDER' => 'HOME_FOLDER',
+        'home_folder' => 'HOME_FOLDER',
+        'xg_users.home_folder' => 'HOME_FOLDER',
+        'LogFolder' => 'LOG_FOLDER',
+        'User.LogFolder' => 'LOG_FOLDER',
+        'logFolder' => 'LOG_FOLDER',
+        'user.logFolder' => 'LOG_FOLDER',
+        'UserTableMap::COL_LOG_FOLDER' => 'LOG_FOLDER',
+        'COL_LOG_FOLDER' => 'LOG_FOLDER',
+        'log_folder' => 'LOG_FOLDER',
+        'xg_users.log_folder' => 'LOG_FOLDER',
+        'WebFolder' => 'WEB_FOLDER',
+        'User.WebFolder' => 'WEB_FOLDER',
+        'webFolder' => 'WEB_FOLDER',
+        'user.webFolder' => 'WEB_FOLDER',
+        'UserTableMap::COL_WEB_FOLDER' => 'WEB_FOLDER',
+        'COL_WEB_FOLDER' => 'WEB_FOLDER',
+        'web_folder' => 'WEB_FOLDER',
+        'xg_users.web_folder' => 'WEB_FOLDER',
+        'Bash' => 'BASH',
+        'User.Bash' => 'BASH',
+        'bash' => 'BASH',
+        'user.bash' => 'BASH',
+        'UserTableMap::COL_BASH' => 'BASH',
+        'COL_BASH' => 'BASH',
+        'xg_users.bash' => 'BASH',
+        'PhpFpmPool' => 'PHP_FPM_POOL',
+        'User.PhpFpmPool' => 'PHP_FPM_POOL',
+        'phpFpmPool' => 'PHP_FPM_POOL',
+        'user.phpFpmPool' => 'PHP_FPM_POOL',
+        'UserTableMap::COL_PHP_FPM_POOL' => 'PHP_FPM_POOL',
+        'COL_PHP_FPM_POOL' => 'PHP_FPM_POOL',
+        'php_fpm_pool' => 'PHP_FPM_POOL',
+        'xg_users.php_fpm_pool' => 'PHP_FPM_POOL',
+        'PhpFpmSocket' => 'PHP_FPM_SOCKET',
+        'User.PhpFpmSocket' => 'PHP_FPM_SOCKET',
+        'phpFpmSocket' => 'PHP_FPM_SOCKET',
+        'user.phpFpmSocket' => 'PHP_FPM_SOCKET',
+        'UserTableMap::COL_PHP_FPM_SOCKET' => 'PHP_FPM_SOCKET',
+        'COL_PHP_FPM_SOCKET' => 'PHP_FPM_SOCKET',
+        'php_fpm_socket' => 'PHP_FPM_SOCKET',
+        'xg_users.php_fpm_socket' => 'PHP_FPM_SOCKET',
+        'PhpFpmPort' => 'PHP_FPM_PORT',
+        'User.PhpFpmPort' => 'PHP_FPM_PORT',
+        'phpFpmPort' => 'PHP_FPM_PORT',
+        'user.phpFpmPort' => 'PHP_FPM_PORT',
+        'UserTableMap::COL_PHP_FPM_PORT' => 'PHP_FPM_PORT',
+        'COL_PHP_FPM_PORT' => 'PHP_FPM_PORT',
+        'php_fpm_port' => 'PHP_FPM_PORT',
+        'xg_users.php_fpm_port' => 'PHP_FPM_PORT',
     ];
 
     /**
@@ -244,6 +398,18 @@ class UserTableMap extends TableMap
         $this->addColumn('password_hash', 'PasswordHash', 'VARCHAR', false, 256, null);
         $this->addColumn('activated', 'Activated', 'BOOLEAN', true, 1, false);
         $this->addColumn('blocked', 'Blocked', 'BOOLEAN', true, 1, false);
+        $this->addColumn('is_delete_candidate', 'IsDeleteCandidate', 'BOOLEAN', true, 1, false);
+        $this->addColumn('last_login', 'LastLogin', 'TIMESTAMP', false, null, null);
+        $this->addColumn('last_login_ip', 'LastLoginIp', 'VARCHAR', false, 128, null);
+        $this->addColumn('processed', 'Processed', 'BOOLEAN', false, 1, false);
+        $this->addColumn('processed_at', 'ProcessedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('home_folder', 'HomeFolder', 'VARCHAR', false, 256, null);
+        $this->addColumn('log_folder', 'LogFolder', 'VARCHAR', false, 256, null);
+        $this->addColumn('web_folder', 'WebFolder', 'VARCHAR', false, 256, null);
+        $this->addColumn('bash', 'Bash', 'VARCHAR', false, 256, null);
+        $this->addColumn('php_fpm_pool', 'PhpFpmPool', 'VARCHAR', false, 256, null);
+        $this->addColumn('php_fpm_socket', 'PhpFpmSocket', 'VARCHAR', false, 256, null);
+        $this->addColumn('php_fpm_port', 'PhpFpmPort', 'INTEGER', false, null, null);
     }
 
     /**
@@ -274,6 +440,41 @@ class UserTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, 'Domainss', false);
+        $this->addRelation('StartedDialogs', '\\basteyy\\XzitGiggle\\Models\\Dialog', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':created_user_id',
+    1 => ':id',
+  ),
+), null, null, 'StartedDialogss', false);
+        $this->addRelation('Dialogs', '\\basteyy\\XzitGiggle\\Models\\DialogUser', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':user_id',
+    1 => ':id',
+  ),
+), null, null, 'Dialogss', false);
+        $this->addRelation('DialogInvites', '\\basteyy\\XzitGiggle\\Models\\DialogUser', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':invited_user_id',
+    1 => ':id',
+  ),
+), null, null, 'DialogInvitess', false);
+        $this->addRelation('DialogMessages', '\\basteyy\\XzitGiggle\\Models\\DialogMessage', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':user_id',
+    1 => ':id',
+  ),
+), null, null, 'DialogMessagess', false);
+        $this->addRelation('ActionLogs', '\\basteyy\\XzitGiggle\\Models\\ActionLog', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':user_id',
+    1 => ':id',
+  ),
+), null, null, 'ActionLogss', false);
     }
 
     /**
@@ -426,6 +627,18 @@ class UserTableMap extends TableMap
             $criteria->addSelectColumn(UserTableMap::COL_PASSWORD_HASH);
             $criteria->addSelectColumn(UserTableMap::COL_ACTIVATED);
             $criteria->addSelectColumn(UserTableMap::COL_BLOCKED);
+            $criteria->addSelectColumn(UserTableMap::COL_IS_DELETE_CANDIDATE);
+            $criteria->addSelectColumn(UserTableMap::COL_LAST_LOGIN);
+            $criteria->addSelectColumn(UserTableMap::COL_LAST_LOGIN_IP);
+            $criteria->addSelectColumn(UserTableMap::COL_PROCESSED);
+            $criteria->addSelectColumn(UserTableMap::COL_PROCESSED_AT);
+            $criteria->addSelectColumn(UserTableMap::COL_HOME_FOLDER);
+            $criteria->addSelectColumn(UserTableMap::COL_LOG_FOLDER);
+            $criteria->addSelectColumn(UserTableMap::COL_WEB_FOLDER);
+            $criteria->addSelectColumn(UserTableMap::COL_BASH);
+            $criteria->addSelectColumn(UserTableMap::COL_PHP_FPM_POOL);
+            $criteria->addSelectColumn(UserTableMap::COL_PHP_FPM_SOCKET);
+            $criteria->addSelectColumn(UserTableMap::COL_PHP_FPM_PORT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.email');
@@ -435,6 +648,18 @@ class UserTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.password_hash');
             $criteria->addSelectColumn($alias . '.activated');
             $criteria->addSelectColumn($alias . '.blocked');
+            $criteria->addSelectColumn($alias . '.is_delete_candidate');
+            $criteria->addSelectColumn($alias . '.last_login');
+            $criteria->addSelectColumn($alias . '.last_login_ip');
+            $criteria->addSelectColumn($alias . '.processed');
+            $criteria->addSelectColumn($alias . '.processed_at');
+            $criteria->addSelectColumn($alias . '.home_folder');
+            $criteria->addSelectColumn($alias . '.log_folder');
+            $criteria->addSelectColumn($alias . '.web_folder');
+            $criteria->addSelectColumn($alias . '.bash');
+            $criteria->addSelectColumn($alias . '.php_fpm_pool');
+            $criteria->addSelectColumn($alias . '.php_fpm_socket');
+            $criteria->addSelectColumn($alias . '.php_fpm_port');
         }
     }
 
@@ -461,6 +686,18 @@ class UserTableMap extends TableMap
             $criteria->removeSelectColumn(UserTableMap::COL_PASSWORD_HASH);
             $criteria->removeSelectColumn(UserTableMap::COL_ACTIVATED);
             $criteria->removeSelectColumn(UserTableMap::COL_BLOCKED);
+            $criteria->removeSelectColumn(UserTableMap::COL_IS_DELETE_CANDIDATE);
+            $criteria->removeSelectColumn(UserTableMap::COL_LAST_LOGIN);
+            $criteria->removeSelectColumn(UserTableMap::COL_LAST_LOGIN_IP);
+            $criteria->removeSelectColumn(UserTableMap::COL_PROCESSED);
+            $criteria->removeSelectColumn(UserTableMap::COL_PROCESSED_AT);
+            $criteria->removeSelectColumn(UserTableMap::COL_HOME_FOLDER);
+            $criteria->removeSelectColumn(UserTableMap::COL_LOG_FOLDER);
+            $criteria->removeSelectColumn(UserTableMap::COL_WEB_FOLDER);
+            $criteria->removeSelectColumn(UserTableMap::COL_BASH);
+            $criteria->removeSelectColumn(UserTableMap::COL_PHP_FPM_POOL);
+            $criteria->removeSelectColumn(UserTableMap::COL_PHP_FPM_SOCKET);
+            $criteria->removeSelectColumn(UserTableMap::COL_PHP_FPM_PORT);
         } else {
             $criteria->removeSelectColumn($alias . '.id');
             $criteria->removeSelectColumn($alias . '.email');
@@ -470,6 +707,18 @@ class UserTableMap extends TableMap
             $criteria->removeSelectColumn($alias . '.password_hash');
             $criteria->removeSelectColumn($alias . '.activated');
             $criteria->removeSelectColumn($alias . '.blocked');
+            $criteria->removeSelectColumn($alias . '.is_delete_candidate');
+            $criteria->removeSelectColumn($alias . '.last_login');
+            $criteria->removeSelectColumn($alias . '.last_login_ip');
+            $criteria->removeSelectColumn($alias . '.processed');
+            $criteria->removeSelectColumn($alias . '.processed_at');
+            $criteria->removeSelectColumn($alias . '.home_folder');
+            $criteria->removeSelectColumn($alias . '.log_folder');
+            $criteria->removeSelectColumn($alias . '.web_folder');
+            $criteria->removeSelectColumn($alias . '.bash');
+            $criteria->removeSelectColumn($alias . '.php_fpm_pool');
+            $criteria->removeSelectColumn($alias . '.php_fpm_socket');
+            $criteria->removeSelectColumn($alias . '.php_fpm_port');
         }
     }
 

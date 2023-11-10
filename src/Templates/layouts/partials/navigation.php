@@ -62,8 +62,15 @@ declare(strict_types=1);
             <?php
             } ?>
 
-            <div class="text-end">
-                <a href="/logout/" class="btn btn-secondary btn-sm ms-md-5 ms-sm-auto me-sm-0">
+            <div class="text-end ms-md-3 btn-group">
+
+                <a href="/@<?= $this->getUser()->getUsername() ?>" title="<?= __('Your Profile') ?>"
+                   class="btn btn-sm btn-outline-light">Hi <strong><?= $this->getUser()->getUsername() ?></strong></a>
+                <a href="/settings/" title="<?= __('Change your personal settings') ?>"
+                   class="btn btn-sm btn-outline-light"><i class="bi bi-gear"></i> <span class="visually-hidden"><?= __('Settings')
+                        ?></span> </a>
+
+                <a href="/logout/" class="btn btn-outline-warning btn-sm">
                     <i class="bi bi-lock"></i> <span class="visually-hidden"><?= __('Logout') ?></span>
                 </a>
             </div>

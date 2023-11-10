@@ -14,13 +14,14 @@ declare(strict_types=1);
 
 namespace basteyy\XzitGiggle\Controller\Superuser\Users;
 
-use basteyy\XzitGiggle\Controller\Superuser\SuperuserBaseController;
+use basteyy\XzitGiggle\Controller\Superuser\SuperuserBaseUserController;
+use basteyy\XzitGiggle\Models\UserQuery;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 
-class ViewUserController extends SuperuserBaseController
+class ViewUserController extends SuperuserBaseUserController
 {
     /**
      * @param Request $request
@@ -32,10 +33,21 @@ class ViewUserController extends SuperuserBaseController
     public function __invoke(RequestInterface  $request,
                              ResponseInterface $response): ResponseInterface
     {
+        $user = UserQuery::create()
+            ->findOneByUsername($request->getQueryParams()['u'] ?? '');
+
+        if (!$user) {
+            $this->addWarningMessage(__('User not found'));
+            return $this->redirect(
+                target: '/su/users',
+                response: $response
+            );
+        }
+
         return $this->render(
-            template: 'SU::',
+            template: 'SU::users/view_user',
             data: [
-                'users' => ''
+                'user' => $user
             ],
             response: $response
         );

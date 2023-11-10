@@ -104,7 +104,7 @@ trait SetupSessionTrait
     {
         $this->getSession()->set($this->superUserSessionKey, [
             'username' => $username,
-            'password' => password_hash($password, PASSWORD_DEFAULT),
+            'password' => password_hash($password, USED_PASSWORD_HASHING_ALGO),
         ]);
     }
 

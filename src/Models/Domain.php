@@ -16,6 +16,16 @@ use basteyy\XzitGiggle\Models\Base\Domain as BaseDomain;
 class Domain extends BaseDomain
 {
 
+    public function getNginxConfigPath() : string {
+        // base is /etc/nginx/sites-available/
+        return '/etc/nginx/sites-available/' . $this->getDomain() . '.conf';
+    }
+
+    public function getSymbolicNginxEnabledPath() : string {
+        // base is /etc/nginx/sites-enabled/
+        return '/etc/nginx/sites-enabled/' . $this->getDomain() . '.conf';
+    }
+
     public function getServerConfig()
     {
 

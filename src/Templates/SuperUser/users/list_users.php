@@ -52,6 +52,11 @@ $this->layout('layouts::default', [
         <?php
         /** @var \basteyy\XzitGiggle\Models\User $user */
         foreach (UserQuery::create()->find() as $user) {
+
+            if ($user->getIsDeleteCandidate()) {
+                continue;
+            }
+
             ?>
             <tr>
                 <td><?= $user->getId() ?></td>
@@ -65,7 +70,10 @@ $this->layout('layouts::default', [
                         <a class="btn btn-sm btn-danger" href="/su/users/delete?u=<?= $user->getUsername() ?>">Delete</a>
                     </div>
                 </td>
-                <td><?= $user->getEmail() ?></td>
+                <td>
+                    <abbr data-mail="<?= $user->getEmail() ?>"
+                          title="CLick to show">...@<?= substr($user->getEmail(), strpos($user->getEmail(), '@') + 1) ?></abbr>
+                </td>
                 <td><?= $user->getLastLoginNice() ?></td>
                 <td><?= $user->getActivated() ? '<i class="bi bi-check-circle text-success"></i>' : '<i class="bi bi-x-circle text-danger"></i>' ?></td>
                 <td><?= $user->getBlocked() ? '<i class="bi bi-check-circle text-success"></i>' : '<i class="bi bi-x-circle text-danger"></i>' ?></td>
@@ -78,3 +86,26 @@ $this->layout('layouts::default', [
 
 
 </main>
+
+<script>
+    document.querySelectorAll('abbr[data-mail]').forEach((el) => {
+        el.addEventListener('click', (e) => {
+            let old = e.target.innerHTML;
+            e.preventDefault();
+            e.target.innerHTML = e.target.dataset.mail;
+            setTimeout(() => {
+                e.target.innerHTML = old;
+            }, 5000);
+        })
+    });
+    document.querySelectorAll('abbr[data-ip]').forEach((el) => {
+        el.addEventListener('click', (e) => {
+            let old = e.target.innerHTML;
+            e.preventDefault();
+            e.target.innerHTML = e.target.dataset.ip;
+            setTimeout(() => {
+                e.target.innerHTML = old;
+            }, 5000);
+        })
+    });
+</script>

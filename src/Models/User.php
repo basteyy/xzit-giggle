@@ -139,8 +139,16 @@ class User extends BaseUser
             return __('Never logged in');
         }
 
-        return '<abbr title="' . $this->getLastLogin(DEFAULT_DATETIME_FORMAT) . '">' . getNiceTimeAgo($this->getLastLogin()) . '</abbr> from <abbr title="'.$this->getLastLoginIp().'">'
-            .substr($this->getLastLoginIp(), 0, 6).'...</abbr>';
+        return '<abbr title="' . $this->getLastLogin(DEFAULT_DATETIME_FORMAT) . '">' . getNiceTimeAgo($this->getLastLogin()) . '</abbr> from <abbr data-ip="'.$this->getLastLoginIp().'" title="'
+            .$this->getLastLoginIp().'">ip</abbr>';
+    }
+
+    /**
+     * @return void
+     * @todo Implement clean ups for the user
+     */
+    public function hardUserDelete() : void {
+        $this->delete();
     }
 
     public function softUserDelete(): void

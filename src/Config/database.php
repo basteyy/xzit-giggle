@@ -15,6 +15,8 @@ declare(strict_types=1);
 use Propel\Runtime\Connection\ConnectionManagerSingle;
 use Propel\Runtime\Propel;
 
+const DB_INIT = true;
+
 /** Check if propels log folder exists and create it, if not */
 if (!is_dir($log = CACHE . '/propel')) {
     mkdir($log, CACHE_FOLDER_PERMISSIONS, true);

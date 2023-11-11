@@ -13,9 +13,7 @@
 declare(strict_types=1);
 
 use Ahc\Cli\Application;
-use basteyy\XzitGiggle\bin\Server\ServerDatabaseTask;
-use basteyy\XzitGiggle\bin\Server\ServerDomainsTask;
-use basteyy\XzitGiggle\bin\Server\ServerUsersTask;
+use Ahc\Cli\Exception\RuntimeException;
 use Dotenv\Dotenv;
 
 define('ROOT', dirname(__DIR__, 2));
@@ -27,12 +25,31 @@ require_once ROOT . '/vendor/autoload.php';
 $dotenv = Dotenv::createImmutable(ROOT);
 $dotenv->load();
 
+/**  */
+
+if (!file_exists($database = ROOT . '/src/Config/database.php')) {
+    throw new RuntimeException(sprintf('The database config file (%s) is missing!', $database));
+}
+
+include $database;
+
 /** Load cli */
 $app = new Application('Xzit Giggle - The CLI Tool', '1.0.0');
 
-$app->add(new ServerDomainsTask::class, 'server:domains');
-$app->add(new ServerUsersTask::class, 'server:users');
-$app->add(new ServerDatabaseTask::class, 'server:databases');
+$app
+    ->command('about', 'A few more information about this tool')
+    ->action(function() use($app) {
+        $app->io()->writer()->greenBgWhite('Xzit Giggle - The CLI Tool', true);
+        $app->io()->writer()->info('This tool is a CLI tool for the Xzit Giggle project. Its the bridge between the frontend settings/work and the backend system settings. That menas, this cli will create system users, manage the domains and some other stuff. You need to setup a crontab (as root/sudo) to the major command `giggle sync`. See the <em>--help</em>> for more.', true);
+    });
+
+$app->group('users', function ($app) {
+    $app->add(new \basteyy\XzitGiggle\bin\Users\SyncUsers());
+    $app->add(new \basteyy\XzitGiggle\bin\Users\AddUsers());
+    $app->add(new \basteyy\XzitGiggle\bin\Users\UpdateUsers());
+    $app->add(new \basteyy\XzitGiggle\bin\Users\DeleteUsers());
+});
+
 
 
 $app->logo('   _  __      _ __     _______             __   

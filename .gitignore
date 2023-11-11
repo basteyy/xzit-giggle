@@ -9,3 +9,4 @@ public/js
 public/uploads
 .env
 .setup
+/src/Config/Propel/Generated-migrations/*

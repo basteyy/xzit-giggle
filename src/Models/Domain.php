@@ -15,6 +15,11 @@ use basteyy\XzitGiggle\Models\Base\Domain as BaseDomain;
  */
 class Domain extends BaseDomain
 {
+    public function setDomain($v): Domain
+    {
+        $v = strtolower($v);
+        return parent::setDomain($v);
+    }
 
     public function getNginxConfigPath() : string {
         // base is /etc/nginx/sites-available/

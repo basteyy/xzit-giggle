@@ -43,6 +43,8 @@ $app
         $app->io()->writer()->info('This tool is a CLI tool for the Xzit Giggle project. Its the bridge between the frontend settings/work and the backend system settings. That menas, this cli will create system users, manage the domains and some other stuff. You need to setup a crontab (as root/sudo) to the major command `giggle sync`. See the <em>--help</em>> for more.', true);
     });
 
+$app->add(new \basteyy\XzitGiggle\bin\SyncAll());
+
 $app->group('users', function ($app) {
     $app->add(new \basteyy\XzitGiggle\bin\Users\SyncUsers());
     $app->add(new \basteyy\XzitGiggle\bin\Users\AddUsers());

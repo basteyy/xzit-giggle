@@ -25,6 +25,11 @@ use function basteyy\Stringer\Times\getNiceTimeAgo;
  */
 class User extends BaseUser
 {
+    public function setUsername($v) : User
+    {
+        return parent::setUsername(strtolower($v));
+    }
+
     public function applyDefaultValues() : void {
 
         $user = (null === $this->getUsername()) ? 'user_' . getRandomString(4, 'abcdefghijklmnoprstuvwxyz'): $this->getUsername();

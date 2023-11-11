@@ -27,6 +27,71 @@ trait DomainTrait
     /**
      * @throws PropelException
      */
+    protected function addDomains(bool $reload_nginx = false) : void {
+        $io = $this->io();
+        $writer = $this->writer();
+
+        $writer->comment(__('Start adding domains ...'), true);
+
+        /** Tmp folder exists? */
+        if (!is_dir($tmp = ROOT . '/.cache/tmp/')) {
+            mkdir($tmp, 0777, true);
+        }
+
+        $domains = DomainQuery::create()
+            ->filterByProcessed(false)
+            ->find();
+
+        foreach ($domains as $domain) {
+
+            $user = $domain->getUser();
+
+            $writer->comment(__('Adding domain %s (user %s)', $domain->getDomain(), $user->getUsername()), true);
+
+            if ($user->isBlocked()) {
+                $writer->comment(__('User %s is blocked. Skipping domain %s', $user->getUsername(), $domain->getDomain()), true);
+                continue;
+            }
+
+            if (!$user->isActivated()) {
+                $writer->comment(__('User %s is not activated. Skipping domain %s', $user->getUsername(), $domain->getDomain()), true);
+                continue;
+            }
+
+            /** Create nginx config */
+            $writer->comment(__('Creating nginx config file %s', $domain->getNginxConfigPath()), true);
+            $config = $domain->getServerConfig();
+            $cache_path = $tmp . $domain->getDomain() . '.conf';
+            file_put_contents($cache_path, $config);
+            $this->runShellCmd(sprintf('cp %1$s %2$s',
+                $cache_path,
+                $domain->getNginxConfigPath()
+            ));
+            unlink($cache_path);
+
+            /** Create the symbolic link */
+            $writer->comment(__('Creating symbolic link %s', $domain->getSymbolicNginxEnabledPath()), true);
+            $this->runShellCmd(sprintf('ln -s %1$s %2$s',
+                $domain->getNginxConfigPath(),
+                $domain->getSymbolicNginxEnabledPath()
+            ));
+
+            /** Set domain as processed */
+            $domain->setProcessed(true);
+            $domain->setProcessedAt(new \DateTime());
+            $domain->save();
+        }
+
+        $writer->comment(__('Adding domains done'), true);
+
+        if ($reload_nginx) {
+            $this->reloadNginx();
+        }
+    }
+
+    /**
+     * @throws PropelException
+     */
     protected function deleteDomainsFromUser(User $user,
                                              bool $reload_nginx = false,
                                              bool $reload_php = false) : void {

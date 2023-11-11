@@ -14,15 +14,9 @@ declare(strict_types=1);
 
 namespace basteyy\XzitGiggle\bin\Users;
 
-use Ahc\Cli\Exception\RuntimeException;
-use Ahc\Cli\Helper\Shell;
 use Ahc\Cli\Input\Command;
-use Ahc\Cli\Output\Writer;
 use basteyy\XzitGiggle\bin\Traits\ShellTrait;
 use basteyy\XzitGiggle\bin\Traits\UsersTrait;
-use basteyy\XzitGiggle\Models\UserQuery;
-use DateTime;
-use function basteyy\Stringer\getRandomAlphaString;
 
 class AddUsers extends Command
 {

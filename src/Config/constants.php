@@ -43,3 +43,5 @@ const DEFAULT_DATETIME_FORMAT = 'Y-m-d H:i:s';
 
 /** The default algorithmic which is used to hash user password */
 const USED_PASSWORD_HASHING_ALGO = PASSWORD_ARGON2ID;
+
+const PHP_VERSIONS = [7.4, 8.0, 8.1, 8.2, 8.3];

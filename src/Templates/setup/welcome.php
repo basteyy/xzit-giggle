@@ -34,11 +34,13 @@ $this->layout('layouts::setup', ['title' => 'Set-up']);
 <?= $this->fetch('setup::checks/php') ?>
 <?= $this->fetch('setup::checks/ext-pdo') ?>
 <?= $this->fetch('setup::checks/ext-json') ?>
+<?= $this->fetch('setup::checks/env') ?>
+<?= $this->fetch('setup::checks/proc_open') ?>
 
 <a class="btn btn-sm"></a>
 
 <script>
-    if (check === 3) {
+    if (check === 5) {
         document.querySelector('.btn').classList.add('btn-success');
         document.querySelector('.btn').classList.remove('btn-danger');
         document.querySelector('.btn').innerText = 'Continue';

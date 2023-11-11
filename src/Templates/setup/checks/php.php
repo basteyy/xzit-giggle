@@ -16,14 +16,14 @@ declare(strict_types=1);
 if (version_compare(PHP_VERSION, REQUIRED_PHP_VERSION, '>=')) {
     ?>
 <div class="alert alert-danger">
-    PHP 8.3 is required. Please update your PHP version. You use <?= PHP_VERSION ?>.
+    PHP <?= REQUIRED_PHP_VERSION ?> is required. Please update your PHP version. You use <?= PHP_VERSION ?>.
 </div>
 <?php
 } else {
     ?>
 
 <div class="alert alert-success">
-    PHP 8.3 is installed. You use <?= PHP_VERSION ?>.
+    PHP <?= REQUIRED_PHP_VERSION ?> is installed. You use <?= PHP_VERSION ?>.
 </div>
     <script>check++;</script>
 <?php

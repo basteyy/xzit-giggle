@@ -30,30 +30,117 @@ $this->layout('layouts::default', [
 
     <h1>Hi mighty <?= $this->getUser()->getUsername() ?></h1>
 
+    <div class="row">
+        <div class="col-12 col-md-6 col-lg-4">
+            <h2>Setup</h2>
+            <table class="table table-responsive table-striped">
+                <tr>
+                    <td class="col-6">Installed on</td>
+                    <td><?= file_get_contents(ROOT .'/.setup') ?></td>
+                </tr>
+                <tr>
+                    <td class="col-6">Installed by Username</td>
+                    <td><?= (\basteyy\XzitGiggle\Models\UserQuery::create()->findOneById(1))->getUsername() ?? 'USer deleted' ?></td>
+                </tr>
+            </table>
+            <h3>Cron</h3>
+            <table class="table table-responsive table-striped">
+                <tr>
+                    <td class="col-6"><code data-copy>giggle sync-all</code></td>
+                    <td><?= \basteyy\XzitGiggle\Helper\Config::get('sync-all.last_execution') ?? __('Never') ?></td>
+                </tr>
+            </table>
 
-    <h2>Domain Info</h2>
+            <div class="alert alert-info">
+                You should run the commands here: <code><?= ROOT ?></code>. Perhaps you need to use <code>sudo</code> and <code>php</code>: <br />
+                <code data-copy>sudo php <?= ROOT ?>/giggle sync-all</code>.
+            </div>
 
-    <?php
-    $domains = \basteyy\XzitGiggle\Models\DomainQuery::create();
-    ?>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+            <h2>PHP-Info</h2>
+            <table class="table table-responsive table-striped">
+                <tr>
+                    <td>PHP Version</td>
+                    <td><?= phpversion() ?></td>
+                </tr>
+                <tr>
+                    <td>PHP Memory Limit</td>
+                    <td><?= ini_get('memory_limit') ?></td>
+                </tr>
+                <tr>
+                    <td>PHP Max Execution Time</td>
+                    <td><?= ini_get('max_execution_time') ?></td>
+                </tr>
+                <tr>
+                    <td>PHP Max Input Time</td>
+                    <td><?= ini_get('max_input_time') ?></td>
+                </tr>
+                <tr>
+                    <td>PHP Post Max Size</td>
+                    <td><?= ini_get('post_max_size') ?></td>
+                </tr>
+                <tr>
+                    <td>PHP Upload Max Filesize</td>
+                    <td><?= ini_get('upload_max_filesize') ?></td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4"><h2>Domain Info</h2>
 
-    <table class="table table-responsive table-striped">
-        <tr>
-            <td>Domains in Database</td>
-            <td><?= $domains->count() ?></td>
-        </tr>
-        <tr>
-            <td>Domains not processed</td>
-            <td><?= $domains
-                    ->filterByProcessed(false)->count() ?>
-            </td>
-        </tr>
-        <tr>
-            <td>Users</td>
-            <td><?= \basteyy\XzitGiggle\Models\UserQuery::create()->count() ?></td>
-        </tr>
-    </table>
+            <?php
+            $domains = \basteyy\XzitGiggle\Models\DomainQuery::create();
+            ?>
 
-
+            <table class="table table-responsive table-striped">
+                <tr>
+                    <td>Domains in Database</td>
+                    <td><?= $domains->count() ?></td>
+                </tr>
+                <tr>
+                    <td>Domains not processed</td>
+                    <td><?= $domains
+                            ->filterByProcessed(false)->count() ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Users</td>
+                    <td><?= \basteyy\XzitGiggle\Models\UserQuery::create()->count() ?></td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4"></div>
+    </div>
 </main>
+
+<script>
+    // Dom Ready
+    document.addEventListener("DOMContentLoaded", function () {
+        // copy on click on [data-copy] element innerText
+        document.querySelectorAll('[data-copy]').forEach((el) => {
+            el.addEventListener('click', () => {
+                navigator.clipboard.writeText(el.innerText);
+
+                // InnerText change to "Copied" and changed back after 1s
+                const oldText = el.innerText;
+                el.innerText = 'Copied';
+                setTimeout(() => {
+                    el.innerText = oldText;
+                }, 1000);
+
+
+            });
+
+            // Add bootstrap 5.3 tooltip to element
+            el.setAttribute('data-bs-toggle', 'tooltip');
+            el.setAttribute('data-bs-title', 'Copy to clipboard');
+        });
+
+        // init all tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    });
+</script>
 

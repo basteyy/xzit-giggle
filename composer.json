@@ -53,6 +53,7 @@
     ],
     "post-update-cmd": [
       "php -r \"if (!is_dir('public/css')) { mkdir('public/css', 0777, true); } copy('vendor/twbs/bootstrap/dist/css/bootstrap.min.css', 'public/css/bootstrap.min.css');\"",
+      "php -r \"copy('vendor/twbs/bootstrap/dist/css/bootstrap.min.css.map', 'public/css/bootstrap.min.css.map');\"",
       "php -r \"if (!is_dir('public/js')) { mkdir('public/js', 0777, true); } copy('vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js', 'public/js/bootstrap.bundle.min.js');\"",
       "php -r \"if (!is_dir('public/js')) { mkdir('public/js', 0777, true); } copy('vendor/twbs/bootstrap/dist/js/bootstrap.bundle.js', 'public/js/bootstrap.bundle.js');\"",
       "php -r \"if (!is_dir('public/js')) { mkdir('public/js', 0777, true); } copy('vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js.map', 'public/js/bootstrap.bundle.min.js.map');\"",

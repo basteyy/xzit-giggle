@@ -19,6 +19,7 @@ use basteyy\XzitGiggle\bin\Traits\DomainTrait;
 use basteyy\XzitGiggle\bin\Traits\ShellTrait;
 use basteyy\XzitGiggle\bin\Traits\SystemTrait;
 use basteyy\XzitGiggle\bin\Traits\UsersTrait;
+use basteyy\XzitGiggle\Helper\Config;
 use Propel\Runtime\Exception\PropelException;
 
 class SyncAll extends Command
@@ -50,6 +51,9 @@ class SyncAll extends Command
         $writer = $this->writer();
 
         $writer->comment(__('Run all tasks ...'), true);
+
+        /** update the datetime of cron exectution in config */
+        Config::set('sync-all.last_execution', date('Y-m-d H:i:s'));
 
         /** users */
         $this->addUsers();

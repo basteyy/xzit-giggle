@@ -43,4 +43,23 @@ class Config {
         return self::getInstance()->config[$key] ?? null;
     }
 
+    public static function exists(string $key): bool
+    {
+        return isset(self::getInstance()->config[$key]);
+    }
+
+    public static function set(string $string, string $date)
+    {
+        if (!self::exists($string)) {
+            $config = new \basteyy\XzitGiggle\Models\Config();
+            $config->setKey($string);
+            $config->setValue($date);
+            $config->setDefault($date);
+            $config->save();
+        }
+
+        self::getInstance()->config[$string] = $date;
+        $_ENV[$string] = $date;
+    }
+
 }

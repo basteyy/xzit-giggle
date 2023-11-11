@@ -54,9 +54,7 @@ class UsersOnlyMiddleware implements MiddlewareInterface {
 
         if(!$this->session->has(USER_SESSION_IDENTIFIER)) {
             $response = new Response();
-            $engine = new Engine(ROOT . '/src/Templates/layouts/');
-            $engine->addFolder('layouts', ROOT . '/src/Templates/layouts/');
-            $response->getBody()->write($engine->render('403'));
+            $response->getBody()->write($this->engine->render('layouts/errors/403'));
             return $response->withStatus(403);
         }
 

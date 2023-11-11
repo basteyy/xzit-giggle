@@ -39,63 +39,6 @@ trait SetupSessionTrait
     /** @var string $optionsSessionKey */
     private string $optionsSessionKey = 'setup.options';
 
-    protected function setOptions(array $options): void
-    {
-        $this->getSession()->set($this->optionsSessionKey, $options);
-    }
-
-    protected function getOptions(): array
-    {
-        return $this->getSession()->get($this->optionsSessionKey) ?? [];
-    }
-
-    protected function isOptionsSetup(): bool
-    {
-        $options = $this->getOptions();
-
-        // Required once
-        $required = [
-            'webroot_path',
-            'user_home_path',
-            'users_bash'
-        ];
-
-        foreach ($required as $key) {
-            if (!isset($options[$key])) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * @return void
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
-    protected function cleanSetupSessionData() : void {
-        if ($this->getSession()->has($this->databaseSessionKey)) {
-            $this->getSession()->delete($this->databaseSessionKey);
-        }
-
-        if ($this->getSession()->has($this->superUserSessionKey)) {
-            $this->getSession()->delete($this->superUserSessionKey);
-        }
-
-        if ($this->getSession()->has($this->ipv4AddressesSessionKey)) {
-            $this->getSession()->delete($this->ipv4AddressesSessionKey);
-        }
-
-        if ($this->getSession()->has($this->ipv6AddressesSessionKey)) {
-            $this->getSession()->delete($this->ipv6AddressesSessionKey);
-        }
-
-        if ($this->getSession()->has($this->optionsSessionKey)) {
-            $this->getSession()->delete($this->optionsSessionKey);
-        }
-    }
-
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -137,25 +80,63 @@ trait SetupSessionTrait
         return $this->getSession()->get($this->superUserSessionKey)['username'];
     }
 
+
+    protected function setOptions(array $options): void
+    {
+        $this->getSession()->set($this->optionsSessionKey, $options);
+    }
+
+    protected function isOptionsSetup(): bool
+    {
+        $options = $this->getOptions();
+
+        // Required once
+        $required = [
+            'webroot_path',
+            'user_home_path',
+            'users_bash'
+        ];
+
+        foreach ($required as $key) {
+            if (!isset($options[$key])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    protected function getOptions(): array
+    {
+        return $this->getSession()->get($this->optionsSessionKey) ?? [];
+    }
+
     /**
-     * @return string[]
+     * @return void
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function getDatabaseData(): array
+    protected function cleanSetupSessionData(): void
     {
-        if (!$this->getSession()->has($this->databaseSessionKey)) {
-            return [
-                'host',
-                'port',
-                'user',
-                'password',
-                'database',
-                'charset',
-            ];
+        if ($this->getSession()->has($this->databaseSessionKey)) {
+            $this->getSession()->delete($this->databaseSessionKey);
         }
 
-        return $this->getSession()->get($this->databaseSessionKey);
+        if ($this->getSession()->has($this->superUserSessionKey)) {
+            $this->getSession()->delete($this->superUserSessionKey);
+        }
+
+        if ($this->getSession()->has($this->ipv4AddressesSessionKey)) {
+            $this->getSession()->delete($this->ipv4AddressesSessionKey);
+        }
+
+        if ($this->getSession()->has($this->ipv6AddressesSessionKey)) {
+            $this->getSession()->delete($this->ipv6AddressesSessionKey);
+        }
+
+        if ($this->getSession()->has($this->optionsSessionKey)) {
+            $this->getSession()->delete($this->optionsSessionKey);
+        }
     }
 
     /**
@@ -295,6 +276,42 @@ trait SetupSessionTrait
         }
 
         return false;
+    }
+
+    /**
+     * Return the database data from the session
+     * @return array|null[]
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    protected function getDatabaseData(bool $exception_if_missed = false): array
+    {
+        if (!$this->getSession()->has($this->databaseSessionKey)) {
+
+            if ($exception_if_missed) {
+                throw new \http\Exception\RuntimeException(__("Database data not found in session"));
+            }
+
+            return [
+                'host'     => null,
+                'port'     => null,
+                'user'     => null,
+                'password' => null,
+                'database' => null,
+                'charset'  => null,
+            ];
+        }
+
+        $data = $this->getSession()->get($this->databaseSessionKey);
+
+        return [
+            'host'     => $data['host'],
+            'port'     => $data['port'],
+            'user'     => $data['user'],
+            'password' => $data['password'],
+            'database' => $data['database'],
+            'charset'  => $data['charset'],
+        ];
     }
 
 }

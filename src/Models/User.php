@@ -2,6 +2,7 @@
 
 namespace basteyy\XzitGiggle\Models;
 
+use basteyy\XzitGiggle\Helper\Enums\UserRole;
 use basteyy\XzitGiggle\Models\Base\User as BaseUser;
 use basteyy\XzitGiggle\Helper\Config as Config;
 use Exception;
@@ -66,7 +67,7 @@ class User extends BaseUser
      */
     public function isAdmin(): bool
     {
-        return $this->getUserRole()->getIdentifier() === 'superuser';
+        return $this->getUserRole()->getIdentifier() === UserRole::SUPER_USER->value;
     }
 
     /**

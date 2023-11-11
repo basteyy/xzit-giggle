@@ -71,6 +71,14 @@ class SetupInstallController extends BaseSetupController
             throw new RuntimeException('Default SQL file not found.');
         }
 
+        if (!file_exists($env_example = ROOT . '/.env.example')) {
+            throw new \http\Exception\RuntimeException('Example env file not found.');
+        }
+
+        if (file_exists($env = ROOT . '/.env')) {
+            throw new \http\Exception\RuntimeException('An env file already exists. Delete it and try again.');
+        }
+
         // $connection beinhaltet die aktive Verbindung
 
         $user = $this->getSuperUserData(
@@ -87,6 +95,17 @@ class SetupInstallController extends BaseSetupController
 
         try {
             $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            /** Write env */
+            $data = $this->getDatabaseData(
+                exception_if_missed: true
+            );
+
+            file_put_contents($env, str_replace([
+                'DB_HOST=', 'DB_PORT=', 'DB_NAME=', 'DB_USER=', 'DB_PASSWORD=', 'DB_CHARSET=utf8mb4'
+            ], [
+                'DB_HOST=' . $data['host'], 'DB_PORT=' . $data['port'], 'DB_NAME=' . $data['database'], 'DB_USER=' . $data['user'], 'DB_PASSWORD=' . $data['password'], 'DB_CHARSET=' . $data['charset'] ?? 'utf8mb4'
+            ], file_get_contents($env_example)));
 
             /** Get the sql from file */
             $connection->exec(file_get_contents($sql));

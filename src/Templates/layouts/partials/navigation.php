@@ -33,7 +33,9 @@ declare(strict_types=1);
                         <?= __('Domains') ?>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/domains/add/"><?= __('Add a Domain') ?></a></li>
+                        <?php if (\basteyy\XzitGiggle\Helper\Config::get('allow_users_domain_adding')) { ?>
+                            <li><a class="dropdown-item" href="/domains/add/"><?= __('Add a Domain') ?></a></li>
+                        <?php } ?>
                         <li><a class="dropdown-item" href="/domains/"><?= __('List all Domains') ?></a></li>
                     </ul>
                 </li>

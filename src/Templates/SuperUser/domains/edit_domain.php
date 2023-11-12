@@ -23,7 +23,7 @@ $this->layout('layouts::default', [
 
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/dashboard/"><?= __('Dashboard') ?></a></li>
+            <li class="breadcrumb-item"><a href="/dashboard/" title="<?= __('Go to your dashboard') ?>"><?= __('Dashboard') ?></a></li>
             <li class="breadcrumb-item"><a href="/su/dashboard/"><?= __('Superuser Dashboard') ?></a></li>
             <li class="breadcrumb-item"><a href="/su/domains/"><?= __('Domains') ?></a></li>
             <li class="breadcrumb-item active" aria-current="page"><?= __('Edit Domain') ?> <?= $domain->getDomain() ?></li>

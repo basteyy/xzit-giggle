@@ -26,7 +26,7 @@ $messages = \basteyy\XzitGiggle\Models\DialogMessageQuery::create()
 $messages = $messages->orderById('ASC')->find();
 
 foreach ($messages as $message) {
-    echo $this->fetch('user/dialogs/partials/dialog_message', [
+    echo $this->fetch('users::dialogs/partials/dialog_message', [
         'message' => $message
     ]);
 }

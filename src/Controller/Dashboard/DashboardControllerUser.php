@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace basteyy\XzitGiggle\Controller\Dashboard;
 
 use basteyy\XzitGiggle\Controller\BaseUserController;
+use basteyy\XzitGiggle\Helper\Config;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\RequestInterface;
@@ -34,7 +35,7 @@ class DashboardControllerUser extends BaseUserController
         $this->setRequest($request);
 
         return $this->render(
-            template: 'user/dashboard/dashboard',
+            template: 'users::dashboard/dashboard',
             data: [
             ],
             response: $response,

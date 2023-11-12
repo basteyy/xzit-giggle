@@ -93,7 +93,7 @@ class UserProfileMessageController extends BaseUserController
         }
 
         return $this->render(
-            template: 'user/profil/dialog',
+            template: 'users::profil/dialog',
             data: [
                 'user' => $user,
                 'dialog' => $dialog,

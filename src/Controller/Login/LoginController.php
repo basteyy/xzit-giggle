@@ -12,7 +12,9 @@ namespace basteyy\XzitGiggle\Controller\Login;
 use basteyy\XzitGiggle\Controller\BaseController;
 use basteyy\XzitGiggle\Controller\Traits\Session\Flash\SessionFlashMessagesTrait;
 use basteyy\XzitGiggle\Controller\Traits\Session\UserSessionTrait;
+use basteyy\XzitGiggle\Helper\Config;
 use basteyy\XzitGiggle\Models\UserQuery;
+use Propel\Runtime\Exception\PropelException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Psr7\Request;
@@ -29,6 +31,7 @@ class LoginController extends BaseController
      * @return ResponseInterface
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws PropelException
      */
     public function __invoke(
         RequestInterface  $request,
@@ -61,6 +64,15 @@ class LoginController extends BaseController
                 return $this->reload($response);
             }
 
+            if (!Config::get('allow_user_login') && !$user->isAdmin()) {
+                $this->addWarningMessage(__('User login is disabled'));
+                return $this->reload($response);
+            }
+
+            if (!Config::get('allow_user_login')) {
+                $this->addInfoMessage(__('User login is disabled, but you are an superuser'));
+            }
+
             $user->setLastLogin(new \DateTime());
             $user->setLastLoginIp($request->getAttribute('ip_address'));
             $user->save();
@@ -72,7 +84,6 @@ class LoginController extends BaseController
                 target: '/dashboard/',
                 response: $response
             );
-
         }
 
         return $this->render(

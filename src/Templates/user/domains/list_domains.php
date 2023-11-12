@@ -22,7 +22,7 @@ $this->layout('layouts::default', [
 
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/dashboard/"><?= __('Dashboard') ?></a></li>
+            <li class="breadcrumb-item"><a href="/dashboard/" title="<?= __('Go to your dashboard') ?>"><?= __('Dashboard') ?></a></li>
             <li class="breadcrumb-item active" aria-current="page"><?= __('List Domains') ?></li>
         </ol>
     </nav>
@@ -62,12 +62,11 @@ $this->layout('layouts::default', [
 
     </div>
 
-
-    <p class="my-3 my-md-5">
-        <a href="/domains/add/" title="<?= __('Add a new domain') ?>" class="btn btn-primary">
-            <?= __('Add a new domain') ?>
-        </a>
-    </p>
-
-
+    <?php if (\basteyy\XzitGiggle\Helper\Config::get('allow_users_domain_adding')) { ?>
+        <p class="my-3 my-md-5">
+            <a href="/domains/add/" title="<?= __('Add a new domain') ?>" class="btn btn-primary">
+                <?= __('Add a new domain') ?>
+            </a>
+        </p>
+    <?php } ?>
 </main>

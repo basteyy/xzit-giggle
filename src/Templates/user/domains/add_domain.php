@@ -24,7 +24,7 @@ $this->layout('layouts::default', [
 
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/dashboard/"><?= __('Dashboard') ?></a></li>
+            <li class="breadcrumb-item"><a href="/dashboard/" title="<?= __('Go to your dashboard') ?>"><?= __('Dashboard') ?></a></li>
             <li class="breadcrumb-item"><a href="/domains/"><?= __('List Domains') ?></a></li>
             <li class="breadcrumb-item active" aria-current="page"><?= __('List Domains') ?></li>
         </ol>
@@ -36,7 +36,7 @@ $this->layout('layouts::default', [
         <?= __('Add a domain and create a website or whatever you want.') ?>
     </p>
 
-    <?= $this->fetch('user/domains/partials/domain_form', [
+    <?= $this->fetch('users::domains/partials/domain_form', [
             'domain' => $domain ?? new \basteyy\XzitGiggle\Models\Domains()
     ]) ?>
 

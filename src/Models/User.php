@@ -104,6 +104,7 @@ class User extends BaseUser
      * @param string $password
      * @return void
      * @see USED_PASSWORD_HASHING_ALGO
+     * @todo Implement logging of password changes, implement email notification?
      */
     public function setPassword(string $password): void
     {

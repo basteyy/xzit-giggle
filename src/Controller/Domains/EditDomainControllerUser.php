@@ -41,7 +41,7 @@ class EditDomainControllerUser extends BaseUserController
             ->findOneByDomain($request->getQueryParams()['d'] ?? '');
 
         return $this->render(
-            template: 'user/domains/edit_domain',
+            template: 'users::domains/edit_domain',
             data: [
                 'domain' => $domain
             ],

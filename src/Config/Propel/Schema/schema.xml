@@ -10,9 +10,10 @@
     <!-- Config Table -->
     <table name="xg_config" phpName="Config">
         <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
-        <column name="key" type="varchar" size="255" required="true"/>
+        <column name="key" type="varchar" size="96" required="true"/>
         <column name="default" type="varchar" size="255" required="true"/>
         <column name="value" type="varchar" size="255" required="true"/>
+        <column name="var_type" type="varchar" size="64" required="true" default="string"/>
         <unique>
             <unique-column name="key"/>
         </unique>

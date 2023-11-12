@@ -20,6 +20,7 @@ return [
 
         $templates->addFolder('layouts', ROOT . '/src/Templates/layouts');
         $templates->addFolder('setup', ROOT . '/src/Templates/setup/');
+        $templates->addFolder('users', ROOT . '/src/Templates/user/');
 
         $templates->loadExtensions([
             /** Url helper */

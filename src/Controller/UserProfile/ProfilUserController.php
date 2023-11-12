@@ -49,7 +49,7 @@ class ProfilUserController extends BaseUserController
         }
 
         return $this->render(
-            template: 'user/profil/profil',
+            template: 'users::profil/profil',
             data: [
                 'user' => $user
             ],

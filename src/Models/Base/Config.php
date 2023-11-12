@@ -90,6 +90,14 @@ abstract class Config implements ActiveRecordInterface
     protected $value;
 
     /**
+     * The value for the var_type field.
+     *
+     * Note: this column has a database default value of: 'string'
+     * @var        string
+     */
+    protected $var_type;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
@@ -98,10 +106,23 @@ abstract class Config implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
+     * Applies default values to this object.
+     * This method should be called from the object's constructor (or
+     * equivalent initialization method).
+     * @see __construct()
+     */
+    public function applyDefaultValues(): void
+    {
+        $this->var_type = 'string';
+    }
+
+    /**
      * Initializes internal state of basteyy\XzitGiggle\Models\Base\Config object.
+     * @see applyDefaults()
      */
     public function __construct()
     {
+        $this->applyDefaultValues();
     }
 
     /**
@@ -364,6 +385,16 @@ abstract class Config implements ActiveRecordInterface
     }
 
     /**
+     * Get the [var_type] column value.
+     *
+     * @return string
+     */
+    public function getVarType()
+    {
+        return $this->var_type;
+    }
+
+    /**
      * Set the value of [id] column.
      *
      * @param int $v New value
@@ -444,6 +475,26 @@ abstract class Config implements ActiveRecordInterface
     }
 
     /**
+     * Set the value of [var_type] column.
+     *
+     * @param string $v New value
+     * @return $this The current object (for fluent API support)
+     */
+    public function setVarType($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->var_type !== $v) {
+            $this->var_type = $v;
+            $this->modifiedColumns[ConfigTableMap::COL_VAR_TYPE] = true;
+        }
+
+        return $this;
+    }
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -453,6 +504,10 @@ abstract class Config implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues(): bool
     {
+            if ($this->var_type !== 'string') {
+                return false;
+            }
+
         // otherwise, everything was equal, so return TRUE
         return true;
     }
@@ -491,6 +546,9 @@ abstract class Config implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ConfigTableMap::translateFieldName('Value', TableMap::TYPE_PHPNAME, $indexType)];
             $this->value = (null !== $col) ? (string) $col : null;
 
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ConfigTableMap::translateFieldName('VarType', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->var_type = (null !== $col) ? (string) $col : null;
+
             $this->resetModified();
             $this->setNew(false);
 
@@ -498,7 +556,7 @@ abstract class Config implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 4; // 4 = ConfigTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 5; // 5 = ConfigTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\basteyy\\XzitGiggle\\Models\\Config'), 0, $e);
@@ -712,6 +770,9 @@ abstract class Config implements ActiveRecordInterface
         if ($this->isColumnModified(ConfigTableMap::COL_VALUE)) {
             $modifiedColumns[':p' . $index++]  = '`value`';
         }
+        if ($this->isColumnModified(ConfigTableMap::COL_VAR_TYPE)) {
+            $modifiedColumns[':p' . $index++]  = '`var_type`';
+        }
 
         $sql = sprintf(
             'INSERT INTO `xg_config` (%s) VALUES (%s)',
@@ -737,6 +798,10 @@ abstract class Config implements ActiveRecordInterface
                         break;
                     case '`value`':
                         $stmt->bindValue($identifier, $this->value, PDO::PARAM_STR);
+
+                        break;
+                    case '`var_type`':
+                        $stmt->bindValue($identifier, $this->var_type, PDO::PARAM_STR);
 
                         break;
                 }
@@ -813,6 +878,9 @@ abstract class Config implements ActiveRecordInterface
             case 3:
                 return $this->getValue();
 
+            case 4:
+                return $this->getVarType();
+
             default:
                 return null;
         } // switch()
@@ -844,6 +912,7 @@ abstract class Config implements ActiveRecordInterface
             $keys[1] => $this->getKey(),
             $keys[2] => $this->getDefault(),
             $keys[3] => $this->getValue(),
+            $keys[4] => $this->getVarType(),
         ];
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -897,6 +966,9 @@ abstract class Config implements ActiveRecordInterface
             case 3:
                 $this->setValue($value);
                 break;
+            case 4:
+                $this->setVarType($value);
+                break;
         } // switch()
 
         return $this;
@@ -934,6 +1006,9 @@ abstract class Config implements ActiveRecordInterface
         }
         if (array_key_exists($keys[3], $arr)) {
             $this->setValue($arr[$keys[3]]);
+        }
+        if (array_key_exists($keys[4], $arr)) {
+            $this->setVarType($arr[$keys[4]]);
         }
 
         return $this;
@@ -989,6 +1064,9 @@ abstract class Config implements ActiveRecordInterface
         }
         if ($this->isColumnModified(ConfigTableMap::COL_VALUE)) {
             $criteria->add(ConfigTableMap::COL_VALUE, $this->value);
+        }
+        if ($this->isColumnModified(ConfigTableMap::COL_VAR_TYPE)) {
+            $criteria->add(ConfigTableMap::COL_VAR_TYPE, $this->var_type);
         }
 
         return $criteria;
@@ -1081,6 +1159,7 @@ abstract class Config implements ActiveRecordInterface
         $copyObj->setKey($this->getKey());
         $copyObj->setDefault($this->getDefault());
         $copyObj->setValue($this->getValue());
+        $copyObj->setVarType($this->getVarType());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1122,8 +1201,10 @@ abstract class Config implements ActiveRecordInterface
         $this->key = null;
         $this->default = null;
         $this->value = null;
+        $this->var_type = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
+        $this->applyDefaultValues();
         $this->resetModified();
         $this->setNew(true);
         $this->setDeleted(false);

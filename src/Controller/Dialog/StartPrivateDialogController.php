@@ -113,7 +113,7 @@ class StartPrivateDialogController extends BaseUserController
         }
 
         return $this->render(
-            template: 'user/dialogs/start_private_dialog',
+            template: 'users::dialogs/start_private_dialog',
             data: [
                 'user' => $user
             ],

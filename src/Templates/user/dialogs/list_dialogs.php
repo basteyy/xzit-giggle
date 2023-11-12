@@ -28,9 +28,9 @@ $user = $this->getUser();
             <div class="col-12 col-md-4">
                 <?php
                 if (count($user->getActiveDialogs()) === 0 ) {
-                    echo $this->fetch('user/dialogs/partials/list_own_dialogs_empty');
+                    echo $this->fetch('users::dialogs/partials/list_own_dialogs_empty');
                 } else {
-                    echo $this->fetch('user/dialogs/partials/list_own_dialogs', [
+                    echo $this->fetch('users::dialogs/partials/list_own_dialogs', [
                         'dialogs' => $user->getActiveDialogs(),
                         'dialog' => $dialog ?? null,
                     ]);
@@ -41,11 +41,11 @@ $user = $this->getUser();
                 <?php
                 if (isset($dialog)) {
 
-                    echo $this->fetch('user/dialogs/partials/dialog_messages', [
+                    echo $this->fetch('users::dialogs/partials/dialog_messages', [
                         'dialog' => $dialog
                     ]);
 
-                    echo $this->fetch('user/dialogs/partials/dialog_message_form', [
+                    echo $this->fetch('users::dialogs/partials/dialog_message_form', [
                         'dialog' => $dialog,
                         'message' => $message ?? new \basteyy\XzitGiggle\Models\DialogMessage()
                     ]);

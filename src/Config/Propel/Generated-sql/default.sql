@@ -12,9 +12,10 @@ DROP TABLE IF EXISTS `xg_config`;
 CREATE TABLE `xg_config`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `key` VARCHAR(255) NOT NULL,
+    `key` VARCHAR(96) NOT NULL,
     `default` VARCHAR(255) NOT NULL,
     `value` VARCHAR(255) NOT NULL,
+    `var_type` VARCHAR(64) DEFAULT 'string' NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE INDEX `xg_config_u_b0eafe` (`key`)
 ) ENGINE=InnoDB;

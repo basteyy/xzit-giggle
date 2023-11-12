@@ -41,7 +41,7 @@ class ViewDomainControllerUser  extends BaseUserController
             ->findOneByDomain($request->getQueryParams()['d'] ?? '');
 
         return $this->render(
-            template: 'user/domains/view_domain',
+            template: 'users::domains/view_domain',
             data: [
                 'domain' => $domain
             ],

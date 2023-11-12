@@ -63,7 +63,7 @@ class ConfigTableMap extends TableMap
     /**
      * The total number of columns
      */
-    public const NUM_COLUMNS = 4;
+    public const NUM_COLUMNS = 5;
 
     /**
      * The number of lazy-loaded columns
@@ -73,7 +73,7 @@ class ConfigTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    public const NUM_HYDRATE_COLUMNS = 4;
+    public const NUM_HYDRATE_COLUMNS = 5;
 
     /**
      * the column name for the id field
@@ -96,6 +96,11 @@ class ConfigTableMap extends TableMap
     public const COL_VALUE = 'xg_config.value';
 
     /**
+     * the column name for the var_type field
+     */
+    public const COL_VAR_TYPE = 'xg_config.var_type';
+
+    /**
      * The default string format for model objects of the related table
      */
     public const DEFAULT_STRING_FORMAT = 'YAML';
@@ -109,11 +114,11 @@ class ConfigTableMap extends TableMap
      * @var array<string, mixed>
      */
     protected static $fieldNames = [
-        self::TYPE_PHPNAME       => ['Id', 'Key', 'Default', 'Value', ],
-        self::TYPE_CAMELNAME     => ['id', 'key', 'default', 'value', ],
-        self::TYPE_COLNAME       => [ConfigTableMap::COL_ID, ConfigTableMap::COL_KEY, ConfigTableMap::COL_DEFAULT, ConfigTableMap::COL_VALUE, ],
-        self::TYPE_FIELDNAME     => ['id', 'key', 'default', 'value', ],
-        self::TYPE_NUM           => [0, 1, 2, 3, ]
+        self::TYPE_PHPNAME       => ['Id', 'Key', 'Default', 'Value', 'VarType', ],
+        self::TYPE_CAMELNAME     => ['id', 'key', 'default', 'value', 'varType', ],
+        self::TYPE_COLNAME       => [ConfigTableMap::COL_ID, ConfigTableMap::COL_KEY, ConfigTableMap::COL_DEFAULT, ConfigTableMap::COL_VALUE, ConfigTableMap::COL_VAR_TYPE, ],
+        self::TYPE_FIELDNAME     => ['id', 'key', 'default', 'value', 'var_type', ],
+        self::TYPE_NUM           => [0, 1, 2, 3, 4, ]
     ];
 
     /**
@@ -125,11 +130,11 @@ class ConfigTableMap extends TableMap
      * @var array<string, mixed>
      */
     protected static $fieldKeys = [
-        self::TYPE_PHPNAME       => ['Id' => 0, 'Key' => 1, 'Default' => 2, 'Value' => 3, ],
-        self::TYPE_CAMELNAME     => ['id' => 0, 'key' => 1, 'default' => 2, 'value' => 3, ],
-        self::TYPE_COLNAME       => [ConfigTableMap::COL_ID => 0, ConfigTableMap::COL_KEY => 1, ConfigTableMap::COL_DEFAULT => 2, ConfigTableMap::COL_VALUE => 3, ],
-        self::TYPE_FIELDNAME     => ['id' => 0, 'key' => 1, 'default' => 2, 'value' => 3, ],
-        self::TYPE_NUM           => [0, 1, 2, 3, ]
+        self::TYPE_PHPNAME       => ['Id' => 0, 'Key' => 1, 'Default' => 2, 'Value' => 3, 'VarType' => 4, ],
+        self::TYPE_CAMELNAME     => ['id' => 0, 'key' => 1, 'default' => 2, 'value' => 3, 'varType' => 4, ],
+        self::TYPE_COLNAME       => [ConfigTableMap::COL_ID => 0, ConfigTableMap::COL_KEY => 1, ConfigTableMap::COL_DEFAULT => 2, ConfigTableMap::COL_VALUE => 3, ConfigTableMap::COL_VAR_TYPE => 4, ],
+        self::TYPE_FIELDNAME     => ['id' => 0, 'key' => 1, 'default' => 2, 'value' => 3, 'var_type' => 4, ],
+        self::TYPE_NUM           => [0, 1, 2, 3, 4, ]
     ];
 
     /**
@@ -166,6 +171,14 @@ class ConfigTableMap extends TableMap
         'ConfigTableMap::COL_VALUE' => 'VALUE',
         'COL_VALUE' => 'VALUE',
         'xg_config.value' => 'VALUE',
+        'VarType' => 'VAR_TYPE',
+        'Config.VarType' => 'VAR_TYPE',
+        'varType' => 'VAR_TYPE',
+        'config.varType' => 'VAR_TYPE',
+        'ConfigTableMap::COL_VAR_TYPE' => 'VAR_TYPE',
+        'COL_VAR_TYPE' => 'VAR_TYPE',
+        'var_type' => 'VAR_TYPE',
+        'xg_config.var_type' => 'VAR_TYPE',
     ];
 
     /**
@@ -186,9 +199,10 @@ class ConfigTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addColumn('key', 'Key', 'VARCHAR', true, 255, null);
+        $this->addColumn('key', 'Key', 'VARCHAR', true, 96, null);
         $this->addColumn('default', 'Default', 'VARCHAR', true, 255, null);
         $this->addColumn('value', 'Value', 'VARCHAR', true, 255, null);
+        $this->addColumn('var_type', 'VarType', 'VARCHAR', true, 64, 'string');
     }
 
     /**
@@ -346,11 +360,13 @@ class ConfigTableMap extends TableMap
             $criteria->addSelectColumn(ConfigTableMap::COL_KEY);
             $criteria->addSelectColumn(ConfigTableMap::COL_DEFAULT);
             $criteria->addSelectColumn(ConfigTableMap::COL_VALUE);
+            $criteria->addSelectColumn(ConfigTableMap::COL_VAR_TYPE);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.key');
             $criteria->addSelectColumn($alias . '.default');
             $criteria->addSelectColumn($alias . '.value');
+            $criteria->addSelectColumn($alias . '.var_type');
         }
     }
 
@@ -373,11 +389,13 @@ class ConfigTableMap extends TableMap
             $criteria->removeSelectColumn(ConfigTableMap::COL_KEY);
             $criteria->removeSelectColumn(ConfigTableMap::COL_DEFAULT);
             $criteria->removeSelectColumn(ConfigTableMap::COL_VALUE);
+            $criteria->removeSelectColumn(ConfigTableMap::COL_VAR_TYPE);
         } else {
             $criteria->removeSelectColumn($alias . '.id');
             $criteria->removeSelectColumn($alias . '.key');
             $criteria->removeSelectColumn($alias . '.default');
             $criteria->removeSelectColumn($alias . '.value');
+            $criteria->removeSelectColumn($alias . '.var_type');
         }
     }
 

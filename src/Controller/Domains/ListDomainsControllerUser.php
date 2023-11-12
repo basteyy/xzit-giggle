@@ -36,7 +36,7 @@ class ListDomainsControllerUser extends BaseUserController
         $this->setRequest($request);
 
         return $this->render(
-            template: 'user/domains/list_domains',
+            template: 'users::domains/list_domains',
             response: $response
         );
     }

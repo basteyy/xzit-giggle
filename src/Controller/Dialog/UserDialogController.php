@@ -95,7 +95,7 @@ class UserDialogController extends BaseUserController
         }
 
         return $this->render(
-            template: 'user/dialogs/list_dialogs',
+            template: 'users::dialogs/list_dialogs',
             data: [
                 'dialog' => $dialog ?? null
             ],

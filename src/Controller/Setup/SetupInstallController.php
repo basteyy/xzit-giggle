@@ -79,8 +79,6 @@ class SetupInstallController extends BaseSetupController
             throw new \http\Exception\RuntimeException('An env file already exists. Delete it and try again.');
         }
 
-        // $connection beinhaltet die aktive Verbindung
-
         $user = $this->getSuperUserData(
             password: true
         );
@@ -167,18 +165,20 @@ class SetupInstallController extends BaseSetupController
                 'user_home_path'              => $this->getOptions()['user_home_path'],
                 'users_bash'                  => $this->getOptions()['users_bash'],
                 'php_fpm_socket_path'         => '/var/run/php-fpm/',
-                'php_fpm_socket_port'         => '9000',
-                'allow_user_login'            => (string)isset($this->getOptions()['allow_user_login']),
-                'allow_users_domain_adding'   => (string)isset($this->getOptions()['allow_users_domain_adding']),
-                'allow_users_database_adding' => (string)true
+                'php_fpm_socket_port'         => 9000,
+                'allow_user_login'            => isset($this->getOptions()['allow_user_login']),
+                'allow_users_domain_adding'   => isset($this->getOptions()['allow_users_domain_adding']),
+                'allow_users_database_adding' => true,
+                'sync-all.last_execution'     => 'never',
             ];
 
             foreach ($default_settings as $item => $setting) {
                 $connection->exec(
-                    'INSERT INTO `xg_config` (`key`, `default`, `value`) VALUES (' .
+                    'INSERT INTO `xg_config` (`key`, `default`, `value`, `var_type`) VALUES (' .
                     $connection->quote($item) . ', ' .
                     $connection->quote($setting) . ', ' .
-                    $connection->quote($setting) . ');'
+                    $connection->quote($setting) . ', ' .
+                    $connection->quote(gettype($setting)) . ');'
                 );
             }
 

@@ -12,7 +12,7 @@
  */
 declare(strict_types=1);
 
-namespace basteyy\XzitGiggle\Controller\User;
+namespace basteyy\XzitGiggle\Controller\User\Settings;
 
 use basteyy\XzitGiggle\Controller\BaseUserController;
 use Psr\Http\Message\RequestInterface;
@@ -30,7 +30,14 @@ class UserSettingController  extends BaseUserController
     public function __invoke(RequestInterface  $request,
                              ResponseInterface $response): ResponseInterface
     {
-        return $response;
+        $this->setRequest($request);
+
+
+
+        return $this->render(
+            template: 'users::settings/user_settings',
+            response: $response,
+        );
     }
 
 }

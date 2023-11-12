@@ -21,11 +21,13 @@ use basteyy\XzitGiggle\Models\Map\ConfigTableMap;
  * @method     ChildConfigQuery orderByKey($order = Criteria::ASC) Order by the key column
  * @method     ChildConfigQuery orderByDefault($order = Criteria::ASC) Order by the default column
  * @method     ChildConfigQuery orderByValue($order = Criteria::ASC) Order by the value column
+ * @method     ChildConfigQuery orderByVarType($order = Criteria::ASC) Order by the var_type column
  *
  * @method     ChildConfigQuery groupById() Group by the id column
  * @method     ChildConfigQuery groupByKey() Group by the key column
  * @method     ChildConfigQuery groupByDefault() Group by the default column
  * @method     ChildConfigQuery groupByValue() Group by the value column
+ * @method     ChildConfigQuery groupByVarType() Group by the var_type column
  *
  * @method     ChildConfigQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildConfigQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -42,6 +44,7 @@ use basteyy\XzitGiggle\Models\Map\ConfigTableMap;
  * @method     ChildConfig|null findOneByKey(string $key) Return the first ChildConfig filtered by the key column
  * @method     ChildConfig|null findOneByDefault(string $default) Return the first ChildConfig filtered by the default column
  * @method     ChildConfig|null findOneByValue(string $value) Return the first ChildConfig filtered by the value column
+ * @method     ChildConfig|null findOneByVarType(string $var_type) Return the first ChildConfig filtered by the var_type column
  *
  * @method     ChildConfig requirePk($key, ?ConnectionInterface $con = null) Return the ChildConfig by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildConfig requireOne(?ConnectionInterface $con = null) Return the first ChildConfig matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -50,6 +53,7 @@ use basteyy\XzitGiggle\Models\Map\ConfigTableMap;
  * @method     ChildConfig requireOneByKey(string $key) Return the first ChildConfig filtered by the key column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildConfig requireOneByDefault(string $default) Return the first ChildConfig filtered by the default column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildConfig requireOneByValue(string $value) Return the first ChildConfig filtered by the value column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildConfig requireOneByVarType(string $var_type) Return the first ChildConfig filtered by the var_type column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildConfig[]|Collection find(?ConnectionInterface $con = null) Return ChildConfig objects based on current ModelCriteria
  * @psalm-method Collection&\Traversable<ChildConfig> find(?ConnectionInterface $con = null) Return ChildConfig objects based on current ModelCriteria
@@ -62,6 +66,8 @@ use basteyy\XzitGiggle\Models\Map\ConfigTableMap;
  * @psalm-method Collection&\Traversable<ChildConfig> findByDefault(string|array<string> $default) Return ChildConfig objects filtered by the default column
  * @method     ChildConfig[]|Collection findByValue(string|array<string> $value) Return ChildConfig objects filtered by the value column
  * @psalm-method Collection&\Traversable<ChildConfig> findByValue(string|array<string> $value) Return ChildConfig objects filtered by the value column
+ * @method     ChildConfig[]|Collection findByVarType(string|array<string> $var_type) Return ChildConfig objects filtered by the var_type column
+ * @psalm-method Collection&\Traversable<ChildConfig> findByVarType(string|array<string> $var_type) Return ChildConfig objects filtered by the var_type column
  *
  * @method     ChildConfig[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ?ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  * @psalm-method \Propel\Runtime\Util\PropelModelPager&\Traversable<ChildConfig> paginate($page = 1, $maxPerPage = 10, ?ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -161,7 +167,7 @@ abstract class ConfigQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT `id`, `key`, `default`, `value` FROM `xg_config` WHERE `id` = :p0';
+        $sql = 'SELECT `id`, `key`, `default`, `value`, `var_type` FROM `xg_config` WHERE `id` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -378,6 +384,34 @@ abstract class ConfigQuery extends ModelCriteria
         }
 
         $this->addUsingAlias(ConfigTableMap::COL_VALUE, $value, $comparison);
+
+        return $this;
+    }
+
+    /**
+     * Filter the query on the var_type column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByVarType('fooValue');   // WHERE var_type = 'fooValue'
+     * $query->filterByVarType('%fooValue%', Criteria::LIKE); // WHERE var_type LIKE '%fooValue%'
+     * $query->filterByVarType(['foo', 'bar']); // WHERE var_type IN ('foo', 'bar')
+     * </code>
+     *
+     * @param string|string[] $varType The value to use as filter.
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this The current query, for fluid interface
+     */
+    public function filterByVarType($varType = null, ?string $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($varType)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        $this->addUsingAlias(ConfigTableMap::COL_VAR_TYPE, $varType, $comparison);
 
         return $this;
     }

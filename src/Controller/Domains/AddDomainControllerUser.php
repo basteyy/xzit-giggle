@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace basteyy\XzitGiggle\Controller\Domains;
 
 use basteyy\XzitGiggle\Controller\BaseUserController;
+use basteyy\XzitGiggle\Helper\Config;
 use basteyy\XzitGiggle\Models\Domain;
 use basteyy\XzitGiggle\Models\DomainQuery;
 use basteyy\XzitGiggle\Models\IpAddressQuery;
@@ -35,6 +36,14 @@ class AddDomainControllerUser extends BaseUserController
     ): ResponseInterface
     {
         $this->setRequest($request);
+
+        if (!Config::get('allow_users_domain_adding')) {
+            $this->addErrorMessage(__('Adding domains is not allowed'));
+            return $this->redirect(
+                target: '/domains/',
+                response: $response
+            );
+        }
 
         $domain = new Domain();
 
@@ -100,7 +109,7 @@ class AddDomainControllerUser extends BaseUserController
         }
 
         return $this->render(
-            template: 'user/domains/add_domain',
+            template: 'users::domains/add_domain',
             data: [
                 'domain' => $domain
             ],

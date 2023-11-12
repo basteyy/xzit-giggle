@@ -85,6 +85,12 @@ $this->layout('layouts::default', [
                     <td><?= ini_get('upload_max_filesize') ?></td>
                 </tr>
             </table>
+            <?= $this->fetch('setup::checks/php') ?>
+            <?= $this->fetch('setup::checks/env') ?>
+            <?= $this->fetch('setup::checks/proc_open') ?>
+            <?= $this->fetch('setup::checks/ext-pdo') ?>
+            <?= $this->fetch('setup::checks/ext-json') ?>
+            <?= $this->fetch('setup::checks/ext-posix') ?>
         </div>
         <div class="col-12 col-md-6 col-lg-4"><h2>Domain Info</h2>
 

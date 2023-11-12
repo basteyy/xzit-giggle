@@ -63,7 +63,7 @@ class DomainTableMap extends TableMap
     /**
      * The total number of columns
      */
-    public const NUM_COLUMNS = 14;
+    public const NUM_COLUMNS = 17;
 
     /**
      * The number of lazy-loaded columns
@@ -73,7 +73,7 @@ class DomainTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    public const NUM_HYDRATE_COLUMNS = 14;
+    public const NUM_HYDRATE_COLUMNS = 17;
 
     /**
      * the column name for the id field
@@ -126,6 +126,21 @@ class DomainTableMap extends TableMap
     public const COL_MOUNTING_POINT = 'xg_domains.mounting_point';
 
     /**
+     * the column name for the php_version field
+     */
+    public const COL_PHP_VERSION = 'xg_domains.php_version';
+
+    /**
+     * the column name for the php_pool_name field
+     */
+    public const COL_PHP_POOL_NAME = 'xg_domains.php_pool_name';
+
+    /**
+     * the column name for the php_pool_sock_path field
+     */
+    public const COL_PHP_POOL_SOCK_PATH = 'xg_domains.php_pool_sock_path';
+
+    /**
      * the column name for the activated field
      */
     public const COL_ACTIVATED = 'xg_domains.activated';
@@ -159,11 +174,11 @@ class DomainTableMap extends TableMap
      * @var array<string, mixed>
      */
     protected static $fieldNames = [
-        self::TYPE_PHPNAME       => ['Id', 'UserId', 'Tld', 'Domain', 'Registered', 'WwwAlias', 'LetsEncrypt', 'Ipv4', 'Ipv6', 'MountingPoint', 'Activated', 'Blocked', 'Processed', 'ProcessedAt', ],
-        self::TYPE_CAMELNAME     => ['id', 'userId', 'tld', 'domain', 'registered', 'wwwAlias', 'letsEncrypt', 'ipv4', 'ipv6', 'mountingPoint', 'activated', 'blocked', 'processed', 'processedAt', ],
-        self::TYPE_COLNAME       => [DomainTableMap::COL_ID, DomainTableMap::COL_USER_ID, DomainTableMap::COL_TLD, DomainTableMap::COL_DOMAIN, DomainTableMap::COL_REGISTERED, DomainTableMap::COL_WWW_ALIAS, DomainTableMap::COL_LETS_ENCRYPT, DomainTableMap::COL_IPV4, DomainTableMap::COL_IPV6, DomainTableMap::COL_MOUNTING_POINT, DomainTableMap::COL_ACTIVATED, DomainTableMap::COL_BLOCKED, DomainTableMap::COL_PROCESSED, DomainTableMap::COL_PROCESSED_AT, ],
-        self::TYPE_FIELDNAME     => ['id', 'user_id', 'tld', 'domain', 'registered', 'www_alias', 'lets_encrypt', 'ipv4', 'ipv6', 'mounting_point', 'activated', 'blocked', 'processed', 'processed_at', ],
-        self::TYPE_NUM           => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, ]
+        self::TYPE_PHPNAME       => ['Id', 'UserId', 'Tld', 'Domain', 'Registered', 'WwwAlias', 'LetsEncrypt', 'Ipv4', 'Ipv6', 'MountingPoint', 'PhpVersion', 'PhpPoolName', 'PhpPoolSockPath', 'Activated', 'Blocked', 'Processed', 'ProcessedAt', ],
+        self::TYPE_CAMELNAME     => ['id', 'userId', 'tld', 'domain', 'registered', 'wwwAlias', 'letsEncrypt', 'ipv4', 'ipv6', 'mountingPoint', 'phpVersion', 'phpPoolName', 'phpPoolSockPath', 'activated', 'blocked', 'processed', 'processedAt', ],
+        self::TYPE_COLNAME       => [DomainTableMap::COL_ID, DomainTableMap::COL_USER_ID, DomainTableMap::COL_TLD, DomainTableMap::COL_DOMAIN, DomainTableMap::COL_REGISTERED, DomainTableMap::COL_WWW_ALIAS, DomainTableMap::COL_LETS_ENCRYPT, DomainTableMap::COL_IPV4, DomainTableMap::COL_IPV6, DomainTableMap::COL_MOUNTING_POINT, DomainTableMap::COL_PHP_VERSION, DomainTableMap::COL_PHP_POOL_NAME, DomainTableMap::COL_PHP_POOL_SOCK_PATH, DomainTableMap::COL_ACTIVATED, DomainTableMap::COL_BLOCKED, DomainTableMap::COL_PROCESSED, DomainTableMap::COL_PROCESSED_AT, ],
+        self::TYPE_FIELDNAME     => ['id', 'user_id', 'tld', 'domain', 'registered', 'www_alias', 'lets_encrypt', 'ipv4', 'ipv6', 'mounting_point', 'php_version', 'php_pool_name', 'php_pool_sock_path', 'activated', 'blocked', 'processed', 'processed_at', ],
+        self::TYPE_NUM           => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, ]
     ];
 
     /**
@@ -175,11 +190,11 @@ class DomainTableMap extends TableMap
      * @var array<string, mixed>
      */
     protected static $fieldKeys = [
-        self::TYPE_PHPNAME       => ['Id' => 0, 'UserId' => 1, 'Tld' => 2, 'Domain' => 3, 'Registered' => 4, 'WwwAlias' => 5, 'LetsEncrypt' => 6, 'Ipv4' => 7, 'Ipv6' => 8, 'MountingPoint' => 9, 'Activated' => 10, 'Blocked' => 11, 'Processed' => 12, 'ProcessedAt' => 13, ],
-        self::TYPE_CAMELNAME     => ['id' => 0, 'userId' => 1, 'tld' => 2, 'domain' => 3, 'registered' => 4, 'wwwAlias' => 5, 'letsEncrypt' => 6, 'ipv4' => 7, 'ipv6' => 8, 'mountingPoint' => 9, 'activated' => 10, 'blocked' => 11, 'processed' => 12, 'processedAt' => 13, ],
-        self::TYPE_COLNAME       => [DomainTableMap::COL_ID => 0, DomainTableMap::COL_USER_ID => 1, DomainTableMap::COL_TLD => 2, DomainTableMap::COL_DOMAIN => 3, DomainTableMap::COL_REGISTERED => 4, DomainTableMap::COL_WWW_ALIAS => 5, DomainTableMap::COL_LETS_ENCRYPT => 6, DomainTableMap::COL_IPV4 => 7, DomainTableMap::COL_IPV6 => 8, DomainTableMap::COL_MOUNTING_POINT => 9, DomainTableMap::COL_ACTIVATED => 10, DomainTableMap::COL_BLOCKED => 11, DomainTableMap::COL_PROCESSED => 12, DomainTableMap::COL_PROCESSED_AT => 13, ],
-        self::TYPE_FIELDNAME     => ['id' => 0, 'user_id' => 1, 'tld' => 2, 'domain' => 3, 'registered' => 4, 'www_alias' => 5, 'lets_encrypt' => 6, 'ipv4' => 7, 'ipv6' => 8, 'mounting_point' => 9, 'activated' => 10, 'blocked' => 11, 'processed' => 12, 'processed_at' => 13, ],
-        self::TYPE_NUM           => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, ]
+        self::TYPE_PHPNAME       => ['Id' => 0, 'UserId' => 1, 'Tld' => 2, 'Domain' => 3, 'Registered' => 4, 'WwwAlias' => 5, 'LetsEncrypt' => 6, 'Ipv4' => 7, 'Ipv6' => 8, 'MountingPoint' => 9, 'PhpVersion' => 10, 'PhpPoolName' => 11, 'PhpPoolSockPath' => 12, 'Activated' => 13, 'Blocked' => 14, 'Processed' => 15, 'ProcessedAt' => 16, ],
+        self::TYPE_CAMELNAME     => ['id' => 0, 'userId' => 1, 'tld' => 2, 'domain' => 3, 'registered' => 4, 'wwwAlias' => 5, 'letsEncrypt' => 6, 'ipv4' => 7, 'ipv6' => 8, 'mountingPoint' => 9, 'phpVersion' => 10, 'phpPoolName' => 11, 'phpPoolSockPath' => 12, 'activated' => 13, 'blocked' => 14, 'processed' => 15, 'processedAt' => 16, ],
+        self::TYPE_COLNAME       => [DomainTableMap::COL_ID => 0, DomainTableMap::COL_USER_ID => 1, DomainTableMap::COL_TLD => 2, DomainTableMap::COL_DOMAIN => 3, DomainTableMap::COL_REGISTERED => 4, DomainTableMap::COL_WWW_ALIAS => 5, DomainTableMap::COL_LETS_ENCRYPT => 6, DomainTableMap::COL_IPV4 => 7, DomainTableMap::COL_IPV6 => 8, DomainTableMap::COL_MOUNTING_POINT => 9, DomainTableMap::COL_PHP_VERSION => 10, DomainTableMap::COL_PHP_POOL_NAME => 11, DomainTableMap::COL_PHP_POOL_SOCK_PATH => 12, DomainTableMap::COL_ACTIVATED => 13, DomainTableMap::COL_BLOCKED => 14, DomainTableMap::COL_PROCESSED => 15, DomainTableMap::COL_PROCESSED_AT => 16, ],
+        self::TYPE_FIELDNAME     => ['id' => 0, 'user_id' => 1, 'tld' => 2, 'domain' => 3, 'registered' => 4, 'www_alias' => 5, 'lets_encrypt' => 6, 'ipv4' => 7, 'ipv6' => 8, 'mounting_point' => 9, 'php_version' => 10, 'php_pool_name' => 11, 'php_pool_sock_path' => 12, 'activated' => 13, 'blocked' => 14, 'processed' => 15, 'processed_at' => 16, ],
+        self::TYPE_NUM           => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, ]
     ];
 
     /**
@@ -262,6 +277,30 @@ class DomainTableMap extends TableMap
         'COL_MOUNTING_POINT' => 'MOUNTING_POINT',
         'mounting_point' => 'MOUNTING_POINT',
         'xg_domains.mounting_point' => 'MOUNTING_POINT',
+        'PhpVersion' => 'PHP_VERSION',
+        'Domain.PhpVersion' => 'PHP_VERSION',
+        'phpVersion' => 'PHP_VERSION',
+        'domain.phpVersion' => 'PHP_VERSION',
+        'DomainTableMap::COL_PHP_VERSION' => 'PHP_VERSION',
+        'COL_PHP_VERSION' => 'PHP_VERSION',
+        'php_version' => 'PHP_VERSION',
+        'xg_domains.php_version' => 'PHP_VERSION',
+        'PhpPoolName' => 'PHP_POOL_NAME',
+        'Domain.PhpPoolName' => 'PHP_POOL_NAME',
+        'phpPoolName' => 'PHP_POOL_NAME',
+        'domain.phpPoolName' => 'PHP_POOL_NAME',
+        'DomainTableMap::COL_PHP_POOL_NAME' => 'PHP_POOL_NAME',
+        'COL_PHP_POOL_NAME' => 'PHP_POOL_NAME',
+        'php_pool_name' => 'PHP_POOL_NAME',
+        'xg_domains.php_pool_name' => 'PHP_POOL_NAME',
+        'PhpPoolSockPath' => 'PHP_POOL_SOCK_PATH',
+        'Domain.PhpPoolSockPath' => 'PHP_POOL_SOCK_PATH',
+        'phpPoolSockPath' => 'PHP_POOL_SOCK_PATH',
+        'domain.phpPoolSockPath' => 'PHP_POOL_SOCK_PATH',
+        'DomainTableMap::COL_PHP_POOL_SOCK_PATH' => 'PHP_POOL_SOCK_PATH',
+        'COL_PHP_POOL_SOCK_PATH' => 'PHP_POOL_SOCK_PATH',
+        'php_pool_sock_path' => 'PHP_POOL_SOCK_PATH',
+        'xg_domains.php_pool_sock_path' => 'PHP_POOL_SOCK_PATH',
         'Activated' => 'ACTIVATED',
         'Domain.Activated' => 'ACTIVATED',
         'activated' => 'ACTIVATED',
@@ -320,6 +359,9 @@ class DomainTableMap extends TableMap
         $this->addColumn('ipv4', 'Ipv4', 'INTEGER', true, null, null);
         $this->addColumn('ipv6', 'Ipv6', 'INTEGER', false, null, null);
         $this->addColumn('mounting_point', 'MountingPoint', 'VARCHAR', true, 255, null);
+        $this->addColumn('php_version', 'PhpVersion', 'VARCHAR', true, 256, null);
+        $this->addColumn('php_pool_name', 'PhpPoolName', 'VARCHAR', true, 256, null);
+        $this->addColumn('php_pool_sock_path', 'PhpPoolSockPath', 'VARCHAR', true, 256, null);
         $this->addColumn('activated', 'Activated', 'BOOLEAN', true, 1, true);
         $this->addColumn('blocked', 'Blocked', 'BOOLEAN', true, 1, false);
         $this->addColumn('processed', 'Processed', 'BOOLEAN', true, 1, false);
@@ -494,6 +536,9 @@ class DomainTableMap extends TableMap
             $criteria->addSelectColumn(DomainTableMap::COL_IPV4);
             $criteria->addSelectColumn(DomainTableMap::COL_IPV6);
             $criteria->addSelectColumn(DomainTableMap::COL_MOUNTING_POINT);
+            $criteria->addSelectColumn(DomainTableMap::COL_PHP_VERSION);
+            $criteria->addSelectColumn(DomainTableMap::COL_PHP_POOL_NAME);
+            $criteria->addSelectColumn(DomainTableMap::COL_PHP_POOL_SOCK_PATH);
             $criteria->addSelectColumn(DomainTableMap::COL_ACTIVATED);
             $criteria->addSelectColumn(DomainTableMap::COL_BLOCKED);
             $criteria->addSelectColumn(DomainTableMap::COL_PROCESSED);
@@ -509,6 +554,9 @@ class DomainTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.ipv4');
             $criteria->addSelectColumn($alias . '.ipv6');
             $criteria->addSelectColumn($alias . '.mounting_point');
+            $criteria->addSelectColumn($alias . '.php_version');
+            $criteria->addSelectColumn($alias . '.php_pool_name');
+            $criteria->addSelectColumn($alias . '.php_pool_sock_path');
             $criteria->addSelectColumn($alias . '.activated');
             $criteria->addSelectColumn($alias . '.blocked');
             $criteria->addSelectColumn($alias . '.processed');
@@ -541,6 +589,9 @@ class DomainTableMap extends TableMap
             $criteria->removeSelectColumn(DomainTableMap::COL_IPV4);
             $criteria->removeSelectColumn(DomainTableMap::COL_IPV6);
             $criteria->removeSelectColumn(DomainTableMap::COL_MOUNTING_POINT);
+            $criteria->removeSelectColumn(DomainTableMap::COL_PHP_VERSION);
+            $criteria->removeSelectColumn(DomainTableMap::COL_PHP_POOL_NAME);
+            $criteria->removeSelectColumn(DomainTableMap::COL_PHP_POOL_SOCK_PATH);
             $criteria->removeSelectColumn(DomainTableMap::COL_ACTIVATED);
             $criteria->removeSelectColumn(DomainTableMap::COL_BLOCKED);
             $criteria->removeSelectColumn(DomainTableMap::COL_PROCESSED);
@@ -556,6 +607,9 @@ class DomainTableMap extends TableMap
             $criteria->removeSelectColumn($alias . '.ipv4');
             $criteria->removeSelectColumn($alias . '.ipv6');
             $criteria->removeSelectColumn($alias . '.mounting_point');
+            $criteria->removeSelectColumn($alias . '.php_version');
+            $criteria->removeSelectColumn($alias . '.php_pool_name');
+            $criteria->removeSelectColumn($alias . '.php_pool_sock_path');
             $criteria->removeSelectColumn($alias . '.activated');
             $criteria->removeSelectColumn($alias . '.blocked');
             $criteria->removeSelectColumn($alias . '.processed');

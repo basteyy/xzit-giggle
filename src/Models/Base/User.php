@@ -209,27 +209,6 @@ abstract class User implements ActiveRecordInterface
     protected $bash;
 
     /**
-     * The value for the php_fpm_pool field.
-     *
-     * @var        string|null
-     */
-    protected $php_fpm_pool;
-
-    /**
-     * The value for the php_fpm_socket field.
-     *
-     * @var        string|null
-     */
-    protected $php_fpm_socket;
-
-    /**
-     * The value for the php_fpm_port field.
-     *
-     * @var        int|null
-     */
-    protected $php_fpm_port;
-
-    /**
      * @var        ChildUserRole
      */
     protected $aUserRole;
@@ -817,36 +796,6 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
-     * Get the [php_fpm_pool] column value.
-     *
-     * @return string|null
-     */
-    public function getPhpFpmPool()
-    {
-        return $this->php_fpm_pool;
-    }
-
-    /**
-     * Get the [php_fpm_socket] column value.
-     *
-     * @return string|null
-     */
-    public function getPhpFpmSocket()
-    {
-        return $this->php_fpm_socket;
-    }
-
-    /**
-     * Get the [php_fpm_port] column value.
-     *
-     * @return int|null
-     */
-    public function getPhpFpmPort()
-    {
-        return $this->php_fpm_port;
-    }
-
-    /**
      * Set the value of [id] column.
      *
      * @param int $v New value
@@ -1223,66 +1172,6 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
-     * Set the value of [php_fpm_pool] column.
-     *
-     * @param string|null $v New value
-     * @return $this The current object (for fluent API support)
-     */
-    public function setPhpFpmPool($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->php_fpm_pool !== $v) {
-            $this->php_fpm_pool = $v;
-            $this->modifiedColumns[UserTableMap::COL_PHP_FPM_POOL] = true;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Set the value of [php_fpm_socket] column.
-     *
-     * @param string|null $v New value
-     * @return $this The current object (for fluent API support)
-     */
-    public function setPhpFpmSocket($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->php_fpm_socket !== $v) {
-            $this->php_fpm_socket = $v;
-            $this->modifiedColumns[UserTableMap::COL_PHP_FPM_SOCKET] = true;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Set the value of [php_fpm_port] column.
-     *
-     * @param int|null $v New value
-     * @return $this The current object (for fluent API support)
-     */
-    public function setPhpFpmPort($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->php_fpm_port !== $v) {
-            $this->php_fpm_port = $v;
-            $this->modifiedColumns[UserTableMap::COL_PHP_FPM_PORT] = true;
-        }
-
-        return $this;
-    }
-
-    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -1391,15 +1280,6 @@ abstract class User implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 16 + $startcol : UserTableMap::translateFieldName('Bash', TableMap::TYPE_PHPNAME, $indexType)];
             $this->bash = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 17 + $startcol : UserTableMap::translateFieldName('PhpFpmPool', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->php_fpm_pool = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 18 + $startcol : UserTableMap::translateFieldName('PhpFpmSocket', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->php_fpm_socket = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 19 + $startcol : UserTableMap::translateFieldName('PhpFpmPort', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->php_fpm_port = (null !== $col) ? (int) $col : null;
-
             $this->resetModified();
             $this->setNew(false);
 
@@ -1407,7 +1287,7 @@ abstract class User implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 20; // 20 = UserTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 17; // 17 = UserTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\basteyy\\XzitGiggle\\Models\\User'), 0, $e);
@@ -1810,15 +1690,6 @@ abstract class User implements ActiveRecordInterface
         if ($this->isColumnModified(UserTableMap::COL_BASH)) {
             $modifiedColumns[':p' . $index++]  = '`bash`';
         }
-        if ($this->isColumnModified(UserTableMap::COL_PHP_FPM_POOL)) {
-            $modifiedColumns[':p' . $index++]  = '`php_fpm_pool`';
-        }
-        if ($this->isColumnModified(UserTableMap::COL_PHP_FPM_SOCKET)) {
-            $modifiedColumns[':p' . $index++]  = '`php_fpm_socket`';
-        }
-        if ($this->isColumnModified(UserTableMap::COL_PHP_FPM_PORT)) {
-            $modifiedColumns[':p' . $index++]  = '`php_fpm_port`';
-        }
 
         $sql = sprintf(
             'INSERT INTO `xg_users` (%s) VALUES (%s)',
@@ -1896,18 +1767,6 @@ abstract class User implements ActiveRecordInterface
                         break;
                     case '`bash`':
                         $stmt->bindValue($identifier, $this->bash, PDO::PARAM_STR);
-
-                        break;
-                    case '`php_fpm_pool`':
-                        $stmt->bindValue($identifier, $this->php_fpm_pool, PDO::PARAM_STR);
-
-                        break;
-                    case '`php_fpm_socket`':
-                        $stmt->bindValue($identifier, $this->php_fpm_socket, PDO::PARAM_STR);
-
-                        break;
-                    case '`php_fpm_port`':
-                        $stmt->bindValue($identifier, $this->php_fpm_port, PDO::PARAM_INT);
 
                         break;
                 }
@@ -2023,15 +1882,6 @@ abstract class User implements ActiveRecordInterface
             case 16:
                 return $this->getBash();
 
-            case 17:
-                return $this->getPhpFpmPool();
-
-            case 18:
-                return $this->getPhpFpmSocket();
-
-            case 19:
-                return $this->getPhpFpmPort();
-
             default:
                 return null;
         } // switch()
@@ -2077,9 +1927,6 @@ abstract class User implements ActiveRecordInterface
             $keys[14] => $this->getLogFolder(),
             $keys[15] => $this->getWebFolder(),
             $keys[16] => $this->getBash(),
-            $keys[17] => $this->getPhpFpmPool(),
-            $keys[18] => $this->getPhpFpmSocket(),
-            $keys[19] => $this->getPhpFpmPort(),
         ];
         if ($result[$keys[9]] instanceof \DateTimeInterface) {
             $result[$keys[9]] = $result[$keys[9]]->format('Y-m-d H:i:s.u');
@@ -2302,15 +2149,6 @@ abstract class User implements ActiveRecordInterface
             case 16:
                 $this->setBash($value);
                 break;
-            case 17:
-                $this->setPhpFpmPool($value);
-                break;
-            case 18:
-                $this->setPhpFpmSocket($value);
-                break;
-            case 19:
-                $this->setPhpFpmPort($value);
-                break;
         } // switch()
 
         return $this;
@@ -2387,15 +2225,6 @@ abstract class User implements ActiveRecordInterface
         }
         if (array_key_exists($keys[16], $arr)) {
             $this->setBash($arr[$keys[16]]);
-        }
-        if (array_key_exists($keys[17], $arr)) {
-            $this->setPhpFpmPool($arr[$keys[17]]);
-        }
-        if (array_key_exists($keys[18], $arr)) {
-            $this->setPhpFpmSocket($arr[$keys[18]]);
-        }
-        if (array_key_exists($keys[19], $arr)) {
-            $this->setPhpFpmPort($arr[$keys[19]]);
         }
 
         return $this;
@@ -2490,15 +2319,6 @@ abstract class User implements ActiveRecordInterface
         }
         if ($this->isColumnModified(UserTableMap::COL_BASH)) {
             $criteria->add(UserTableMap::COL_BASH, $this->bash);
-        }
-        if ($this->isColumnModified(UserTableMap::COL_PHP_FPM_POOL)) {
-            $criteria->add(UserTableMap::COL_PHP_FPM_POOL, $this->php_fpm_pool);
-        }
-        if ($this->isColumnModified(UserTableMap::COL_PHP_FPM_SOCKET)) {
-            $criteria->add(UserTableMap::COL_PHP_FPM_SOCKET, $this->php_fpm_socket);
-        }
-        if ($this->isColumnModified(UserTableMap::COL_PHP_FPM_PORT)) {
-            $criteria->add(UserTableMap::COL_PHP_FPM_PORT, $this->php_fpm_port);
         }
 
         return $criteria;
@@ -2604,9 +2424,6 @@ abstract class User implements ActiveRecordInterface
         $copyObj->setLogFolder($this->getLogFolder());
         $copyObj->setWebFolder($this->getWebFolder());
         $copyObj->setBash($this->getBash());
-        $copyObj->setPhpFpmPool($this->getPhpFpmPool());
-        $copyObj->setPhpFpmSocket($this->getPhpFpmSocket());
-        $copyObj->setPhpFpmPort($this->getPhpFpmPort());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -4583,9 +4400,6 @@ abstract class User implements ActiveRecordInterface
         $this->log_folder = null;
         $this->web_folder = null;
         $this->bash = null;
-        $this->php_fpm_pool = null;
-        $this->php_fpm_socket = null;
-        $this->php_fpm_port = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();

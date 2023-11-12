@@ -28,7 +28,7 @@ class User extends BaseUser
 {
     public function setUsername($v) : User
     {
-        return parent::setUsername(strtolower($v));
+        return parent::setUsername(strtolower(preg_replace('/[^a-zA-Z0-9_]/', '', $v)));
     }
 
     /**
@@ -85,30 +85,33 @@ class User extends BaseUser
         return $value;
     }
 
+    /**
+     * @throws PropelException
+     */
+    public function getBash(bool $save_fallback_value = false) : string {
+        $value = parent::getBash();
+
+        if (null === $value || strlen($value) < 1) {
+            $value = Config::get('users_bash');
+            $this->setBash($value);
+
+            if ($save_fallback_value) {
+                $this->save();
+            }
+        }
+
+        return $value;
+    }
+
+    /**
+     * @return void
+     * @throws Exception
+     */
     public function applyDefaultValues() : void {
 
         $user = (null === $this->getUsername()) ? 'user_' . getRandomString(4, 'abcdefghijklmnoprstuvwxyz'): $this->getUsername();
 
         $this->setUsername($user);
-
-        if (null === $this->getLogFolder() || strlen($this->getLogFolder()) < 1) {
-            $this->setLogFolder(rtrim(Config::get('user_home_path'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $user . DIRECTORY_SEPARATOR . 'logs');
-        }
-        if (null === $this->getWebFolder() || strlen($this->getWebFolder()) < 1) {
-            $this->setWebFolder(rtrim(Config::get('webroot_path'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $user);
-        }
-        if (null === $this->getBash() || strlen($this->getBash()) < 1) {
-            $this->setBash(Config::get('users_bash'));
-        }
-        if (null === $this->getPhpFpmPool() || strlen($this->getPhpFpmPool()) < 1) {
-            $this->setPhpFpmPool($user . '-php');
-        }
-        if (null === $this->getPhpFpmSocket() || strlen($this->getPhpFpmSocket()) < 1) {
-            $this->setPhpFpmSocket(rtrim(Config::get('php_fpm_socket_path'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $user . '.sock');
-        }
-        if (null === $this->getPhpFpmPort() || strlen($this->getPhpFpmPort()) < 1) {
-            $this->setPhpFpmPort(Config::get('php_fpm_socket_port'));
-        }
     }
 
     /**

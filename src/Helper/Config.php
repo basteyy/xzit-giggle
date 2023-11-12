@@ -20,6 +20,7 @@ use Propel\Runtime\Exception\PropelException;
 class Config
 {
 
+    private string $config_path = '/src/Config/config.php';
     private static $instance;
 
     private array $config = [];

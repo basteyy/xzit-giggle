@@ -139,6 +139,27 @@ abstract class Domain implements ActiveRecordInterface
     protected $mounting_point;
 
     /**
+     * The value for the php_version field.
+     *
+     * @var        string
+     */
+    protected $php_version;
+
+    /**
+     * The value for the php_pool_name field.
+     *
+     * @var        string
+     */
+    protected $php_pool_name;
+
+    /**
+     * The value for the php_pool_sock_path field.
+     *
+     * @var        string
+     */
+    protected $php_pool_sock_path;
+
+    /**
      * The value for the activated field.
      *
      * Note: this column has a database default value of: true
@@ -558,6 +579,36 @@ abstract class Domain implements ActiveRecordInterface
     }
 
     /**
+     * Get the [php_version] column value.
+     *
+     * @return string
+     */
+    public function getPhpVersion()
+    {
+        return $this->php_version;
+    }
+
+    /**
+     * Get the [php_pool_name] column value.
+     *
+     * @return string
+     */
+    public function getPhpPoolName()
+    {
+        return $this->php_pool_name;
+    }
+
+    /**
+     * Get the [php_pool_sock_path] column value.
+     *
+     * @return string
+     */
+    public function getPhpPoolSockPath()
+    {
+        return $this->php_pool_sock_path;
+    }
+
+    /**
      * Get the [activated] column value.
      *
      * @return boolean
@@ -860,6 +911,66 @@ abstract class Domain implements ActiveRecordInterface
     }
 
     /**
+     * Set the value of [php_version] column.
+     *
+     * @param string $v New value
+     * @return $this The current object (for fluent API support)
+     */
+    public function setPhpVersion($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->php_version !== $v) {
+            $this->php_version = $v;
+            $this->modifiedColumns[DomainTableMap::COL_PHP_VERSION] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set the value of [php_pool_name] column.
+     *
+     * @param string $v New value
+     * @return $this The current object (for fluent API support)
+     */
+    public function setPhpPoolName($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->php_pool_name !== $v) {
+            $this->php_pool_name = $v;
+            $this->modifiedColumns[DomainTableMap::COL_PHP_POOL_NAME] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set the value of [php_pool_sock_path] column.
+     *
+     * @param string $v New value
+     * @return $this The current object (for fluent API support)
+     */
+    public function setPhpPoolSockPath($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->php_pool_sock_path !== $v) {
+            $this->php_pool_sock_path = $v;
+            $this->modifiedColumns[DomainTableMap::COL_PHP_POOL_SOCK_PATH] = true;
+        }
+
+        return $this;
+    }
+
+    /**
      * Sets the value of the [activated] column.
      * Non-boolean arguments are converted using the following rules:
      *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
@@ -1052,16 +1163,25 @@ abstract class Domain implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : DomainTableMap::translateFieldName('MountingPoint', TableMap::TYPE_PHPNAME, $indexType)];
             $this->mounting_point = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : DomainTableMap::translateFieldName('Activated', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : DomainTableMap::translateFieldName('PhpVersion', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->php_version = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : DomainTableMap::translateFieldName('PhpPoolName', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->php_pool_name = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : DomainTableMap::translateFieldName('PhpPoolSockPath', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->php_pool_sock_path = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : DomainTableMap::translateFieldName('Activated', TableMap::TYPE_PHPNAME, $indexType)];
             $this->activated = (null !== $col) ? (boolean) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : DomainTableMap::translateFieldName('Blocked', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : DomainTableMap::translateFieldName('Blocked', TableMap::TYPE_PHPNAME, $indexType)];
             $this->blocked = (null !== $col) ? (boolean) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : DomainTableMap::translateFieldName('Processed', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 15 + $startcol : DomainTableMap::translateFieldName('Processed', TableMap::TYPE_PHPNAME, $indexType)];
             $this->processed = (null !== $col) ? (boolean) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : DomainTableMap::translateFieldName('ProcessedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 16 + $startcol : DomainTableMap::translateFieldName('ProcessedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -1074,7 +1194,7 @@ abstract class Domain implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 14; // 14 = DomainTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 17; // 17 = DomainTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\basteyy\\XzitGiggle\\Models\\Domain'), 0, $e);
@@ -1322,6 +1442,15 @@ abstract class Domain implements ActiveRecordInterface
         if ($this->isColumnModified(DomainTableMap::COL_MOUNTING_POINT)) {
             $modifiedColumns[':p' . $index++]  = '`mounting_point`';
         }
+        if ($this->isColumnModified(DomainTableMap::COL_PHP_VERSION)) {
+            $modifiedColumns[':p' . $index++]  = '`php_version`';
+        }
+        if ($this->isColumnModified(DomainTableMap::COL_PHP_POOL_NAME)) {
+            $modifiedColumns[':p' . $index++]  = '`php_pool_name`';
+        }
+        if ($this->isColumnModified(DomainTableMap::COL_PHP_POOL_SOCK_PATH)) {
+            $modifiedColumns[':p' . $index++]  = '`php_pool_sock_path`';
+        }
         if ($this->isColumnModified(DomainTableMap::COL_ACTIVATED)) {
             $modifiedColumns[':p' . $index++]  = '`activated`';
         }
@@ -1383,6 +1512,18 @@ abstract class Domain implements ActiveRecordInterface
                         break;
                     case '`mounting_point`':
                         $stmt->bindValue($identifier, $this->mounting_point, PDO::PARAM_STR);
+
+                        break;
+                    case '`php_version`':
+                        $stmt->bindValue($identifier, $this->php_version, PDO::PARAM_STR);
+
+                        break;
+                    case '`php_pool_name`':
+                        $stmt->bindValue($identifier, $this->php_pool_name, PDO::PARAM_STR);
+
+                        break;
+                    case '`php_pool_sock_path`':
+                        $stmt->bindValue($identifier, $this->php_pool_sock_path, PDO::PARAM_STR);
 
                         break;
                     case '`activated`':
@@ -1494,15 +1635,24 @@ abstract class Domain implements ActiveRecordInterface
                 return $this->getMountingPoint();
 
             case 10:
-                return $this->getActivated();
+                return $this->getPhpVersion();
 
             case 11:
-                return $this->getBlocked();
+                return $this->getPhpPoolName();
 
             case 12:
-                return $this->getProcessed();
+                return $this->getPhpPoolSockPath();
 
             case 13:
+                return $this->getActivated();
+
+            case 14:
+                return $this->getBlocked();
+
+            case 15:
+                return $this->getProcessed();
+
+            case 16:
                 return $this->getProcessedAt();
 
             default:
@@ -1543,17 +1693,20 @@ abstract class Domain implements ActiveRecordInterface
             $keys[7] => $this->getIpv4(),
             $keys[8] => $this->getIpv6(),
             $keys[9] => $this->getMountingPoint(),
-            $keys[10] => $this->getActivated(),
-            $keys[11] => $this->getBlocked(),
-            $keys[12] => $this->getProcessed(),
-            $keys[13] => $this->getProcessedAt(),
+            $keys[10] => $this->getPhpVersion(),
+            $keys[11] => $this->getPhpPoolName(),
+            $keys[12] => $this->getPhpPoolSockPath(),
+            $keys[13] => $this->getActivated(),
+            $keys[14] => $this->getBlocked(),
+            $keys[15] => $this->getProcessed(),
+            $keys[16] => $this->getProcessedAt(),
         ];
         if ($result[$keys[4]] instanceof \DateTimeInterface) {
             $result[$keys[4]] = $result[$keys[4]]->format('Y-m-d H:i:s.u');
         }
 
-        if ($result[$keys[13]] instanceof \DateTimeInterface) {
-            $result[$keys[13]] = $result[$keys[13]]->format('Y-m-d H:i:s.u');
+        if ($result[$keys[16]] instanceof \DateTimeInterface) {
+            $result[$keys[16]] = $result[$keys[16]]->format('Y-m-d H:i:s.u');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1644,15 +1797,24 @@ abstract class Domain implements ActiveRecordInterface
                 $this->setMountingPoint($value);
                 break;
             case 10:
-                $this->setActivated($value);
+                $this->setPhpVersion($value);
                 break;
             case 11:
-                $this->setBlocked($value);
+                $this->setPhpPoolName($value);
                 break;
             case 12:
-                $this->setProcessed($value);
+                $this->setPhpPoolSockPath($value);
                 break;
             case 13:
+                $this->setActivated($value);
+                break;
+            case 14:
+                $this->setBlocked($value);
+                break;
+            case 15:
+                $this->setProcessed($value);
+                break;
+            case 16:
                 $this->setProcessedAt($value);
                 break;
         } // switch()
@@ -1712,16 +1874,25 @@ abstract class Domain implements ActiveRecordInterface
             $this->setMountingPoint($arr[$keys[9]]);
         }
         if (array_key_exists($keys[10], $arr)) {
-            $this->setActivated($arr[$keys[10]]);
+            $this->setPhpVersion($arr[$keys[10]]);
         }
         if (array_key_exists($keys[11], $arr)) {
-            $this->setBlocked($arr[$keys[11]]);
+            $this->setPhpPoolName($arr[$keys[11]]);
         }
         if (array_key_exists($keys[12], $arr)) {
-            $this->setProcessed($arr[$keys[12]]);
+            $this->setPhpPoolSockPath($arr[$keys[12]]);
         }
         if (array_key_exists($keys[13], $arr)) {
-            $this->setProcessedAt($arr[$keys[13]]);
+            $this->setActivated($arr[$keys[13]]);
+        }
+        if (array_key_exists($keys[14], $arr)) {
+            $this->setBlocked($arr[$keys[14]]);
+        }
+        if (array_key_exists($keys[15], $arr)) {
+            $this->setProcessed($arr[$keys[15]]);
+        }
+        if (array_key_exists($keys[16], $arr)) {
+            $this->setProcessedAt($arr[$keys[16]]);
         }
 
         return $this;
@@ -1795,6 +1966,15 @@ abstract class Domain implements ActiveRecordInterface
         }
         if ($this->isColumnModified(DomainTableMap::COL_MOUNTING_POINT)) {
             $criteria->add(DomainTableMap::COL_MOUNTING_POINT, $this->mounting_point);
+        }
+        if ($this->isColumnModified(DomainTableMap::COL_PHP_VERSION)) {
+            $criteria->add(DomainTableMap::COL_PHP_VERSION, $this->php_version);
+        }
+        if ($this->isColumnModified(DomainTableMap::COL_PHP_POOL_NAME)) {
+            $criteria->add(DomainTableMap::COL_PHP_POOL_NAME, $this->php_pool_name);
+        }
+        if ($this->isColumnModified(DomainTableMap::COL_PHP_POOL_SOCK_PATH)) {
+            $criteria->add(DomainTableMap::COL_PHP_POOL_SOCK_PATH, $this->php_pool_sock_path);
         }
         if ($this->isColumnModified(DomainTableMap::COL_ACTIVATED)) {
             $criteria->add(DomainTableMap::COL_ACTIVATED, $this->activated);
@@ -1905,6 +2085,9 @@ abstract class Domain implements ActiveRecordInterface
         $copyObj->setIpv4($this->getIpv4());
         $copyObj->setIpv6($this->getIpv6());
         $copyObj->setMountingPoint($this->getMountingPoint());
+        $copyObj->setPhpVersion($this->getPhpVersion());
+        $copyObj->setPhpPoolName($this->getPhpPoolName());
+        $copyObj->setPhpPoolSockPath($this->getPhpPoolSockPath());
         $copyObj->setActivated($this->getActivated());
         $copyObj->setBlocked($this->getBlocked());
         $copyObj->setProcessed($this->getProcessed());
@@ -2010,6 +2193,9 @@ abstract class Domain implements ActiveRecordInterface
         $this->ipv4 = null;
         $this->ipv6 = null;
         $this->mounting_point = null;
+        $this->php_version = null;
+        $this->php_pool_name = null;
+        $this->php_pool_sock_path = null;
         $this->activated = null;
         $this->blocked = null;
         $this->processed = null;

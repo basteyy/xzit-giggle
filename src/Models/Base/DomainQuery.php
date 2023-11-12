@@ -29,6 +29,9 @@ use basteyy\XzitGiggle\Models\Map\DomainTableMap;
  * @method     ChildDomainQuery orderByIpv4($order = Criteria::ASC) Order by the ipv4 column
  * @method     ChildDomainQuery orderByIpv6($order = Criteria::ASC) Order by the ipv6 column
  * @method     ChildDomainQuery orderByMountingPoint($order = Criteria::ASC) Order by the mounting_point column
+ * @method     ChildDomainQuery orderByPhpVersion($order = Criteria::ASC) Order by the php_version column
+ * @method     ChildDomainQuery orderByPhpPoolName($order = Criteria::ASC) Order by the php_pool_name column
+ * @method     ChildDomainQuery orderByPhpPoolSockPath($order = Criteria::ASC) Order by the php_pool_sock_path column
  * @method     ChildDomainQuery orderByActivated($order = Criteria::ASC) Order by the activated column
  * @method     ChildDomainQuery orderByBlocked($order = Criteria::ASC) Order by the blocked column
  * @method     ChildDomainQuery orderByProcessed($order = Criteria::ASC) Order by the processed column
@@ -44,6 +47,9 @@ use basteyy\XzitGiggle\Models\Map\DomainTableMap;
  * @method     ChildDomainQuery groupByIpv4() Group by the ipv4 column
  * @method     ChildDomainQuery groupByIpv6() Group by the ipv6 column
  * @method     ChildDomainQuery groupByMountingPoint() Group by the mounting_point column
+ * @method     ChildDomainQuery groupByPhpVersion() Group by the php_version column
+ * @method     ChildDomainQuery groupByPhpPoolName() Group by the php_pool_name column
+ * @method     ChildDomainQuery groupByPhpPoolSockPath() Group by the php_pool_sock_path column
  * @method     ChildDomainQuery groupByActivated() Group by the activated column
  * @method     ChildDomainQuery groupByBlocked() Group by the blocked column
  * @method     ChildDomainQuery groupByProcessed() Group by the processed column
@@ -82,6 +88,9 @@ use basteyy\XzitGiggle\Models\Map\DomainTableMap;
  * @method     ChildDomain|null findOneByIpv4(int $ipv4) Return the first ChildDomain filtered by the ipv4 column
  * @method     ChildDomain|null findOneByIpv6(int $ipv6) Return the first ChildDomain filtered by the ipv6 column
  * @method     ChildDomain|null findOneByMountingPoint(string $mounting_point) Return the first ChildDomain filtered by the mounting_point column
+ * @method     ChildDomain|null findOneByPhpVersion(string $php_version) Return the first ChildDomain filtered by the php_version column
+ * @method     ChildDomain|null findOneByPhpPoolName(string $php_pool_name) Return the first ChildDomain filtered by the php_pool_name column
+ * @method     ChildDomain|null findOneByPhpPoolSockPath(string $php_pool_sock_path) Return the first ChildDomain filtered by the php_pool_sock_path column
  * @method     ChildDomain|null findOneByActivated(boolean $activated) Return the first ChildDomain filtered by the activated column
  * @method     ChildDomain|null findOneByBlocked(boolean $blocked) Return the first ChildDomain filtered by the blocked column
  * @method     ChildDomain|null findOneByProcessed(boolean $processed) Return the first ChildDomain filtered by the processed column
@@ -100,6 +109,9 @@ use basteyy\XzitGiggle\Models\Map\DomainTableMap;
  * @method     ChildDomain requireOneByIpv4(int $ipv4) Return the first ChildDomain filtered by the ipv4 column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildDomain requireOneByIpv6(int $ipv6) Return the first ChildDomain filtered by the ipv6 column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildDomain requireOneByMountingPoint(string $mounting_point) Return the first ChildDomain filtered by the mounting_point column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildDomain requireOneByPhpVersion(string $php_version) Return the first ChildDomain filtered by the php_version column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildDomain requireOneByPhpPoolName(string $php_pool_name) Return the first ChildDomain filtered by the php_pool_name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildDomain requireOneByPhpPoolSockPath(string $php_pool_sock_path) Return the first ChildDomain filtered by the php_pool_sock_path column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildDomain requireOneByActivated(boolean $activated) Return the first ChildDomain filtered by the activated column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildDomain requireOneByBlocked(boolean $blocked) Return the first ChildDomain filtered by the blocked column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildDomain requireOneByProcessed(boolean $processed) Return the first ChildDomain filtered by the processed column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -128,6 +140,12 @@ use basteyy\XzitGiggle\Models\Map\DomainTableMap;
  * @psalm-method Collection&\Traversable<ChildDomain> findByIpv6(int|array<int> $ipv6) Return ChildDomain objects filtered by the ipv6 column
  * @method     ChildDomain[]|Collection findByMountingPoint(string|array<string> $mounting_point) Return ChildDomain objects filtered by the mounting_point column
  * @psalm-method Collection&\Traversable<ChildDomain> findByMountingPoint(string|array<string> $mounting_point) Return ChildDomain objects filtered by the mounting_point column
+ * @method     ChildDomain[]|Collection findByPhpVersion(string|array<string> $php_version) Return ChildDomain objects filtered by the php_version column
+ * @psalm-method Collection&\Traversable<ChildDomain> findByPhpVersion(string|array<string> $php_version) Return ChildDomain objects filtered by the php_version column
+ * @method     ChildDomain[]|Collection findByPhpPoolName(string|array<string> $php_pool_name) Return ChildDomain objects filtered by the php_pool_name column
+ * @psalm-method Collection&\Traversable<ChildDomain> findByPhpPoolName(string|array<string> $php_pool_name) Return ChildDomain objects filtered by the php_pool_name column
+ * @method     ChildDomain[]|Collection findByPhpPoolSockPath(string|array<string> $php_pool_sock_path) Return ChildDomain objects filtered by the php_pool_sock_path column
+ * @psalm-method Collection&\Traversable<ChildDomain> findByPhpPoolSockPath(string|array<string> $php_pool_sock_path) Return ChildDomain objects filtered by the php_pool_sock_path column
  * @method     ChildDomain[]|Collection findByActivated(boolean|array<boolean> $activated) Return ChildDomain objects filtered by the activated column
  * @psalm-method Collection&\Traversable<ChildDomain> findByActivated(boolean|array<boolean> $activated) Return ChildDomain objects filtered by the activated column
  * @method     ChildDomain[]|Collection findByBlocked(boolean|array<boolean> $blocked) Return ChildDomain objects filtered by the blocked column
@@ -235,7 +253,7 @@ abstract class DomainQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT `id`, `user_id`, `tld`, `domain`, `registered`, `www_alias`, `lets_encrypt`, `ipv4`, `ipv6`, `mounting_point`, `activated`, `blocked`, `processed`, `processed_at` FROM `xg_domains` WHERE `id` = :p0';
+        $sql = 'SELECT `id`, `user_id`, `tld`, `domain`, `registered`, `www_alias`, `lets_encrypt`, `ipv4`, `ipv6`, `mounting_point`, `php_version`, `php_pool_name`, `php_pool_sock_path`, `activated`, `blocked`, `processed`, `processed_at` FROM `xg_domains` WHERE `id` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -686,6 +704,90 @@ abstract class DomainQuery extends ModelCriteria
         }
 
         $this->addUsingAlias(DomainTableMap::COL_MOUNTING_POINT, $mountingPoint, $comparison);
+
+        return $this;
+    }
+
+    /**
+     * Filter the query on the php_version column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByPhpVersion('fooValue');   // WHERE php_version = 'fooValue'
+     * $query->filterByPhpVersion('%fooValue%', Criteria::LIKE); // WHERE php_version LIKE '%fooValue%'
+     * $query->filterByPhpVersion(['foo', 'bar']); // WHERE php_version IN ('foo', 'bar')
+     * </code>
+     *
+     * @param string|string[] $phpVersion The value to use as filter.
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this The current query, for fluid interface
+     */
+    public function filterByPhpVersion($phpVersion = null, ?string $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($phpVersion)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        $this->addUsingAlias(DomainTableMap::COL_PHP_VERSION, $phpVersion, $comparison);
+
+        return $this;
+    }
+
+    /**
+     * Filter the query on the php_pool_name column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByPhpPoolName('fooValue');   // WHERE php_pool_name = 'fooValue'
+     * $query->filterByPhpPoolName('%fooValue%', Criteria::LIKE); // WHERE php_pool_name LIKE '%fooValue%'
+     * $query->filterByPhpPoolName(['foo', 'bar']); // WHERE php_pool_name IN ('foo', 'bar')
+     * </code>
+     *
+     * @param string|string[] $phpPoolName The value to use as filter.
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this The current query, for fluid interface
+     */
+    public function filterByPhpPoolName($phpPoolName = null, ?string $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($phpPoolName)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        $this->addUsingAlias(DomainTableMap::COL_PHP_POOL_NAME, $phpPoolName, $comparison);
+
+        return $this;
+    }
+
+    /**
+     * Filter the query on the php_pool_sock_path column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByPhpPoolSockPath('fooValue');   // WHERE php_pool_sock_path = 'fooValue'
+     * $query->filterByPhpPoolSockPath('%fooValue%', Criteria::LIKE); // WHERE php_pool_sock_path LIKE '%fooValue%'
+     * $query->filterByPhpPoolSockPath(['foo', 'bar']); // WHERE php_pool_sock_path IN ('foo', 'bar')
+     * </code>
+     *
+     * @param string|string[] $phpPoolSockPath The value to use as filter.
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this The current query, for fluid interface
+     */
+    public function filterByPhpPoolSockPath($phpPoolSockPath = null, ?string $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($phpPoolSockPath)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        $this->addUsingAlias(DomainTableMap::COL_PHP_POOL_SOCK_PATH, $phpPoolSockPath, $comparison);
 
         return $this;
     }

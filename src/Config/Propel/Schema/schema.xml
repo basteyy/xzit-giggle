@@ -38,9 +38,6 @@
         <column name="log_folder" type="varchar" size="256" required="false"/>
         <column name="web_folder" type="varchar" size="256" required="false"/>
         <column name="bash" type="varchar" size="256" required="false"/>
-        <column name="php_fpm_pool" type="varchar" size="256" required="false"/>
-        <column name="php_fpm_socket" type="varchar" size="256" required="false"/>
-        <column name="php_fpm_port" type="integer" required="false"/>
 
         <foreign-key foreignTable="xg_user_roles" phpName="UserRole" refPhpName="Users">
             <reference local="user_role_id" foreign="id"/>
@@ -105,6 +102,11 @@
         <column name="ipv4" type="integer" required="true"/>
         <column name="ipv6" type="integer" required="false"/>
         <column name="mounting_point" type="varchar" size="255" required="true"/>
+
+        <column name="php_version" type="varchar" size="256" required="true"/>
+        <column name="php_pool_name" type="varchar" size="256" required="true"/>
+        <column name="php_pool_sock_path" type="varchar" size="256" required="true"/>
+
         <column name="activated" type="boolean" required="true" default="true"/>
         <column name="blocked" type="boolean" required="true" default="false"/>
         <column name="processed" type="boolean" required="true" default="false"/>

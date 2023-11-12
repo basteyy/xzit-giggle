@@ -36,9 +36,6 @@ use basteyy\XzitGiggle\Models\Map\UserTableMap;
  * @method     ChildUserQuery orderByLogFolder($order = Criteria::ASC) Order by the log_folder column
  * @method     ChildUserQuery orderByWebFolder($order = Criteria::ASC) Order by the web_folder column
  * @method     ChildUserQuery orderByBash($order = Criteria::ASC) Order by the bash column
- * @method     ChildUserQuery orderByPhpFpmPool($order = Criteria::ASC) Order by the php_fpm_pool column
- * @method     ChildUserQuery orderByPhpFpmSocket($order = Criteria::ASC) Order by the php_fpm_socket column
- * @method     ChildUserQuery orderByPhpFpmPort($order = Criteria::ASC) Order by the php_fpm_port column
  *
  * @method     ChildUserQuery groupById() Group by the id column
  * @method     ChildUserQuery groupByEmail() Group by the email column
@@ -57,9 +54,6 @@ use basteyy\XzitGiggle\Models\Map\UserTableMap;
  * @method     ChildUserQuery groupByLogFolder() Group by the log_folder column
  * @method     ChildUserQuery groupByWebFolder() Group by the web_folder column
  * @method     ChildUserQuery groupByBash() Group by the bash column
- * @method     ChildUserQuery groupByPhpFpmPool() Group by the php_fpm_pool column
- * @method     ChildUserQuery groupByPhpFpmSocket() Group by the php_fpm_socket column
- * @method     ChildUserQuery groupByPhpFpmPort() Group by the php_fpm_port column
  *
  * @method     ChildUserQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildUserQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -171,9 +165,6 @@ use basteyy\XzitGiggle\Models\Map\UserTableMap;
  * @method     ChildUser|null findOneByLogFolder(string $log_folder) Return the first ChildUser filtered by the log_folder column
  * @method     ChildUser|null findOneByWebFolder(string $web_folder) Return the first ChildUser filtered by the web_folder column
  * @method     ChildUser|null findOneByBash(string $bash) Return the first ChildUser filtered by the bash column
- * @method     ChildUser|null findOneByPhpFpmPool(string $php_fpm_pool) Return the first ChildUser filtered by the php_fpm_pool column
- * @method     ChildUser|null findOneByPhpFpmSocket(string $php_fpm_socket) Return the first ChildUser filtered by the php_fpm_socket column
- * @method     ChildUser|null findOneByPhpFpmPort(int $php_fpm_port) Return the first ChildUser filtered by the php_fpm_port column
  *
  * @method     ChildUser requirePk($key, ?ConnectionInterface $con = null) Return the ChildUser by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOne(?ConnectionInterface $con = null) Return the first ChildUser matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -195,9 +186,6 @@ use basteyy\XzitGiggle\Models\Map\UserTableMap;
  * @method     ChildUser requireOneByLogFolder(string $log_folder) Return the first ChildUser filtered by the log_folder column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByWebFolder(string $web_folder) Return the first ChildUser filtered by the web_folder column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByBash(string $bash) Return the first ChildUser filtered by the bash column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildUser requireOneByPhpFpmPool(string $php_fpm_pool) Return the first ChildUser filtered by the php_fpm_pool column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildUser requireOneByPhpFpmSocket(string $php_fpm_socket) Return the first ChildUser filtered by the php_fpm_socket column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildUser requireOneByPhpFpmPort(int $php_fpm_port) Return the first ChildUser filtered by the php_fpm_port column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildUser[]|Collection find(?ConnectionInterface $con = null) Return ChildUser objects based on current ModelCriteria
  * @psalm-method Collection&\Traversable<ChildUser> find(?ConnectionInterface $con = null) Return ChildUser objects based on current ModelCriteria
@@ -236,12 +224,6 @@ use basteyy\XzitGiggle\Models\Map\UserTableMap;
  * @psalm-method Collection&\Traversable<ChildUser> findByWebFolder(string|array<string> $web_folder) Return ChildUser objects filtered by the web_folder column
  * @method     ChildUser[]|Collection findByBash(string|array<string> $bash) Return ChildUser objects filtered by the bash column
  * @psalm-method Collection&\Traversable<ChildUser> findByBash(string|array<string> $bash) Return ChildUser objects filtered by the bash column
- * @method     ChildUser[]|Collection findByPhpFpmPool(string|array<string> $php_fpm_pool) Return ChildUser objects filtered by the php_fpm_pool column
- * @psalm-method Collection&\Traversable<ChildUser> findByPhpFpmPool(string|array<string> $php_fpm_pool) Return ChildUser objects filtered by the php_fpm_pool column
- * @method     ChildUser[]|Collection findByPhpFpmSocket(string|array<string> $php_fpm_socket) Return ChildUser objects filtered by the php_fpm_socket column
- * @psalm-method Collection&\Traversable<ChildUser> findByPhpFpmSocket(string|array<string> $php_fpm_socket) Return ChildUser objects filtered by the php_fpm_socket column
- * @method     ChildUser[]|Collection findByPhpFpmPort(int|array<int> $php_fpm_port) Return ChildUser objects filtered by the php_fpm_port column
- * @psalm-method Collection&\Traversable<ChildUser> findByPhpFpmPort(int|array<int> $php_fpm_port) Return ChildUser objects filtered by the php_fpm_port column
  *
  * @method     ChildUser[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ?ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  * @psalm-method \Propel\Runtime\Util\PropelModelPager&\Traversable<ChildUser> paginate($page = 1, $maxPerPage = 10, ?ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -341,7 +323,7 @@ abstract class UserQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT `id`, `email`, `username`, `user_role_id`, `secret_key`, `password_hash`, `activated`, `blocked`, `is_delete_candidate`, `last_login`, `last_login_ip`, `processed`, `processed_at`, `home_folder`, `log_folder`, `web_folder`, `bash`, `php_fpm_pool`, `php_fpm_socket`, `php_fpm_port` FROM `xg_users` WHERE `id` = :p0';
+        $sql = 'SELECT `id`, `email`, `username`, `user_role_id`, `secret_key`, `password_hash`, `activated`, `blocked`, `is_delete_candidate`, `last_login`, `last_login_ip`, `processed`, `processed_at`, `home_folder`, `log_folder`, `web_folder`, `bash` FROM `xg_users` WHERE `id` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -977,105 +959,6 @@ abstract class UserQuery extends ModelCriteria
         }
 
         $this->addUsingAlias(UserTableMap::COL_BASH, $bash, $comparison);
-
-        return $this;
-    }
-
-    /**
-     * Filter the query on the php_fpm_pool column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByPhpFpmPool('fooValue');   // WHERE php_fpm_pool = 'fooValue'
-     * $query->filterByPhpFpmPool('%fooValue%', Criteria::LIKE); // WHERE php_fpm_pool LIKE '%fooValue%'
-     * $query->filterByPhpFpmPool(['foo', 'bar']); // WHERE php_fpm_pool IN ('foo', 'bar')
-     * </code>
-     *
-     * @param string|string[] $phpFpmPool The value to use as filter.
-     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this The current query, for fluid interface
-     */
-    public function filterByPhpFpmPool($phpFpmPool = null, ?string $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($phpFpmPool)) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        $this->addUsingAlias(UserTableMap::COL_PHP_FPM_POOL, $phpFpmPool, $comparison);
-
-        return $this;
-    }
-
-    /**
-     * Filter the query on the php_fpm_socket column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByPhpFpmSocket('fooValue');   // WHERE php_fpm_socket = 'fooValue'
-     * $query->filterByPhpFpmSocket('%fooValue%', Criteria::LIKE); // WHERE php_fpm_socket LIKE '%fooValue%'
-     * $query->filterByPhpFpmSocket(['foo', 'bar']); // WHERE php_fpm_socket IN ('foo', 'bar')
-     * </code>
-     *
-     * @param string|string[] $phpFpmSocket The value to use as filter.
-     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this The current query, for fluid interface
-     */
-    public function filterByPhpFpmSocket($phpFpmSocket = null, ?string $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($phpFpmSocket)) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        $this->addUsingAlias(UserTableMap::COL_PHP_FPM_SOCKET, $phpFpmSocket, $comparison);
-
-        return $this;
-    }
-
-    /**
-     * Filter the query on the php_fpm_port column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByPhpFpmPort(1234); // WHERE php_fpm_port = 1234
-     * $query->filterByPhpFpmPort(array(12, 34)); // WHERE php_fpm_port IN (12, 34)
-     * $query->filterByPhpFpmPort(array('min' => 12)); // WHERE php_fpm_port > 12
-     * </code>
-     *
-     * @param mixed $phpFpmPort The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this The current query, for fluid interface
-     */
-    public function filterByPhpFpmPort($phpFpmPort = null, ?string $comparison = null)
-    {
-        if (is_array($phpFpmPort)) {
-            $useMinMax = false;
-            if (isset($phpFpmPort['min'])) {
-                $this->addUsingAlias(UserTableMap::COL_PHP_FPM_PORT, $phpFpmPort['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($phpFpmPort['max'])) {
-                $this->addUsingAlias(UserTableMap::COL_PHP_FPM_PORT, $phpFpmPort['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        $this->addUsingAlias(UserTableMap::COL_PHP_FPM_PORT, $phpFpmPort, $comparison);
 
         return $this;
     }

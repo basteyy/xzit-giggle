@@ -67,6 +67,19 @@ trait UsersTrait
                 continue;
             }
 
+            /** Create HomeFolder */
+            $writer->comment('Create home folder for user ' . $username . ' ... ', true);
+            $this->runShellCmd(sprintf('mkdir -p %1$s',
+                $user->getHomeFolder()
+            ));
+
+            /** Make home folder chown to user */
+            $writer->comment('Make home folder chown to user ' . $username . ' ... ', true);
+            $this->runShellCmd(sprintf('chown -R %1$s:%1$s %2$s',
+                $user->getUsername(),
+                $user->getHomeFolder()
+            ));
+
             /** Create user */
             $writer->comment('Create user ' . $username . ' ... ', true);
             $this->runShellCmd(sprintf('useradd -m -d %2$s -s %3$s %1$s',

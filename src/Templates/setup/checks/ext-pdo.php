@@ -16,13 +16,13 @@ declare(strict_types=1);
 if (!extension_loaded('pdo')) {
     ?>
     <div class="alert alert-danger">
-        The PHP extension `pdo` is not installed. Please install it.
+        The PHP extension <code>pdo</code> is not installed. Please install it.
     </div>
     <?php
 } else {
     ?>
     <div class="alert alert-success">
-        The PHP extension `pdo` is installed.
+        The PHP extension <code>pdo</code> is installed.
     </div>
     <script>check++;</script>
     <?php

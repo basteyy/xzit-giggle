@@ -85,8 +85,8 @@ $this->layout('layouts::default', [
                     <td><?= ini_get('upload_max_filesize') ?></td>
                 </tr>
             </table>
+            <script>let check = 0;</script>
             <?= $this->fetch('setup::checks/php') ?>
-            <?= $this->fetch('setup::checks/env') ?>
             <?= $this->fetch('setup::checks/proc_open') ?>
             <?= $this->fetch('setup::checks/ext-pdo') ?>
             <?= $this->fetch('setup::checks/ext-json') ?>

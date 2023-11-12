@@ -16,13 +16,13 @@ declare(strict_types=1);
 if (!extension_loaded('posix')) {
     ?>
     <div class="alert alert-danger">
-        The PHP extension `posix` is not installed. Please install it.
+        The PHP extension <code>posix</code> is not installed. Please install it.
     </div>
     <?php
 } else {
     ?>
     <div class="alert alert-success">
-        The PHP extension `posix` is installed.
+        The PHP extension <code>posix</code> is installed.
     </div>
     <script>check++;</script>
     <?php

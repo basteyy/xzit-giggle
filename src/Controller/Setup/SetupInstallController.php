@@ -176,9 +176,9 @@ class SetupInstallController extends BaseSetupController
                 $connection->exec(
                     'INSERT INTO `xg_config` (`key`, `default`, `value`, `var_type`) VALUES (' .
                     $connection->quote($item) . ', ' .
-                    $connection->quote($setting) . ', ' .
-                    $connection->quote($setting) . ', ' .
-                    $connection->quote(gettype($setting)) . ');'
+                    $connection->quote((string)$setting) . ', ' .
+                    $connection->quote((string)$setting) . ', ' .
+                    $connection->quote((string)gettype($setting)) . ');'
                 );
             }
 

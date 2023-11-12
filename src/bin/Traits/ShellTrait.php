@@ -46,7 +46,7 @@ trait ShellTrait {
             file_put_contents($this->getLogFilePath(), $cmd, FILE_APPEND);
 
             /** The owner of ROOT must be also owner of log file */
-            $owner = posix_getpwuid(fileowner(ROOT));
+            chown($logFile, posix_getpwuid(fileowner(ROOT))['name']);
 
             return 0;
         } else {

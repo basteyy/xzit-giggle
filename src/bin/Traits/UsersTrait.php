@@ -16,6 +16,7 @@ namespace basteyy\XzitGiggle\bin\Traits;
 
 use Ahc\Cli\Helper\Shell;
 use Ahc\Cli\Output\Writer;
+use basteyy\XzitGiggle\Helper\Config;
 use basteyy\XzitGiggle\Models\UserQuery;
 use DateTime;
 use Propel\Runtime\Exception\PropelException;
@@ -133,6 +134,12 @@ trait UsersTrait
 
             /** Create web folder */
             $web_folder = $user->getWebFolder();
+
+            if (strlen(trim($web_folder)) < 1) {
+                $web_folder = Config::get('webroot_path') . DIRECTORY_SEPARATOR . $user->getUsername();
+                $user->setWebFolder($web_folder);
+            }
+
             $writer->comment('Create web folder for user ' . $username . ' ... ', true);
             $this->runShellCmd(sprintf('mkdir -p %1$s',
                 $web_folder

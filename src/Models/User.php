@@ -31,15 +31,66 @@ class User extends BaseUser
         return parent::setUsername(strtolower($v));
     }
 
+    /**
+     * @param bool $save_fallback_value
+     * @return string
+     * @throws PropelException
+     */
+    public function getHomeFolder(bool $save_fallback_value = false) : string
+    {
+        $value = parent::getHomeFolder();
+
+        if (null === $value || strlen($value) < 1) {
+            $value = rtrim(Config::get('user_home_path'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $this->getUsername();
+            $this->setHomeFolder($value);
+
+            if ($save_fallback_value) {
+                $this->save();
+            }
+        }
+
+        return $value;
+    }
+
+    public function getWebFolder(bool $save_fallback_value = false) : string {
+        $value = parent::getWebFolder();
+
+        if (null === $value || strlen($value) < 1) {
+            $value = rtrim(Config::get('webroot_path'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $this->getUsername();
+            $this->setHomeFolder($value);
+
+            if ($save_fallback_value) {
+                $this->save();
+            }
+        }
+
+        return $value;
+    }
+
+    /**
+     * @throws PropelException
+     */
+    public function getLogFolder(bool $save_fallback_value = false) : string {
+        $value = parent::getLogFolder();
+
+        if (null === $value || strlen($value) < 1) {
+            $value = rtrim($this->getHomeFolder($save_fallback_value), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'logs';
+            $this->setLogFolder($value);
+
+            if ($save_fallback_value) {
+                $this->save();
+            }
+        }
+
+        return $value;
+    }
+
     public function applyDefaultValues() : void {
 
         $user = (null === $this->getUsername()) ? 'user_' . getRandomString(4, 'abcdefghijklmnoprstuvwxyz'): $this->getUsername();
 
         $this->setUsername($user);
 
-        if (null === $this->getHomeFolder() || strlen($this->getHomeFolder()) < 1) {
-            $this->setHomeFolder(rtrim(Config::get('user_home_path'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $user);
-        }
         if (null === $this->getLogFolder() || strlen($this->getLogFolder()) < 1) {
             $this->setLogFolder(rtrim(Config::get('user_home_path'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $user . DIRECTORY_SEPARATOR . 'logs');
         }

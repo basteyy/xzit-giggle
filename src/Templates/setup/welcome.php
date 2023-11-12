@@ -32,15 +32,16 @@ $this->layout('layouts::setup', ['title' => 'Set-up']);
 <script>let check = 0;</script>
 
 <?= $this->fetch('setup::checks/php') ?>
-<?= $this->fetch('setup::checks/ext-pdo') ?>
-<?= $this->fetch('setup::checks/ext-json') ?>
 <?= $this->fetch('setup::checks/env') ?>
 <?= $this->fetch('setup::checks/proc_open') ?>
+<?= $this->fetch('setup::checks/ext-pdo') ?>
+<?= $this->fetch('setup::checks/ext-json') ?>
+<?= $this->fetch('setup::checks/ext-posix') ?>
 
 <a class="btn btn-sm"></a>
 
 <script>
-    if (check === 5) {
+    if (check === 6) {
         document.querySelector('.btn').classList.add('btn-success');
         document.querySelector('.btn').classList.remove('btn-danger');
         document.querySelector('.btn').innerText = 'Continue';

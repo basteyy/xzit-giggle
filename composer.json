@@ -45,7 +45,8 @@
     "basteyy/php-stringer": "^1.0.0",
     "basteyy/php-i18n": "^1.0.0",
     "monolog/monolog": ">=3.5.0",
-    "adhocore/cli": "^v1.0.0"
+    "adhocore/cli": "^v1.0.0",
+    "ext-posix": "*"
   },
   "scripts": {
     "propel": [

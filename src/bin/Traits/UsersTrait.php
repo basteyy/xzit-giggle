@@ -73,6 +73,13 @@ trait UsersTrait
                 $user->getHomeFolder()
             ));
 
+            /** add folder as home folter */
+            $writer->comment('Add home folder for user ' . $username . ' ... ', true);
+            $this->runShellCmd(sprintf('usermod -d %2$s %1$s',
+                $user->getUsername(),
+                $user->getHomeFolder()
+            ));
+
             /** Make home folder chown to user */
             $writer->comment('Make home folder chown to user ' . $username . ' ... ', true);
             $this->runShellCmd(sprintf('chown -R %1$s:%1$s %2$s',

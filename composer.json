@@ -63,7 +63,4 @@
       "php -r \"copy('vendor/twbs/bootstrap-icons/font/fonts/bootstrap-icons.woff2', 'public/css/fonts/bootstrap-icons.woff2');\""
     ]
   }
-
-
-
 }

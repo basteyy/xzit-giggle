@@ -114,21 +114,6 @@ trait UserSaveTrait
             $errors[] = __('Bash must be set');
         }
 
-        $user->setPhpFpmPool($request->getParsedBody()['php_fpm_pool'] ?? null);
-        if (null === $user->getPhpFpmPool() || strlen(trim($user->getPhpFpmPool())) < 1) {
-            $errors[] = __('Fpm Pool must be set');
-        }
-
-        $user->setPhpFpmSocket($request->getParsedBody()['php_fpm_socket'] ?? null);
-        if (null === $user->getPhpFpmSocket() || strlen(trim($user->getPhpFpmSocket())) < 1) {
-            $errors[] = __('Fpm Socket must be set');
-        }
-
-        $user->setPhpFpmPort($request->getParsedBody()['php_fpm_port'] ?? null);
-        if (null === $user->getPhpFpmPort()) {
-            $errors[] = __('Fpm Port must be set');
-        }
-
         if (count($errors) === 0) {
 
             if (isset($request->getParsedBody()['set_password'])) {

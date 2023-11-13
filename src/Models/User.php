@@ -166,15 +166,6 @@ class User extends BaseUser
     }
 
     /**
-     * Return the path to the users php-fpm socket
-     * @return string
-     */
-    public function getFpmSock(): string
-    {
-        return '/run/php/php8.4-fpm-' . $this->getUsername() . '.sock';
-    }
-
-    /**
      * Return all active dialogs of the user, ordered by last message
      * @return Collection<Dialog>
      */

@@ -76,6 +76,9 @@ trait DomainTrait
                 $domain->getSymbolicNginxEnabledPath()
             ));
 
+            /** Run certbot (certbot --nginx -d domain.de,www.domain.de */
+            /** @todo Implement it */
+
             /** Set domain as processed */
             $domain->setProcessed(true);
             $domain->setProcessedAt(new \DateTime());

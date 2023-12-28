@@ -13,7 +13,7 @@
 declare(strict_types=1);
 
 /** check if php version is 8.3 and above */
-if (version_compare(PHP_VERSION, REQUIRED_PHP_VERSION, '>=')) {
+if (version_compare(PHP_VERSION, REQUIRED_PHP_VERSION, '<')) {
     ?>
 <div class="alert alert-danger">
     PHP <?= REQUIRED_PHP_VERSION ?> is required. Please update your PHP version. You use <?= PHP_VERSION ?>.

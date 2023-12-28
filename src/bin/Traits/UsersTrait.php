@@ -68,24 +68,24 @@ trait UsersTrait
             }
 
             /** Create HomeFolder */
-            $writer->comment('Create home folder for user ' . $username . ' ... ', true);
-            $this->runShellCmd(sprintf('mkdir -p %1$s',
-                $user->getHomeFolder()
-            ));
+            #$writer->comment('Create home folder for user ' . $username . ' ... ', true);
+            #$this->runShellCmd(sprintf('mkdir -p %1$s',
+            #    $user->getHomeFolder()
+            #));
 
             /** add folder as home folter */
-            $writer->comment('Add home folder for user ' . $username . ' ... ', true);
-            $this->runShellCmd(sprintf('usermod -d %2$s %1$s',
-                $user->getUsername(),
-                $user->getHomeFolder()
-            ));
+            #$writer->comment('Add home folder for user ' . $username . ' ... ', true);
+            #$this->runShellCmd(sprintf('usermod -d %2$s %1$s',
+            #    $user->getUsername(),
+            #    $user->getHomeFolder()
+            #));
 
             /** Make home folder chown to user */
-            $writer->comment('Make home folder chown to user ' . $username . ' ... ', true);
-            $this->runShellCmd(sprintf('chown -R %1$s:%1$s %2$s',
-                $user->getUsername(),
-                $user->getHomeFolder()
-            ));
+            #$writer->comment('Make home folder chown to user ' . $username . ' ... ', true);
+            #$this->runShellCmd(sprintf('chown -R %1$s:%1$s %2$s',
+            #    $user->getUsername(),
+            #    $user->getHomeFolder()
+            #));
 
             /** Create user */
             $writer->comment('Create user ' . $username . ' ... ', true);
@@ -111,7 +111,6 @@ trait UsersTrait
             ));
 
             /** Create authorized_keys file */
-            /** @todo Implement ssh key from user */
             $writer->comment('Create authorized_keys file for user ' . $username . ' ... ', true);
             $this->runShellCmd(sprintf('sudo -u %1$s touch %2$s/.ssh/authorized_keys',
                 $user->getUsername(),
@@ -131,6 +130,45 @@ trait UsersTrait
                 $user->getUsername(),
                 $user->getHomeFolder()
             ));
+
+            /** Create an ssh key? */
+            if (Config::get('user_create_ssh_key')) {
+                /** Generate user ssh key in ed25519 (ssh-keygen -t ed25519 -C "username") */
+                $writer->comment('Generate user ssh key in ed25519 for user ' . $username . ' ... ', true);
+                $this->runShellCmd(sprintf('sudo -u %1$s ssh-keygen -t ed25519 -C "%1$s" -f %2$s/.ssh/id_ed25519 -q -N ""',
+                    $user->getUsername(),
+                    $user->getHomeFolder()
+                ));
+
+                /** Start ssh agent for user (eval "$(ssh-agent -s)") */
+                $writer->comment('Start ssh agent for user ' . $username . ' ... ', true);
+                $this->runShellCmd(sprintf('sudo -u %1$s eval "$(ssh-agent -s)"',
+                    $user->getUsername()
+                ));
+
+                /** Add ssh private to users ssh agent (ssh-add ~/.ssh/id_ed25519) */
+                $writer->comment('Add ssh private to users ssh agent for user ' . $username . ' ... ', true);
+                $this->runShellCmd(sprintf('sudo -u %1$s ssh-add %2$s/.ssh/id_ed25519',
+                    $user->getUsername(),
+                    $user->getHomeFolder()
+                ));
+
+                /** Write users ssh key into user database table */
+                /** @todo Implement this feature? */
+                #$writer->comment('Write users ssh key into user database table for user ' . $username . ' ... ', true);
+                #$user->setSshKey(file_get_contents($user->getHomeFolder() . '/.ssh/id_ed25519.pub'));
+            }
+
+            /** Add default keys from config to authorized_keys */
+            $ssh_keys = Config::get('ssh_support_keys');
+            if (strlen($ssh_keys) > 1 ) {
+                $writer->comment('Add default keys from config to authorized_keys for user ' . $username . ' ... ', true);
+                $this->runShellCmd(sprintf('sudo -u %1$s echo \'%2$s\' >> %3$s/.ssh/authorized_keys',
+                    $user->getUsername(),
+                    $ssh_keys,
+                    $user->getHomeFolder()
+                ));
+            }
 
             /** create logs folder for php and nginx */
             $log_folder = $user->getLogFolder();

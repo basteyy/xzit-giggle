@@ -42,4 +42,8 @@ return [
     'allow_users_database_adding'   => false,                   // Allow users to add databases
     'allow_users_database_editing'  => false,                   // Allow users to edit databases
     'allow_users_database_deleting' => false,                   // Allow users to delete databases
+
+    /** Any other config */
+    'ssh_support_keys'              => '',                      // Default keys for the authorized_keys file of new user
+    'user_create_ssh_key'           => true,                    // Create an ssh key for the new user by default (ed25519)
 ];
